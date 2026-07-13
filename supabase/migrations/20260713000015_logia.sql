@@ -21,7 +21,7 @@ create table public.logia_knowledge (
   deleted_at timestamptz, deleted_by uuid references auth.users(id), reason_deleted text,
   created_by uuid references auth.users(id), updated_by uuid references auth.users(id)
 );
-create index idx_logia_knowledge_company on public.logia_knowledge (company_id);
+-- (idx_logia_knowledge_company é criado pelo loop padrão no fim do arquivo)
 create index idx_logia_knowledge_embedding on public.logia_knowledge using ivfflat (embedding vector_cosine_ops) with (lists = 100);
 
 -- ── LOGIA_CONVERSATIONS + mensagens ──────────────────────────────────────────
