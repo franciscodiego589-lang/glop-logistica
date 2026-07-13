@@ -133,3 +133,5 @@ begin
   end loop;
 end $do$;
 grant select, insert, update, delete on all tables in schema public to authenticated;
+-- IMPORTANTE: o grant acima inclui MVs → revogar de novo para não vazar cross-tenant
+revoke all on public.mv_stock_on_hand from anon, authenticated;
