@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --border: #e6e9f2;
+  --text: #1a2133;
+  --muted: #6b7488;
+}
+.dark {
+  --bg: #0c1020;
+  --surface: #141a2e;
+  --border: #232c46;
+  --text: #e8ecf6;
+  --muted: #93a0bd;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.muted { color: var(--muted); }
