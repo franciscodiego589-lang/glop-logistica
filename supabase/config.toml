@@ -1,0 +1,17 @@
+# Supabase CLI config — ERP Logístico Mundial
+# project_id é preenchido pelo `supabase link --project-ref <ref>`.
+project_id = "erp-logistica"
+
+[db]
+major_version = 15
+
+[db.migrations]
+schema_paths = []
+
+[api]
+enabled = true
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+
+[auth]
+enabled = true
