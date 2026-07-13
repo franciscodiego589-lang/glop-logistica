@@ -3,6 +3,10 @@
 > Carregado em toda sessão. Regras **obrigatórias** para qualquer código gerado.
 > Este é um ERP de logística Enterprise (WMS/TMS/YMS/MRP/APS/PCP/BI/IA), novo e independente.
 
+> 📜 **Referência suprema:** [`docs/VOLUME-01-CONSTITUTION.md`](docs/VOLUME-01-CONSTITUTION.md) — a Constituição
+> da Logística. Todo módulo segue seus princípios, o template de 20 pontos e o mapa de conformidade
+> honesto (✅ pronto / 🟡 parcial / 🔴 roadmap). Nunca alegar como pronto o que está em 🔴.
+
 ## Stack Oficial
 
 | Camada | Tecnologia |
