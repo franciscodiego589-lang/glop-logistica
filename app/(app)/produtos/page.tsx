@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { VitrineBanner } from "@/components/VitrineBanner";
+import ProductTable from "@/components/produtos/ProductTable";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+type Dup = { a_name: string; b_name: string; similarity: number; reason: string };
 
 type Kpis = {
   total?: number; active?: number; blocked?: number; no_photo?: number; no_supplier?: number;
@@ -24,8 +27,9 @@ export default async function ProdutosPage() {
   const company = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID;
   let kpis: Kpis | null = null;
   let products: Product[] = [];
+  let dups: Dup[] = [];
   if (supabase && company) {
-    const [{ data: k }, { data: rows }] = await Promise.all([
+    const [{ data: k }, { data: rows }, { data: d }] = await Promise.all([
       supabase.rpc("mdm_dashboard", { p_company: company }),
       supabase
         .from("products")
@@ -33,10 +37,12 @@ export default async function ProdutosPage() {
         .eq("company_id", company)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
-        .limit(100),
+        .limit(500),
+      supabase.rpc("detect_duplicate_products", { p_company: company, p_threshold: 0.6 }),
     ]);
     kpis = (k as Kpis) ?? null;
     products = (rows as Product[]) ?? [];
+    dups = (d as Dup[]) ?? [];
   }
 
   return (
@@ -65,48 +71,22 @@ export default async function ProdutosPage() {
         <KpiCard label="Sem dimensões" value={kpis?.no_dimensions ?? "—"} />
       </div>
 
-      <div className="card overflow-hidden">
-        <div className="px-4 py-3 border-b flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
-          <div className="font-semibold">Produtos <span className="muted font-normal">({products.length})</span></div>
+      {dups.length > 0 && (
+        <div className="card p-4 border-amber-500/40">
+          <div className="font-semibold mb-2">✦ LOGIA — possíveis duplicidades ({dups.length})</div>
+          <div className="space-y-1 text-sm">
+            {dups.slice(0, 6).map((d, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-500 text-xs font-semibold">{Math.round(d.similarity * 100)}%</span>
+                <span>“{d.a_name}” ≈ “{d.b_name}”</span>
+                <span className="muted text-xs">por {d.reason}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left muted border-b" style={{ borderColor: "var(--border)" }}>
-                <th className="px-4 py-2 font-semibold">SKU</th>
-                <th className="px-4 py-2 font-semibold">Nome</th>
-                <th className="px-4 py-2 font-semibold">Tipo</th>
-                <th className="px-4 py-2 font-semibold">ABC</th>
-                <th className="px-4 py-2 font-semibold text-right">Custo</th>
-                <th className="px-4 py-2 font-semibold text-right">Venda</th>
-                <th className="px-4 py-2 font-semibold text-right">Qualidade</th>
-                <th className="px-4 py-2 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.length === 0 && (
-                <tr><td colSpan={8} className="px-4 py-10 text-center muted">Nenhum produto ainda. Clique em <b>+ Novo produto</b>.</td></tr>
-              )}
-              {products.map((p) => (
-                <tr key={p.id} className="border-b hover:bg-black/5 dark:hover:bg-white/5" style={{ borderColor: "var(--border)" }}>
-                  <td className="px-4 py-2 font-mono text-xs">{p.sku ?? p.code ?? "—"}</td>
-                  <td className="px-4 py-2 font-medium">{p.name}</td>
-                  <td className="px-4 py-2 muted">{p.product_type}</td>
-                  <td className="px-4 py-2">{p.abc_class !== "none" ? p.abc_class : "—"}</td>
-                  <td className="px-4 py-2 text-right tabular-nums">{money(p.cost_price)}</td>
-                  <td className="px-4 py-2 text-right tabular-nums">{money(p.sale_price)}</td>
-                  <td className="px-4 py-2 text-right">
-                    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${p.data_quality_score >= 80 ? "bg-green-500/15 text-green-500" : p.data_quality_score >= 50 ? "bg-amber-500/15 text-amber-500" : "bg-red-500/15 text-red-500"}`}>
-                      {Math.round(p.data_quality_score)}%
-                    </span>
-                  </td>
-                  <td className="px-4 py-2">{p.active ? "Ativo" : "Bloqueado"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      )}
+
+      <ProductTable products={products} />
     </div>
   );
 }
