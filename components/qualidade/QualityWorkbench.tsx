@@ -4,14 +4,32 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import CrudPanel, { Field, Column } from "@/components/ui/CrudPanel";
 import { KpiCard } from "@/components/ui/KpiCard";
+import SpcChart from "./SpcChart";
+import SignPanel from "./SignPanel";
 
-const TABS = ["Painel", "Inspeções", "Não Conformidades", "CAPA", "Auditorias", "Riscos (FMEA)", "Documentos",
-  "Reclamações", "Liberação de Lote", "Especificações", "Planos", "Treinamentos", "Validações", "Recall", "CoA"] as const;
+const TABS = ["Painel", "Inspeções", "Não Conformidades", "CAPA", "Auditorias", "Riscos (FMEA)", "CEP/SPC", "Documentos",
+  "Reclamações", "Liberação de Lote", "Assinaturas", "Especificações", "Planos", "Treinamentos", "Validações", "Recall", "CoA"] as const;
 
 const bool: [string, string][] = [["true", "Sim"], ["false", "Não"]];
 
+const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
+
 export default function QualityWorkbench({ kpis, data, lots }: { kpis: any; data: Record<string, any[]>; lots: any[] }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  const [iaMsg, setIaMsg] = useState<string | null>(null);
+  const [iaBusy, setIaBusy] = useState(false);
+
+  async function runPredict() {
+    if (!supabase) return;
+    setIaBusy(true); setIaMsg(null);
+    const { data: n, error } = await supabase.rpc("quality_predict", { p_company: COMPANY });
+    setIaBusy(false);
+    setIaMsg(error ? error.message : `LOGIA analisou os processos: ${n ?? 0} desvio(s) de capabilidade detectado(s). Veja em LOGIA (IA).`);
+    router.refresh();
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
@@ -30,6 +48,14 @@ export default function QualityWorkbench({ kpis, data, lots }: { kpis: any; data
       </div>
 
       {tab === "Painel" && (
+        <div className="space-y-3">
+        <div className="card p-3 flex items-center gap-3">
+          <div className="text-sm"><b>✦ IA da Qualidade</b> <span className="muted">— detecta processos com baixa capabilidade (Cpk&lt;1,33) antes de gerarem NC.</span></div>
+          <button onClick={runPredict} disabled={iaBusy} className="ml-auto text-sm px-3 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold disabled:opacity-60">
+            {iaBusy ? "Analisando…" : "Analisar desvios"}
+          </button>
+        </div>
+        {iaMsg && <div className="text-sm text-brand-500 px-1">{iaMsg}</div>}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <KpiCard label="NCs abertas" value={kpis?.nc_open ?? "—"} accent />
           <KpiCard label="NCs críticas" value={kpis?.nc_critical ?? "—"} />
@@ -42,7 +68,12 @@ export default function QualityWorkbench({ kpis, data, lots }: { kpis: any; data
           <KpiCard label="Auditorias planejadas" value={kpis?.audits_planned ?? "—"} />
           <KpiCard label="Reclamações abertas" value={kpis?.complaints_open ?? "—"} />
         </div>
+        </div>
       )}
+
+      {tab === "CEP/SPC" && <SpcChart />}
+
+      {tab === "Assinaturas" && <SignPanel documents={data.quality_documents} inspections={data.quality_inspections} />}
 
       {tab === "Inspeções" && <CrudPanel table="quality_inspections" title="Inspeções" rows={data.quality_inspections}
         fields={[
