@@ -27,6 +27,7 @@ export const NAV: NavItem[] = [
 
   { slug: "qualidade", label: "QMS / Qualidade", icon: "✔", group: "Qualidade & Conformidade", vol: 8, description: "Inspeções, NC, CAPA, auditorias, FMEA, liberação de lote" },
   { slug: "lims", label: "LIMS / Laboratório", icon: "🧪", group: "Suprimentos", vol: 9, description: "Amostras, ensaios, especificações e liberação de lote" },
+  { slug: "manutencao", label: "EAM / Manutenção", icon: "🔧", group: "Suprimentos", vol: 10, description: "Ativos, ordens de serviço, preventiva, MTTR/MTBF" },
 
   { slug: "expedicao", label: "Expedição", icon: "📦", group: "Distribuição", vol: 12, description: "Pedidos, picking, packing e embarque" },
   { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Distribuição", vol: 4, description: "Transportadoras, fretes, rotas e tracking" },
