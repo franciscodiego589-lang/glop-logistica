@@ -1,6 +1,6 @@
 import { KpiCard } from "@/components/ui/KpiCard";
 import { VitrineBanner } from "@/components/VitrineBanner";
-import ProducaoPanel from "@/components/producao/ProducaoPanel";
+import ProducaoWorkbench from "@/components/producao/ProducaoWorkbench";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +42,7 @@ export default async function ProducaoPage() {
         <KpiCard label="Estruturas (BOM)" value={boms.length || "—"} />
       </div>
 
-      <ProducaoPanel orders={orders} products={products} boms={boms} warehouses={warehouses} prodName={prodName} />
+      <ProducaoWorkbench data={{ orders, products, boms, warehouses, prodName }} />
     </div>
   );
 }

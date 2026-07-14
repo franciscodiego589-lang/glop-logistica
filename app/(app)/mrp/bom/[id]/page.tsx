@@ -15,7 +15,7 @@ export default async function BomPage({ params }: { params: { id: string } }) {
   const [{ data: components }, { data: products }] = await Promise.all([
     supabase.from("bom_components").select("id,component_product_id,quantity,uom_code,scrap_percent,operation_seq")
       .eq("bom_id", params.id).is("deleted_at", null).order("operation_seq").limit(1000),
-    supabase.from("products").select("id,name,sku,base_uom_code").eq("company_id", company).is("deleted_at", null).order("name").limit(5000),
+    supabase.from("products").select("id,name,sku,base_uom_code,cost_price").eq("company_id", company).is("deleted_at", null).order("name").limit(5000),
   ]);
 
   return <BomDetail bom={bom} components={components ?? []} products={products ?? []} />;
