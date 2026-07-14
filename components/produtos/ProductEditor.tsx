@@ -5,8 +5,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import ProductForm from "./ProductForm";
 import RelationEditor from "./RelationEditor";
+import MediaUploader from "./MediaUploader";
+import LocationPicker from "./LocationPicker";
 
-const SECTIONS = ["Dados", "Fornecedores", "Custos", "Tributos", "Mídias"] as const;
+const SECTIONS = ["Dados", "Endereço", "Fornecedores", "Custos", "Tributos", "Mídias"] as const;
 
 export default function ProductEditor({ product }: { product: any }) {
   const router = useRouter();
@@ -40,6 +42,8 @@ export default function ProductEditor({ product }: { product: any }) {
 
       {sec === "Dados" && <ProductForm productId={pid} initial={product} />}
 
+      {sec === "Endereço" && <LocationPicker productId={pid} current={product.default_location_id ?? null} />}
+
       {sec === "Fornecedores" && (
         <RelationEditor title="Fornecedores do produto" table="product_suppliers" productId={pid} tenantId={tenantId}
           fields={[
@@ -72,13 +76,16 @@ export default function ProductEditor({ product }: { product: any }) {
       )}
 
       {sec === "Mídias" && (
-        <RelationEditor title="Fotos e mídias" table="product_media" productId={pid} tenantId={tenantId}
+        <div className="space-y-4">
+          <MediaUploader productId={pid} tenantId={tenantId} />
+          <RelationEditor title="Fotos e mídias" table="product_media" productId={pid} tenantId={tenantId}
           fields={[
             { key: "media_kind", label: "Tipo", type: "select", options: [["main","Principal"],["technical","Técnica"],["commercial","Comercial"],["packaging","Embalagem"],["pallet","Pallet"],["image360","360°"],["model3d","3D"],["video","Vídeo"],["manual","Manual PDF"]] },
             { key: "url", label: "URL", type: "text" },
             { key: "title", label: "Título", type: "text" },
           ]}
           rowLabel={(r) => `${r.media_kind}: ${r.title || r.url}`} />
+        </div>
       )}
 
       <div className="card p-4 border-red-500/30">

@@ -7,7 +7,7 @@ const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 export type RelField = {
   key: string;
   label: string;
-  type?: "text" | "number" | "select" | "fk";
+  type?: "text" | "number" | "select" | "fk" | "date";
   options?: [string, string][];
   fkTable?: string;      // para type 'fk': tabela de origem (id, label)
   fkLabel?: string;      // coluna de rótulo (default 'name')
@@ -94,7 +94,7 @@ export default function RelationEditor({
                   : (f.options ?? []).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             ) : (
-              <input type={f.type === "number" ? "number" : "text"} value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
+              <input type={f.type === "number" ? "number" : f.type === "date" ? "date" : "text"} value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
                 className="w-full mt-1 border rounded-lg px-2 py-1.5 text-sm bg-transparent outline-none focus:border-brand-500" style={{ borderColor: "var(--border)" }} />
             )}
           </div>
