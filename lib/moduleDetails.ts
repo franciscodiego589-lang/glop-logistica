@@ -8,7 +8,7 @@ export const MODULE_DETAILS: Record<string, ModuleDetail> = {
   },
   estoque: {
     features: ["Saldo por produto/armazém/bin/lote", "Curva ABC automática", "Ponto de pedido e sugestões", "Vencimentos", "KPIs de valor e cobertura"],
-    tables: ["stock_balances", "stock_movements", "reorder_suggestions", "stock_snapshots", "mv_stock_on_hand"],
+    tables: ["stock_balances", "stock_movements", "reorder_suggestions", "stock_snapshots"],
     rpcs: ["inventory_kpis", "calculate_abc", "generate_reorder_suggestions"],
   },
   wms: {
