@@ -9,7 +9,7 @@ create type public.lab_sample_type as enum ('raw_material','finished_product','i
 create type public.lab_sample_status as enum ('registered','in_analysis','approved','rejected','retained','canceled');
 create type public.lab_test_status as enum ('pending','pass','fail','repeat');
 create type public.lab_test_kind as enum ('physical','chemical','microbiological','sensory','instrumental','stability');
-create type public.lab_stability_kind as enum ('long_term','accelerated','photostability','in_use');
+-- (stability_studies + seu enum vivem no QMS 023 — LIMS reusa aquela tabela, sem recriar)
 
 -- ── LAB_METHODS (métodos analíticos / POPs, versionados) ────────────────────
 create table public.lab_methods (
@@ -118,26 +118,11 @@ create table public.lab_instruments (
 );
 create index idx_lab_instruments_caldue on public.lab_instruments (company_id, calibration_due) where deleted_at is null;
 
--- ── STABILITY_STUDIES (estudos de estabilidade) ─────────────────────────────
-create table public.stability_studies (
-  id uuid primary key default gen_random_uuid(),
-  tenant_id uuid not null references public.tenants(id) on delete restrict,
-  company_id uuid not null references public.companies(id) on delete restrict,
-  branch_id uuid references public.branches(id) on delete restrict,
-  product_id uuid references public.products(id) on delete set null,
-  lot_id uuid references public.product_lots(id) on delete set null,
-  code text, study_kind public.lab_stability_kind not null default 'long_term',
-  condition_temp text, condition_humidity text, start_date date, end_date date,
-  status text not null default 'ongoing', notes text,
-  active boolean not null default true, version integer not null default 1, metadata jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  deleted_at timestamptz, deleted_by uuid references auth.users(id), reason_deleted text,
-  created_by uuid references auth.users(id), updated_by uuid references auth.users(id)
-);
+-- (stability_studies é criada e gerida pelo QMS — ver migration 000023_qms.sql)
 
 -- ── RLS + triggers (recurso 'production') ───────────────────────────────────
 do $do$
-declare t text; specs text[] := array['lab_methods','product_specifications','lab_samples','lab_tests','lab_reagents','lab_instruments','stability_studies'];
+declare t text; specs text[] := array['lab_methods','product_specifications','lab_samples','lab_tests','lab_reagents','lab_instruments'];
 begin
   foreach t in array specs loop
     execute format('alter table public.%I enable row level security;', t);
@@ -150,7 +135,10 @@ begin
     execute format('create policy %I on public.%I for delete to authenticated using (app.is_superadmin());', t||'_delete', t);
   end loop;
 end $do$;
-grant select, insert, update, delete on all tables in schema public to authenticated;
+-- grant POR-TABELA (NÃO usar "on all tables in schema public" — reexpõe materialized views sem RLS)
+grant select, insert, update, delete on
+  public.lab_methods, public.product_specifications, public.lab_samples,
+  public.lab_tests, public.lab_reagents, public.lab_instruments to authenticated;
 
 -- ── RPC: liberar amostra — avalia ensaios × spec e libera/bloqueia o lote ────
 create or replace function public.release_sample(p_sample uuid)

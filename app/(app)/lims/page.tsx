@@ -20,7 +20,7 @@ export default async function LimsPage() {
       supabase.from("product_specifications").select("id,product_id,parameter,test_kind,min_value,max_value,unit,method_id").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(3000),
       supabase.from("lab_reagents").select("id,name,manufacturer,lot_number,expiry_date,quantity,unit,location,responsible").eq("company_id", company).is("deleted_at", null).order("expiry_date").limit(2000),
       supabase.from("lab_instruments").select("id,code,name,instrument_type,manufacturer,model,calibration_due,last_calibration,responsible,status").eq("company_id", company).is("deleted_at", null).order("name").limit(2000),
-      supabase.from("stability_studies").select("id,code,product_id,study_kind,condition_temp,condition_humidity,start_date,end_date,status").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(2000),
+      supabase.from("stability_studies").select("id,code,product_id,condition,start_date,duration_days,status").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(2000),
     ]);
     samples = sa.data ?? []; products = pr.data ?? []; lots = lo.data ?? []; methods = me.data ?? [];
     specs = sp.data ?? []; reagents = re.data ?? []; instruments = ins.data ?? []; stability = stb.data ?? [];

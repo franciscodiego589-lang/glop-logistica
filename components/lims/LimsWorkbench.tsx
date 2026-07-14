@@ -94,20 +94,19 @@ export default function LimsWorkbench({ data }: { data: any }) {
 
       {tab === "Estabilidade" && (
         <CrudPanel table="stability_studies" title="Estudos de estabilidade" rows={data.stability}
-          emptyHint="Estudos de estabilidade (longa duração, acelerado, fotoestabilidade)."
+          emptyHint="Estudos de estabilidade (longa duração, acelerado, fotoestabilidade). Tabela compartilhada com o módulo Qualidade (QMS)."
           fields={[
             { key: "product_id", label: "Produto", type: "fk", fkTable: "products", required: true },
             { key: "code", label: "Código" },
-            { key: "study_kind", label: "Tipo", type: "select", options: [["long_term", "Longa duração"], ["accelerated", "Acelerado"], ["photostability", "Fotoestabilidade"], ["in_use", "Em uso"]], default: "long_term" },
-            { key: "condition_temp", label: "Temperatura", placeholder: "25°C / 40°C" },
-            { key: "condition_humidity", label: "Umidade", placeholder: "60% / 75%" },
+            { key: "condition", label: "Condição", placeholder: "25°C/60%UR, 40°C/75%UR, fotoestabilidade…" },
             { key: "start_date", label: "Início", type: "date" },
-            { key: "end_date", label: "Fim previsto", type: "date" },
+            { key: "duration_days", label: "Duração (dias)", type: "number" },
             { key: "status", label: "Status", type: "select", options: [["ongoing", "Em andamento"], ["completed", "Concluído"], ["canceled", "Cancelado"]], default: "ongoing" },
           ]}
           columns={[
-            { key: "product_id", label: "Produto", fmt: () => "" }, { key: "code", label: "Código" }, { key: "study_kind", label: "Tipo" },
-            { key: "condition_temp", label: "Temp." }, { key: "condition_humidity", label: "Umidade" }, { key: "status", label: "Status" },
+            { key: "product_id", label: "Produto", fmt: () => "" }, { key: "code", label: "Código" },
+            { key: "condition", label: "Condição" }, { key: "start_date", label: "Início" },
+            { key: "duration_days", label: "Duração (d)" }, { key: "status", label: "Status" },
           ]} />
       )}
     </div>
