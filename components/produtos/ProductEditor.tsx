@@ -8,7 +8,7 @@ import RelationEditor from "./RelationEditor";
 import MediaUploader from "./MediaUploader";
 import LocationPicker from "./LocationPicker";
 
-const SECTIONS = ["Dados", "Endereço", "Fornecedores", "Custos", "Tributos", "Mídias"] as const;
+const SECTIONS = ["Dados", "Endereço", "Fornecedores", "Custos", "Tributos", "Mídias", "Lotes", "Séries", "Documentos", "Clientes"] as const;
 
 export default function ProductEditor({ product }: { product: any }) {
   const router = useRouter();
@@ -86,6 +86,46 @@ export default function ProductEditor({ product }: { product: any }) {
           ]}
           rowLabel={(r) => `${r.media_kind}: ${r.title || r.url}`} />
         </div>
+      )}
+
+      {sec === "Lotes" && (
+        <RelationEditor title="Lotes" table="product_lots" productId={pid} tenantId={tenantId}
+          fields={[
+            { key: "lot_number", label: "Nº do lote", type: "text" },
+            { key: "manufacture_date", label: "Fabricação", type: "date" },
+            { key: "expiry_date", label: "Validade", type: "date" },
+            { key: "cost", label: "Custo", type: "number" },
+          ]}
+          rowLabel={(r) => `Lote ${r.lot_number} · val ${r.expiry_date ?? "—"} · custo ${r.cost ?? "—"}`} />
+      )}
+
+      {sec === "Séries" && (
+        <RelationEditor title="Números de série" table="product_serials" productId={pid} tenantId={tenantId}
+          fields={[
+            { key: "serial_number", label: "Nº de série", type: "text" },
+            { key: "status", label: "Status", type: "select", options: [["in_stock","Em estoque"],["reserved","Reservado"],["sold","Vendido"],["consumed","Consumido"],["in_transit","Em trânsito"],["defective","Defeituoso"],["returned","Devolvido"],["scrapped","Descartado"]] },
+          ]}
+          rowLabel={(r) => `${r.serial_number} · ${r.status}`} />
+      )}
+
+      {sec === "Documentos" && (
+        <RelationEditor title="Documentos" table="product_documents" productId={pid} tenantId={tenantId}
+          fields={[
+            { key: "doc_type", label: "Tipo", type: "select", options: [["datasheet","Ficha técnica"],["pop","POP"],["spec","Especificação"],["report","Laudo"],["fispq","FISPQ"],["manual","Manual"],["iso","ISO"],["anvisa","ANVISA"],["mapa","MAPA"],["inmetro","INMETRO"]] },
+            { key: "title", label: "Título", type: "text" },
+            { key: "url", label: "URL", type: "text" },
+          ]}
+          rowLabel={(r) => `${r.doc_type}: ${r.title || r.url}`} />
+      )}
+
+      {sec === "Clientes" && (
+        <RelationEditor title="Clientes autorizados / exclusivos / bloqueados" table="product_customers" productId={pid} tenantId={tenantId}
+          fields={[
+            { key: "customer_id", label: "Cliente", type: "fk", fkTable: "customers" },
+            { key: "relation", label: "Relação", type: "select", options: [["authorized","Autorizado"],["exclusive","Exclusivo"],["blocked","Bloqueado"]] },
+            { key: "special_price", label: "Preço especial", type: "number" },
+          ]}
+          rowLabel={(r, m) => `${m.customer_id?.[r.customer_id] ?? "?"} · ${r.relation} · R$ ${r.special_price ?? "—"}`} />
       )}
 
       <div className="card p-4 border-red-500/30">

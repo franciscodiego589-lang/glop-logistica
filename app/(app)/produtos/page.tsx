@@ -54,6 +54,7 @@ export default async function ProdutosPage() {
           <p className="text-sm muted">Volume 02 · Governança de dados de produtos</p>
         </div>
         <div className="ml-auto flex gap-2">
+          <Link href="/produtos/apoio" className="text-sm px-3 py-2 rounded-lg border hover:border-brand-500" style={{ borderColor: "var(--border)" }}>Cadastros de apoio</Link>
           <Link href="/produtos/novo" className="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 font-semibold">+ Novo produto</Link>
         </div>
       </div>
