@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import CrudPanel from "./CrudPanel";
+import CrudPanel from "@/components/ui/CrudPanel";
 import ShipmentsPanel from "./ShipmentsPanel";
 import FreightCalculator from "./FreightCalculator";
 
