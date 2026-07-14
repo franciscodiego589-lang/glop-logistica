@@ -6,14 +6,16 @@ import CrudPanel from "@/components/ui/CrudPanel";
 import PayablesPanel from "./PayablesPanel";
 import ReceivablesPanel from "./ReceivablesPanel";
 import CashFlowPanel from "./CashFlowPanel";
+import { FinancePanel, ReconcilePanel, CreditPanel, ConsolidatedPanel } from "./FinanceAdvanced";
 
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
-const TABS = ["Contas a Pagar", "Contas a Receber", "Fluxo de Caixa", "Bancos & Caixa", "Centros de Custo"] as const;
+const TABS = ["Painel", "Contas a Pagar", "Contas a Receber", "Fluxo de Caixa", "Tesouraria", "Conciliação",
+  "Crédito", "Cobrança", "Rateios", "Orçamento", "Bancos & Caixa", "Centros de Custo", "Consolidado"] as const;
 
 export default function FinanceWorkbench({ data }: { data: any }) {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
-  const [tab, setTab] = useState<(typeof TABS)[number]>("Contas a Pagar");
+  const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -75,6 +77,66 @@ export default function FinanceWorkbench({ data }: { data: any }) {
           columns={[
             { key: "code", label: "Código" }, { key: "name", label: "Nome" }, { key: "cc_type", label: "Tipo" },
           ]} />
+      )}
+
+      {tab === "Painel" && <FinancePanel fin={data.fin} forecast={data.forecast} />}
+      {tab === "Conciliação" && <ReconcilePanel statements={data.statements} />}
+      {tab === "Crédito" && <CreditPanel credit={data.credit} customers={data.customers} />}
+      {tab === "Consolidado" && <ConsolidatedPanel c={data.consolidated} />}
+
+      {tab === "Tesouraria" && (
+        <CrudPanel table="treasury_positions" title="Tesouraria — investimentos, empréstimos e financiamentos" rows={data.treasury}
+          emptyHint="Cadastre aplicações, empréstimos e financiamentos (com taxa, vencimento e saldo)."
+          fields={[
+            { key: "kind", label: "Tipo", type: "select", options: [["investment", "Investimento"], ["loan", "Empréstimo"], ["financing", "Financiamento"]], default: "investment" },
+            { key: "description", label: "Descrição", required: true },
+            { key: "institution", label: "Instituição" },
+            { key: "bank_account_id", label: "Conta", type: "fk", fkTable: "bank_accounts" },
+            { key: "principal", label: "Principal (R$)", type: "number" },
+            { key: "rate_percent", label: "Taxa %", type: "number" },
+            { key: "start_date", label: "Início", type: "date" },
+            { key: "maturity_date", label: "Vencimento", type: "date" },
+            { key: "current_value", label: "Valor atual", type: "number" },
+            { key: "outstanding", label: "Saldo devedor", type: "number" },
+          ]}
+          columns={[{ key: "kind", label: "Tipo" }, { key: "description", label: "Descrição" }, { key: "institution", label: "Instituição" }, { key: "principal", label: "Principal" }, { key: "maturity_date", label: "Vencimento" }]} />
+      )}
+
+      {tab === "Cobrança" && (
+        <CrudPanel table="dunning_rules" title="Régua de cobrança" rows={data.dunning}
+          emptyHint="Defina as etapas da cobrança por dias de atraso (e-mail, SMS, WhatsApp, ligação)."
+          fields={[
+            { key: "name", label: "Etapa", required: true },
+            { key: "days_overdue", label: "Dias de atraso", type: "number" },
+            { key: "channel", label: "Canal", type: "select", options: [["email", "E-mail"], ["sms", "SMS"], ["whatsapp", "WhatsApp"], ["call", "Ligação"], ["letter", "Carta"]], default: "email" },
+            { key: "action", label: "Ação" },
+            { key: "sequence", label: "Ordem", type: "number" },
+          ]}
+          columns={[{ key: "sequence", label: "Ordem" }, { key: "name", label: "Etapa" }, { key: "days_overdue", label: "Dias" }, { key: "channel", label: "Canal" }]} />
+      )}
+
+      {tab === "Rateios" && (
+        <CrudPanel table="allocation_rules" title="Rateios (alocação de custos)" rows={data.allocations}
+          emptyHint="Crie regras de rateio (por percentual, receita, headcount, horas, produção...)."
+          fields={[
+            { key: "name", label: "Nome", required: true },
+            { key: "basis", label: "Base", type: "select", options: [["percent", "Percentual"], ["revenue", "Receita"], ["headcount", "Headcount"], ["hours", "Horas"], ["production", "Produção"], ["consumption", "Consumo"], ["area", "Área"]], default: "percent" },
+            { key: "source_cost_center_id", label: "CC origem", type: "fk", fkTable: "cost_centers" },
+            { key: "notes", label: "Observações" },
+          ]}
+          columns={[{ key: "name", label: "Nome" }, { key: "basis", label: "Base" }]} />
+      )}
+
+      {tab === "Orçamento" && (
+        <CrudPanel table="financial_budgets" title="Orçamento (Budget)" rows={data.budgets}
+          emptyHint="Planeje orçamentos anuais/trimestrais e acompanhe previsto × realizado."
+          fields={[
+            { key: "name", label: "Nome", required: true },
+            { key: "year", label: "Ano", type: "number" },
+            { key: "period", label: "Período", type: "select", options: [["annual", "Anual"], ["quarterly", "Trimestral"], ["monthly", "Mensal"]], default: "annual" },
+            { key: "status", label: "Status", type: "select", options: [["draft", "Rascunho"], ["active", "Ativo"], ["closed", "Fechado"]], default: "draft" },
+          ]}
+          columns={[{ key: "name", label: "Nome" }, { key: "year", label: "Ano" }, { key: "period", label: "Período" }, { key: "status", label: "Status" }]} />
       )}
     </div>
   );

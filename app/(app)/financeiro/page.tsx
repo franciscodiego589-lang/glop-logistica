@@ -13,6 +13,7 @@ export default async function FinanceiroPage() {
   const company = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID;
   let kpis: Kpis = {};
   let payables: any[] = [], receivables: any[] = [], suppliers: any[] = [], customers: any[] = [], banks: any[] = [], costCenters: any[] = [];
+  const adv: any = { fin: {}, forecast: [], consolidated: {}, treasury: [], statements: [], credit: [], dunning: [], allocations: [], budgets: [], intercompany: [] };
 
   if (supabase && company) {
     const [{ data: k }, pa, re, su, cu, ba, cc] = await Promise.all([
@@ -26,6 +27,24 @@ export default async function FinanceiroPage() {
     ]);
     kpis = (k as Kpis) ?? {};
     payables = pa.data ?? []; receivables = re.data ?? []; suppliers = su.data ?? []; customers = cu.data ?? []; banks = ba.data ?? []; costCenters = cc.data ?? [];
+
+    const { data: comp } = await supabase.from("companies").select("tenant_id").eq("id", company).single();
+    const tenant = (comp as any)?.tenant_id;
+    const [fd, fc, cs, tp, st, cr, du, al, bu, ic] = await Promise.all([
+      supabase.rpc("finance_dashboard", { p_company: company }),
+      supabase.rpc("forecast_cashflow", { p_company: company, p_days: 30 }),
+      tenant ? supabase.rpc("consolidated_finance", { p_tenant: tenant }) : Promise.resolve({ data: {} } as any),
+      supabase.from("treasury_positions").select("*").eq("company_id", company).is("deleted_at", null).order("maturity_date").limit(500),
+      supabase.from("bank_statements").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+      supabase.from("customer_credit").select("*").eq("company_id", company).is("deleted_at", null).order("score").limit(1000),
+      supabase.from("dunning_rules").select("*").eq("company_id", company).is("deleted_at", null).order("days_overdue").limit(200),
+      supabase.from("allocation_rules").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+      supabase.from("financial_budgets").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+      supabase.from("intercompany_transactions").select("*").eq("company_id", company).is("deleted_at", null).order("occurred_at", { ascending: false }).limit(500),
+    ]);
+    adv.fin = fd.data ?? {}; adv.forecast = fc.data ?? []; adv.consolidated = cs.data ?? {};
+    adv.treasury = tp.data ?? []; adv.statements = st.data ?? []; adv.credit = cr.data ?? [];
+    adv.dunning = du.data ?? []; adv.allocations = al.data ?? []; adv.budgets = bu.data ?? []; adv.intercompany = ic.data ?? [];
   }
 
   return (
@@ -48,7 +67,7 @@ export default async function FinanceiroPage() {
         <KpiCard label="Vencido a receber" value={kpis.receivable_overdue != null ? money(kpis.receivable_overdue) : "—"} />
       </div>
 
-      <FinanceWorkbench data={{ payables, receivables, suppliers, customers, banks, costCenters, cashPosition: kpis.cash_position ?? 0 }} />
+      <FinanceWorkbench data={{ payables, receivables, suppliers, customers, banks, costCenters, cashPosition: kpis.cash_position ?? 0, ...adv }} />
     </div>
   );
 }
