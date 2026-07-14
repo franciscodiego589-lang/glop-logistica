@@ -22,6 +22,7 @@ export const NAV: NavItem[] = [
   { slug: "demanda", label: "Demand Planning", icon: "📈", group: "Suprimentos", vol: 7, description: "Histórico, previsões e S&OP" },
   { slug: "mrp", label: "MRP / APS", icon: "⚙", group: "Suprimentos", vol: 8, description: "BOM, necessidades e capacidade" },
   { slug: "producao", label: "Produção / PCP", icon: "🏭", group: "Suprimentos", vol: 9, description: "Ordens, apontamentos e consumo" },
+  { slug: "mes", label: "MES / Chão de Fábrica", icon: "🕹", group: "Suprimentos", vol: 6, description: "Execução em tempo real, apontamentos, paradas e OEE" },
 
   { slug: "expedicao", label: "Expedição", icon: "📦", group: "Distribuição", vol: 12, description: "Pedidos, picking, packing e embarque" },
   { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Distribuição", vol: 4, description: "Transportadoras, fretes, rotas e tracking" },
