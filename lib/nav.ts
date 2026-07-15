@@ -13,6 +13,7 @@ export const NAV: NavItem[] = [
   { slug: "control-tower", label: "Torre de Controle", icon: "⛭", group: "Visão Geral", vol: 14, description: "Eventos, SLA, alertas e exceções" },
   { slug: "ia-central", label: "LAIOS — Cérebro do ERP", icon: "✦", group: "Visão Geral", vol: 15, description: "IA central: orquestra agentes 24/7, propõe decisões, memória corporativa, governança" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Visão Geral", vol: 15, description: "Insights, previsões e planos de ação" },
+  { slug: "analytics", label: "BI & Analytics", icon: "📈", group: "Visão Geral", vol: 25, description: "Cockpit executivo, catálogo de KPIs com tendências, alertas, governança de dados" },
   { slug: "auditoria", label: "Auditoria & Custos (LAIS)", icon: "🔎", group: "Visão Geral", vol: 18, description: "Auditoria contínua, custos, desperdícios, riscos, IGEL" },
   { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Pessoas & Governança", vol: 23, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },
   { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Pessoas & Governança", vol: 24, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
