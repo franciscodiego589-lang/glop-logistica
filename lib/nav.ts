@@ -13,6 +13,7 @@ export const NAV: NavItem[] = [
   { slug: "control-tower", label: "Torre de Controle", icon: "⛭", group: "Visão Geral", vol: 14, description: "Eventos, SLA, alertas e exceções" },
   { slug: "logia", label: "LOGIA (IA)", icon: "✦", group: "Visão Geral", vol: 15, description: "Insights, previsões e planos de ação" },
   { slug: "auditoria", label: "Auditoria & Custos (LAIS)", icon: "🔎", group: "Visão Geral", vol: 18, description: "Auditoria contínua, custos, desperdícios, riscos, IGEL" },
+  { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
 
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
   { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 10, description: "Saldos, curva ABC, ponto de pedido" },
