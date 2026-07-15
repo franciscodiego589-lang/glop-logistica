@@ -10,6 +10,7 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   { slug: "dashboard", label: "Cockpit Executivo", icon: "◎", group: "Visão Geral", vol: 16, description: "KPIs cross-módulo em tempo real" },
+  { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Visão Geral", vol: 31, description: "Mission control: estado vivo de todos os módulos, central de alertas, sala de crise" },
   { slug: "control-tower", label: "Torre de Controle", icon: "⛭", group: "Visão Geral", vol: 14, description: "Eventos, SLA, alertas e exceções" },
   { slug: "ia-central", label: "LAIOS — Cérebro do ERP", icon: "✦", group: "Visão Geral", vol: 15, description: "IA central: orquestra agentes 24/7, propõe decisões, memória corporativa, governança" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Visão Geral", vol: 15, description: "Insights, previsões e planos de ação" },
