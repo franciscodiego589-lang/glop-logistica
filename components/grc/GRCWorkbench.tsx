@@ -7,11 +7,12 @@ const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 const levelColor = (l: string) => ({ critical: "var(--danger)", high: "var(--warning)", medium: "#eab308", low: "var(--success)" } as any)[l] ?? "var(--muted)";
 const cellColor = (crit: number) => crit >= 15 ? "var(--danger)" : crit >= 8 ? "var(--warning)" : crit >= 4 ? "#eab308" : "var(--success)";
 
-const TABS = ["Painel", "Matriz de Risco", "Controles Internos", "Segregação de Funções (SoD)", "Compliance", "Auditorias & Políticas"] as const;
+const TABS = ["Painel", "Matriz de Risco", "KRIs", "Controles Internos", "Segregação de Funções (SoD)", "Obrigações", "Compliance", "Governança", "Evidências", "Auditorias & Políticas"] as const;
 type Tab = typeof TABS[number];
 
-export default function GRCWorkbench({ dash, matrix, controls, sods, compliance, requirements, audits, policies }: {
+export default function GRCWorkbench({ dash, matrix, controls, sods, compliance, requirements, audits, policies, gov, kris, obligations, bodies, delegations, evidence }: {
   dash: any; matrix: any[]; controls: any[]; sods: any[]; compliance: any[]; requirements: any[]; audits: any[]; policies: any[];
+  gov: any; kris: any[]; obligations: any[]; bodies: any[]; delegations: any[]; evidence: any[];
 }) {
   const [tab, setTab] = useState<Tab>("Painel");
   return (
@@ -28,11 +29,15 @@ export default function GRCWorkbench({ dash, matrix, controls, sods, compliance,
         ))}
       </div>
 
-      {tab === "Painel" && <Painel dash={dash} compliance={compliance} />}
+      {tab === "Painel" && <Painel dash={dash} compliance={compliance} gov={gov} />}
       {tab === "Matriz de Risco" && <Matriz matrix={matrix} />}
+      {tab === "KRIs" && <KRIs kris={kris} />}
       {tab === "Controles Internos" && <Controles controls={controls} />}
       {tab === "Segregação de Funções (SoD)" && <SoD sods={sods} />}
+      {tab === "Obrigações" && <Obrigacoes obligations={obligations} />}
       {tab === "Compliance" && <Compliance compliance={compliance} requirements={requirements} />}
+      {tab === "Governança" && <Governanca bodies={bodies} delegations={delegations} />}
+      {tab === "Evidências" && <Evidencias evidence={evidence} />}
       {tab === "Auditorias & Políticas" && <AuditPol audits={audits} policies={policies} />}
     </div>
   );
@@ -41,18 +46,21 @@ export default function GRCWorkbench({ dash, matrix, controls, sods, compliance,
 function KPI({ label, value, hint, tone }: { label: string; value: string; hint?: string; tone?: string }) {
   return <div className="kpi"><div className="kpi-label">{label}</div><div className="kpi-value tabular-nums" style={{ color: tone }}>{value}</div>{hint && <div className="text-xs muted mt-0.5">{hint}</div>}</div>;
 }
-function Painel({ dash, compliance }: { dash: any; compliance: any[] }) {
-  const d = dash ?? {};
+function Painel({ dash, compliance, gov }: { dash: any; compliance: any[]; gov: any }) {
+  const d = dash ?? {}; const g = gov ?? {};
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <KPI label="Riscos ativos" value={String(d.risks ?? 0)} hint={`${d.risks_critical ?? 0} críticos · ${d.risks_high ?? 0} altos`} tone={d.risks_critical ? "var(--danger)" : undefined} />
+        <KPI label="KRIs no vermelho" value={String(g.kri_red ?? 0)} hint={`${g.kri_amber ?? 0} em alerta · ${g.kri_total ?? 0} total`} tone={g.kri_red ? "var(--danger)" : "var(--success)"} />
         <KPI label="Controles efetivos" value={`${d.controls_effective ?? 0}/${d.controls ?? 0}`} tone="var(--success)" />
         <KPI label="Violações de SoD" value={String(d.sod_violations ?? 0)} tone={d.sod_violations ? "var(--danger)" : "var(--success)"} />
         <KPI label="Nível de compliance" value={`${d.compliance ?? 0}%`} tone={Number(d.compliance) >= 80 ? "var(--success)" : "var(--warning)"} />
+        <KPI label="Obrigações vencidas" value={String(g.obligations_overdue ?? 0)} hint={`${g.obligations_pending ?? 0} pendentes`} tone={g.obligations_overdue ? "var(--danger)" : undefined} />
+        <KPI label="Não conformidades" value={String(g.nonconformities_open ?? 0)} hint={`${g.capas_open ?? 0} CAPAs abertas`} tone={g.nonconformities_open ? "var(--warning)" : "var(--success)"} />
+        <KPI label="Delegações ativas" value={String(g.delegations_active ?? 0)} hint={`${g.delegations_expired ?? 0} expiradas · ${g.bodies ?? 0} comitês`} tone={g.delegations_expired ? "var(--warning)" : undefined} />
         <KPI label="Planos de ação" value={String(d.action_plans_open ?? 0)} hint={`${d.action_plans_overdue ?? 0} atrasados`} />
-        <KPI label="Auditorias" value={String(d.audits ?? 0)} />
-        <KPI label="Políticas" value={String(d.policies ?? 0)} hint={`${d.policies_expired ?? 0} a revisar`} />
+        <KPI label="Evidências (GED)" value={String(g.evidence_count ?? 0)} />
       </div>
       <div className="card p-5">
         <div className="font-semibold mb-3">Conformidade por framework</div>
@@ -194,6 +202,130 @@ function Compliance({ compliance, requirements }: { compliance: any[]; requireme
           </div>
         );
       })}
+    </div>
+  );
+}
+
+const kriColor = (s: string) => ({ red: "var(--danger)", amber: "var(--warning)", green: "var(--success)" } as any)[s] ?? "var(--muted)";
+function KRIs({ kris }: { kris: any[] }) {
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  async function measure(id: string) {
+    if (!supabase) return;
+    const v = prompt("Novo valor medido do indicador:");
+    if (v === null || v.trim() === "") return;
+    await supabase.rpc("record_kri", { p_company: COMPANY, p_kri: id, p_value: Number(v) });
+    router.refresh();
+  }
+  return (
+    <div className="space-y-3">
+      <div className="font-semibold text-base">Indicadores-Chave de Risco (KRIs)</div>
+      {kris.length === 0 ? <p className="text-sm muted">Sem KRIs cadastrados.</p> : (
+        <div className="grid md:grid-cols-2 gap-3">
+          {kris.map((k) => (
+            <div key={k.id} className="card p-4" style={{ borderLeft: `3px solid ${kriColor(k.status)}` }}>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="font-semibold text-sm">{k.name}</div>
+                  <div className="text-xs muted">{k.metric}{k.risk_name ? ` · risco: ${k.risk_name}` : ""}</div>
+                </div>
+                <span className="badge" style={{ background: kriColor(k.status), color: "#fff" }}>{k.status}</span>
+              </div>
+              <div className="flex items-end gap-3 mt-2">
+                <div><span className="text-2xl font-extrabold tabular-nums" style={{ color: kriColor(k.status) }}>{k.current_value ?? "—"}</span> <span className="text-xs muted">{k.unit}</span></div>
+                <div className="text-[11px] muted ml-auto text-right">
+                  <div>meta {k.target_value ?? "—"} · {k.direction === "down_bad" ? "menor=pior" : "maior=pior"}</div>
+                  <div>alerta {k.threshold_amber ?? "—"} · crítico {k.threshold_red ?? "—"}</div>
+                </div>
+              </div>
+              <button onClick={() => measure(k.id)} className="text-xs text-brand-600 hover:underline mt-2">↻ registrar medição</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Obrigacoes({ obligations }: { obligations: any[] }) {
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  async function gen() { if (!supabase) return; setBusy(true); await supabase.rpc("generate_grc_obligations", { p_company: COMPANY }); setBusy(false); router.refresh(); }
+  async function done(id: string) { if (!supabase) return; await supabase.rpc("complete_obligation", { p_company: COMPANY, p_obligation: id }); router.refresh(); }
+  const KIND: Record<string, string> = { audit: "Auditoria", control_test: "Teste de controle", policy_review: "Revisão de política", training: "Treinamento", renewal: "Renovação", certification: "Certificação", regulatory: "Regulatória", other: "Outra" };
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <div className="font-semibold text-base mr-auto">Calendário de Obrigações</div>
+        <button onClick={gen} disabled={busy} className="btn btn-primary btn-sm">{busy ? "Gerando…" : "⟳ Gerar de controles/políticas/auditorias"}</button>
+      </div>
+      {obligations.length === 0 ? <p className="text-sm muted">Nenhuma obrigação nos próximos meses. Clique em gerar.</p> : (
+        <div className="card p-0 overflow-x-auto"><table className="tbl">
+          <thead><tr><th>Obrigação</th><th>Tipo</th><th>Framework</th><th>Vencimento</th><th className="text-center">Prazo</th><th>Evidência</th><th>Status</th><th></th></tr></thead>
+          <tbody>{obligations.map((o) => {
+            const overdue = o.status === "overdue"; const soon = o.days_left != null && o.days_left >= 0 && o.days_left <= 15;
+            return (
+              <tr key={o.id}>
+                <td className="font-medium">{o.title}</td><td className="text-xs">{KIND[o.obligation_kind] ?? o.obligation_kind}</td><td className="text-xs muted">{o.framework ?? "—"}</td>
+                <td className="text-xs tabular-nums">{o.due_date}</td>
+                <td className="text-center text-xs tabular-nums" style={{ color: overdue ? "var(--danger)" : soon ? "var(--warning)" : undefined }}>{o.days_left != null ? (o.days_left < 0 ? `${-o.days_left}d atrás` : `${o.days_left}d`) : "—"}</td>
+                <td>{o.evidence_required ? (o.has_evidence ? <span className="badge badge-success">✓ anexada</span> : <span className="badge badge-warning">falta</span>) : <span className="text-xs muted">n/a</span>}</td>
+                <td><span className={`badge ${overdue ? "badge-danger" : o.status === "done" ? "badge-success" : "badge-neutral"}`}>{overdue ? "vencida" : o.status === "done" ? "concluída" : "pendente"}</span></td>
+                <td className="text-right"><button onClick={() => done(o.id)} className="text-xs text-brand-600 hover:underline">✓ concluir</button></td>
+              </tr>
+            );
+          })}</tbody>
+        </table></div>
+      )}
+    </div>
+  );
+}
+
+function Governanca({ bodies, delegations }: { bodies: any[]; delegations: any[] }) {
+  const BODY: Record<string, string> = { board: "Conselho", committee: "Comitê", council: "Conselho", forum: "Fórum" };
+  const today = new Date().toISOString().slice(0, 10);
+  return (
+    <div className="grid lg:grid-cols-2 gap-4">
+      <div>
+        <div className="font-semibold text-sm mb-2">Estrutura de Governança</div>
+        {bodies.length === 0 ? <p className="text-sm muted">—</p> : bodies.map((b) => (
+          <div key={b.id} className="card p-4 mb-2">
+            <div className="flex items-center gap-2"><span className="badge badge-neutral">{BODY[b.body_type] ?? b.body_type}</span><span className="font-semibold text-sm">{b.name}</span><span className="text-xs muted ml-auto">{b.meeting_frequency}</span></div>
+            <div className="text-xs muted mt-1">{b.purpose}</div>
+            <div className="text-[11px] muted mt-1">{Array.isArray(b.members) ? b.members.length : 0} membro(s)</div>
+          </div>
+        ))}
+      </div>
+      <div>
+        <div className="font-semibold text-sm mb-2">Delegação de Autoridade</div>
+        {delegations.length === 0 ? <p className="text-sm muted">—</p> : (
+          <div className="card p-0 overflow-x-auto"><table className="tbl">
+            <thead><tr><th>Alçada</th><th>Tipo</th><th className="text-right">Limite</th><th>Validade</th></tr></thead>
+            <tbody>{delegations.map((d) => {
+              const expired = d.valid_to && d.valid_to < today;
+              return (<tr key={d.id}><td className="font-medium">{d.title}</td><td className="text-xs muted">{d.authority_type}</td><td className="text-right tabular-nums text-xs">{d.limit_amount ? "R$ " + Number(d.limit_amount).toLocaleString("pt-BR") : "—"}</td><td className="text-xs"><span className={expired ? "badge badge-danger" : "badge badge-success"}>{expired ? "expirada " : "até "}{d.valid_to ?? "—"}</span></td></tr>);
+            })}</tbody>
+          </table></div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Evidencias({ evidence }: { evidence: any[] }) {
+  const ENT: Record<string, string> = { risk: "Risco", control: "Controle", audit: "Auditoria", obligation: "Obrigação", nonconformity: "Não conformidade", action_plan: "Plano de ação", policy: "Política", sod: "SoD", continuity: "Continuidade" };
+  return (
+    <div className="space-y-3">
+      <div className="font-semibold text-base">Evidências (integradas ao ECM/GED)</div>
+      {evidence.length === 0 ? <p className="text-sm muted">Nenhuma evidência anexada. Use <code>attach_evidence</code> a partir de riscos, controles, auditorias e obrigações.</p> : (
+        <div className="card p-0 overflow-x-auto"><table className="tbl">
+          <thead><tr><th>Título</th><th>Vínculo</th><th>Tipo</th><th>Coletada em</th><th>Referência</th></tr></thead>
+          <tbody>{evidence.map((e) => (
+            <tr key={e.id}><td className="font-medium">{e.title ?? "(sem título)"}</td><td className="text-xs"><span className="badge badge-neutral">{ENT[e.entity_type] ?? e.entity_type}</span></td><td className="text-xs muted">{e.evidence_type}</td><td className="text-xs tabular-nums">{(e.collected_at ?? "").slice(0, 10)}</td><td className="text-xs">{e.document_id ? "📎 documento GED" : e.external_url ? <a href={e.external_url} target="_blank" rel="noreferrer" className="text-brand-600 hover:underline">🔗 link</a> : "—"}</td></tr>
+          ))}</tbody>
+        </table></div>
+      )}
     </div>
   );
 }
