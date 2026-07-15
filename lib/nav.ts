@@ -20,6 +20,7 @@ export const NAV: NavItem[] = [
   { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Visão Geral & Inteligência", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
   { slug: "auditoria", label: "Auditoria Logística & Custos", icon: "🔎", group: "Visão Geral & Inteligência", vol: 6, description: "Auditoria de fretes/operacional, custos, rentabilidade, riscos, compliance logístico, score" },
   { slug: "engenharia-logistica", label: "Logistics Planning & Rede", icon: "🗺", group: "Visão Geral & Inteligência", vol: 10, description: "Digital twin, mapa de demanda, IA de localização de CD, simulações, ROI/payback" },
+  { slug: "gemeo-digital", label: "Gêmeo Digital (LDTP)", icon: "🧬", group: "Visão Geral & Inteligência", vol: 46, description: "Réplica viva da operação, simulação what-if, gargalos, reprodução histórica" },
 
   // ── Fluxo Operacional (ponto de entrada do fluxo mestre) ──────────────────
   { slug: "pedidos-logisticos", label: "Pedidos Logísticos (LOM)", icon: "🧾", group: "Fluxo Operacional", vol: 1, description: "Domínio 01: demanda logística, validação (ATP), planejamento, reserva, máquina das 17 etapas e barramento de eventos" },
