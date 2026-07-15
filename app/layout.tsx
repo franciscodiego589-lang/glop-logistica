@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "ERP Logístico Mundial",
-  description: "ERP de logística Enterprise — WMS · TMS · YMS · MRP · PCP · BI · LOGIA",
+  title: "Cargyon — Enterprise ERP",
+  description: "Cargyon — plataforma corporativa: Supply Chain, WMS, TMS, Comex, Financeiro, Comercial, RH, BPM, BI e IA.",
 };
 
 // Evita flash de tema: aplica o tema salvo antes da hidratação.

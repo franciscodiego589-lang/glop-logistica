@@ -16,8 +16,8 @@ export default function Sidebar() {
           <div className="h-10 w-10 rounded-xl grid place-items-center font-black text-lg text-white shadow-md shrink-0"
             style={{ background: "linear-gradient(150deg,#2f56e6,#1a336f)" }}>◈</div>
           <div className="min-w-0">
-            <div className="font-bold leading-tight truncate text-white">Logística Mundial</div>
-            <div className="text-[11px]" style={{ color: "var(--sidebar-muted)" }}>Enterprise Suite</div>
+            <div className="font-bold leading-tight truncate text-white">Cargyon</div>
+            <div className="text-[11px]" style={{ color: "var(--sidebar-muted)" }}>Enterprise ERP</div>
           </div>
         </div>
       </div>

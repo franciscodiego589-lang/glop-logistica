@@ -41,7 +41,7 @@ export default function LoginPage() {
           <div className="h-11 w-11 rounded-2xl grid place-items-center font-black text-xl shadow-lg"
             style={{ background: "rgba(255,255,255,.14)", backdropFilter: "blur(6px)" }}>◈</div>
           <div>
-            <div className="font-extrabold text-lg leading-tight tracking-tight">ERP Logístico Mundial</div>
+            <div className="font-extrabold text-lg leading-tight tracking-tight">Cargyon</div>
             <div className="text-xs text-white/70">Supply Chain · WMS · TMS · YMS · Comex · IA</div>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="relative text-xs text-white/50">© {new Date().getFullYear()} ERP Logístico Mundial · Multi-tenant · LGPD-ready</div>
+        <div className="relative text-xs text-white/50">© {new Date().getFullYear()} Cargyon · Multi-tenant · LGPD-ready</div>
       </div>
 
       {/* Formulário */}
@@ -76,7 +76,7 @@ export default function LoginPage() {
           <div className="lg:hidden flex items-center gap-3 mb-8">
             <div className="h-11 w-11 rounded-2xl grid place-items-center font-black text-xl text-white"
               style={{ background: "linear-gradient(150deg,#2144cc,#2f56e6)" }}>◈</div>
-            <div className="font-extrabold leading-tight">ERP Logístico Mundial</div>
+            <div className="font-extrabold leading-tight">Cargyon</div>
           </div>
 
           <h2 className="text-2xl font-extrabold tracking-tight">Bem-vindo de volta</h2>
