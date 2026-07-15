@@ -48,6 +48,7 @@ export const NAV: NavItem[] = [
   { slug: "encomendas", label: "Encomendas & Volumes (PMS)", icon: "📦", group: "Expedição & Distribuição", vol: 42, description: "LPN/etiquetas, scan events, rastreabilidade, hubs, lockers, consolidação" },
   { slug: "cadeia-fria", label: "Cadeia Fria (CCLMS)", icon: "❄️", group: "Expedição & Distribuição", vol: 43, description: "Monitoramento térmico, sensores IoT, integridade, alarmes, cargas sensíveis" },
   { slug: "devolucoes", label: "RMA & Logística Reversa", icon: "↩", group: "Expedição & Distribuição", vol: 1, description: "Devoluções, conferência, quarentena, retrabalho, reintegração ao estoque" },
+  { slug: "logistica-reversa", label: "Logística Reversa Enterprise (RLMS)", icon: "↩️", group: "Expedição & Distribuição", vol: 49, description: "Ciclo reverso completo: autorização, coleta, triagem, destinação, recalls, embalagens retornáveis" },
   { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Expedição & Distribuição", vol: 2, description: "Etiqueta→PLP→postagem→1ª movimentação, objetos parados, CEP inválido, SLA, alertas" },
 
   // ── Transporte ────────────────────────────────────────────────────────────
