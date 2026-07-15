@@ -26,6 +26,7 @@ export const NAV: NavItem[] = [
   { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Pessoas & Governança", vol: 32, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais" },
   { slug: "studio", label: "Studio (Low-Code)", icon: "🧩", group: "Pessoas & Governança", vol: 33, description: "Construtor de apps/entidades/formulários sem código, templates, publicação — não-invasivo" },
   { slug: "devops", label: "DevSecOps & Observabilidade", icon: "🛰", group: "Pessoas & Governança", vol: 34, description: "CI/CD, deploys+rollback, incidentes SRE (MTTR), SLO/error budget, saúde dos serviços" },
+  { slug: "grc", label: "GRC (Governança/Riscos/Compliance)", icon: "⚖", group: "Pessoas & Governança", vol: 35, description: "Matriz de risco, controles internos, SoD, compliance LGPD/ISO/BPF, auditorias, planos de ação" },
   { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
 
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
