@@ -221,12 +221,83 @@ integrações · estratégia de testes · critérios de aceite.
 
 ---
 
-# CAPÍTULO 3 — Arquitetura Funcional *(pendente)*
+# CAPÍTULO 3 — Arquitetura Funcional (Fluxo Mestre)
 
-> **Placeholder.** Este capítulo descreverá o mapa funcional e o **fluxo mestre**
-> `pedido → armazenagem → transporte → entrega → devolução`, com os fluxos BPMN de ponta a
-> ponta e como os domínios do Cap. 4 se encadeiam. A definir com o dono (proposta de rascunho
-> a partir dos módulos atuais está disponível).
+**Classificação:** Mapa Funcional da Plataforma · *rascunho v0.1 (a validar pelo dono)*.
+**Objetivo:** descrever o **fluxo mestre** de ponta a ponta, quem é o domínio-dono de cada
+estágio, e os **contratos de handoff** (evento + RPC oficial) entre domínios. Nenhum estágio
+avança sem registro (regra de ouro do Cap. 2) e todo handoff cruza a interface oficial (Cap. 4).
+
+## 3.1 O Fluxo Mestre (visão direta)
+
+```
+[01] PEDIDO ──▶ [02] ALOCAÇÃO ──▶ [03] SEPARAÇÃO ──▶ [04] EXPEDIÇÃO ──▶ [05] POSTAGEM/
+ LOM            de estoque         wave/picking       packing+carrier     MANIFESTO
+                (WMS/ATP)          (WMS+SSC)           (SSC)               (Correios/Carrier)
+                                                                              │
+   ┌──────────────────────────────────────────────────────────────────────────┘
+   ▼
+[06] PÁTIO/DOCA ──▶ [07] TRANSPORTE ──▶ [08] ENTREGA ──▶ [09] PÓS-ENTREGA
+ carga (YMS)         em trânsito (TMS)    (TMS/Correios)   portal/NPS (Portal)
+                     tracking/ETA         OTIF/POD
+                                                             │  se devolução
+                                                             ▼
+                            [10] LOGÍSTICA REVERSA (RMA) ──▶ reintegra ao estoque (WMS)
+```
+
+## 3.2 Estágios × Domínio-dono × Handoff (evento + RPC oficial)
+
+| # | Estágio | Domínio-dono | Entrada → Saída | Evento emitido | RPC/Interface oficial |
+|---|---------|--------------|-----------------|----------------|-----------------------|
+| 01 | Pedido logístico | **LOM (D01)** ⚠️ | pedido recebido → validado/priorizado | `order.created` | *(gap — a criar; ver Cap. 4.4)* |
+| 02 | Alocação/Reserva | **WMS (D02)** | pedido → estoque reservado (ATP) | `stock.reserved` | `register_stock_movement` |
+| 03 | Separação | **WMS + SSC** | reserva → onda/picking | `wave.released` | `generate_shipping_waves` |
+| 04 | Expedição | **Smart Shipping (D05)** | picking → packing + transportadora | `shipment.packed` | `optimize_packing`, `recommend_carrier`, `ship_outbound_order` |
+| 05 | Postagem/Manifesto | **Correios (D06) / Carriers (D07)** | volume → PLP/etiqueta/manifesto | `dispatch.posted` | `generate_dispatches`, `audit_postal_freight` |
+| 06 | Pátio/Doca | **YMS (D04)** | manifesto → agendamento/carga | `dock.loaded` | `recommend_dock` |
+| 07 | Transporte | **TMS (D03)** | carga → em trânsito (ETA/tracking) | `shipment.in_transit` | `shipment_events` (via `tg_shipment_event_sync`) |
+| 08 | Entrega | **TMS/Correios** | trânsito → entregue (POD/OTIF) | `shipment.delivered` | fluxo de status do `shipment` |
+| 09 | Pós-entrega | **Portal (suporte)** | entregue → NPS/ocorrência | `delivery.confirmed` | `cxp`/`clx` dashboards |
+| 10 | Logística Reversa | **Reversa (D09)** | devolução → conferência → reintegra | `return.reintegrated` | `process_rma_item` → `register_stock_movement` |
+
+> O estágio 02 (reserva) e o 10 (reintegração) usam a **mesma** interface oficial do WMS
+> (`register_stock_movement`) — nenhuma outra área grava saldo direto. É o padrão de "interface
+> única por domínio" do Cap. 4 já materializado.
+
+## 3.3 Camadas Transversais (observam/servem todo o fluxo)
+
+- **Control Tower (D08)** — consome os eventos de todos os estágios e consolida estado vivo
+  (`command_overview`), alertas (`sync_command_alerts`) e crises. Não altera dados de domínio.
+- **Logistics AI (D13)** — o LAIOS (`laios_orchestrate`) descobre e roda os motores `*_insights`
+  de cada domínio a cada 15 min, propõe decisões (nunca executa ação crítica sem aprovação — Cap. 2).
+- **Logistics Analytics (D12)** — materializa KPIs/forecast/heatmap sobre os eventos (BI).
+- **Auditoria Logística (suporte)** — auditoria de fretes/operacional e score sobre o histórico.
+- **Integrações / Event Bus (iPaaS)** — o barramento por onde os eventos de handoff trafegam
+  (fila, retentativa, DLQ, logs) — é o "mecanismo controlado" das regras do Cap. 4.
+- **MDM, IAM, ECM, BPM, Super App** — dados-mestre (SKU), identidade/permissão, documentos/POD,
+  aprovações/alçadas e captura em campo (coletor/motorista).
+
+## 3.4 Máquina de Estados do Pedido (resumo)
+
+```
+draft → validated → allocated → picking → packed → dispatched
+      → in_transit → delivered → closed
+                   ↘ (exceção) → on_hold / canceled
+delivered → return_requested → received → inspected → reintegrated | discarded | refunded
+```
+
+Toda transição registra usuário, data/hora, origem e resultado (Cap. 2 · Auditoria) e emite
+o evento correspondente da tabela 3.2.
+
+## 3.5 Invariantes do Fluxo (critérios de aceite arquitetural)
+1. Nenhum estágio grava dados de outro domínio fora da RPC oficial da coluna "Interface".
+2. Todo handoff emite evento no event bus (rastreável, com retentativa).
+3. O saldo de estoque só muda por `register_stock_movement` (estágios 02, 03, 10).
+4. Control Tower e AI **leem** eventos; não escrevem no domínio de origem.
+5. Todo estágio tem KPI próprio (Lead Time do estágio) que alimenta OTIF/Lead Time ponta a ponta.
+
+> **Pendente de decisão do dono:** nomes/versões dos eventos (`order.created`, `shipment.*`…) e
+> se o Domínio 01 (LOM) será um módulo novo que passa a **originar** o fluxo (recomendado).
 
 ---
 
