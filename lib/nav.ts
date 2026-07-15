@@ -36,6 +36,7 @@ export const NAV: NavItem[] = [
   { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Distribuição", vol: 5, description: "Docas, agendamento e pátio" },
   { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Distribuição", vol: 13, description: "Transferências, cross-dock, entregas" },
   { slug: "devolucoes", label: "Devoluções (RMA)", icon: "↩", group: "Distribuição", vol: 14, description: "Logística reversa, conferência, reintegração ao estoque" },
+  { slug: "pos-venda", label: "Pós-Venda & CLX", icon: "💬", group: "Distribuição", vol: 19, description: "Portal do cliente, rastreio público, ocorrências, NPS/CSAT" },
   { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Distribuição", vol: 15, description: "Correios/transportadoras: etiqueta→postagem→1ª movimentação, SLA, alertas" },
   { slug: "transporte", label: "Torre de Transporte", icon: "🌐", group: "Distribuição", vol: 16, description: "Monitoramento em trânsito, ETA, score de risco, ocorrências, OTIF" },
   { slug: "correios", label: "Correios (CMS)", icon: "📮", group: "Distribuição", vol: 17, description: "Contratos, PLP, objetos, SRO, auditoria de fretes, simulador, SLA" },
