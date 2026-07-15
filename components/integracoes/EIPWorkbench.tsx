@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import CrudPanel from "@/components/ui/CrudPanel";
 
@@ -22,6 +23,16 @@ export default function EIPWorkbench({ dash, apis, connectors, webhooks, events,
         <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Integrações (iPaaS / API Gateway)</h1>
         <p className="text-sm muted mt-0.5">Barramento corporativo: catálogo de APIs, conectores, event bus com webhooks, fila com retry/DLQ e ETL.</p>
       </div>
+
+      {/* Atalho: muita gente cai aqui procurando "colar chave da loja e puxar pedidos" — isso é em outro módulo. */}
+      <Link href="/integracoes-lojas" className="flex items-center gap-3 card p-4 no-underline" style={{ background: "var(--brand-soft, var(--surface-3))", borderColor: "var(--brand)" }}>
+        <span className="text-2xl">🛒</span>
+        <div className="flex-1">
+          <div className="font-bold text-sm">Quer colar a chave da <b>Monetizze</b> (ou Hotmart/Kiwify) e <b>puxar os pedidos</b>?</div>
+          <div className="text-xs muted">Não é aqui. Isto gera chaves internas do GLOP. Clique para ir em <b>“Puxar Pedidos de Lojas”</b> →</div>
+        </div>
+        <span className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold whitespace-nowrap">Ir para Puxar Pedidos →</span>
+      </Link>
       <div className="flex gap-1 flex-wrap border-b" style={{ borderColor: "var(--border)" }}>
         {TABS.map((t) => (
           <button key={t} onClick={() => setTab(t)}
