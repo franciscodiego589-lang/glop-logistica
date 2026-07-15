@@ -413,6 +413,60 @@ packing · transporte · entrega · devolução · índice de retrabalho · índ
 
 ---
 
+# CAPÍTULO 7 — Modelo de Dados Logístico Global
+
+**Classificação:** Arquitetura de Dados Logísticos.
+**Objetivo:** entidades, relacionamentos, integridade, rastreabilidade e governança que
+servem de base a todos os módulos. Nenhum módulo cria entidade fora deste modelo.
+
+## 7.1 Princípios (já materializados pelas colunas-padrão do `CLAUDE.md`)
+Identificação única (**UUID**) · chaves imutáveis · **versão** (`version`) · auditoria
+permanente (triggers `tg_write_audit` → `audit_logs`) · relacionamentos explícitos (FK
+indexada) · integridade referencial · histórico completo · soft-delete (`deleted_at`).
+Identificadores por entidade: ID Global (UUID) · código interno · código externo · QR ·
+RFID · código de barras (quando aplicável).
+
+## 7.2 As 14 Grandes Entidades × Tabela real (mapa honesto, com gaps)
+
+| # | Entidade | Tabela(s) atual(is) | Status |
+|---|----------|---------------------|--------|
+| 01 | Pedidos Logísticos | `logistics_orders` (+items/events/holds) | ✅ (Domínio 01/LOM) |
+| 02 | Produtos | `products` (+ lots/serials/media/…) | ✅ |
+| 03 | **Volumes** | `packages` (WMS) | 🟡 existe como "package"; falta entidade **volume** cross-modal (tipo caixa/envelope/pallet/container + peso/cubagem/dimensões/origem/destino/transportadora/status) |
+| 04 | Endereços Logísticos | `storage_zones`, `storage_locations` (bin: aisle/rack/level/pos) | ✅ |
+| 05 | Centros de Distribuição | `warehouses` | ✅ |
+| 06 | Transportadoras | `carriers` | ✅ |
+| 07 | Veículos | `vehicles` | ✅ |
+| 08 | Motoristas | `drivers` | ✅ |
+| 09 | Docas | `docks` (+ `dock_appointments`) | ✅ |
+| 10 | Rotas | `routes` | ✅ |
+| 11 | Eventos | `event_bus` + `logistics_order_events` + `shipment_events` | ✅ (contrato no Cap. 8) |
+| 12 | **Ocorrências** | `incidents` (NOC/Control Tower) | 🟡 falta entidade **ocorrência** logística unificada (tipo/categoria/fotos/vídeos/responsável/solução) ligada a pedido/embarque |
+| 13 | **Rastreamento** | `shipment_events`, `postal_objects` (SRO Correios) | 🟡 falta **tracking_points** geo unificado (lat/long/cidade/UF/país/data-hora) |
+| 14 | Ativos Retornáveis | `returnable_asset_types`, `asset_loans`, `asset_charges` | ✅ |
+
+## 7.3 Cadeia de Relacionamentos (integridade obrigatória)
+```
+Pedido → Produtos → Volumes → Picking → Packing → Expedição → Transportadora
+       → Veículo → Motorista → Rota → Entrega → Eventos → Auditoria
+```
+**Proibido (integridade):** pedido órfão · volume sem pedido · motorista sem transportadora ·
+evento sem origem · entrega sem rastreamento · picking sem operador · packing sem conferência.
+
+## 7.4 Governança de Dados (por entidade)
+Responsável · origem · destino · sensibilidade · criticidade · tempo de retenção · política
+de arquivamento · política de exclusão. **IA sobre dados** (via MDM): duplicidades,
+inconsistências, campos incompletos, produtos/pedidos/volumes/endereços conflitantes.
+
+## 7.5 Gaps priorizados (candidatos a próximas migrations)
+1. **`volumes`** — entidade física cross-modal (hoje só `packages` no WMS). Liga pedido↔transporte.
+2. **`occurrences`** — ocorrência logística unificada (com mídia) ligada a pedido/embarque/entrega.
+3. **`tracking_points`** — pontos de rastreamento geo unificados (alimenta mapa do Cap. 2).
+
+> Os três fecham 100% do Cap. 7; os outros 11 já existem e seguem as colunas-padrão.
+
+---
+
 ## Anexo A — Mapa de Implementação (Fase 1, 16 volumes)
 
 Estado atual da base sobre a qual o GLOP evolui (rotas já existentes):
