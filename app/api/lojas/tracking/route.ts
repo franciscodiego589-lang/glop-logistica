@@ -55,16 +55,21 @@ export async function POST(req: Request) {
       .eq("company_id", company).eq("connector_id", connectorId).eq("sale_number", it.sale_number).is("deleted_at", null);
   }
 
-  // 2) Monta a fila a enviar: os itens explícitos + pendentes (com rastreio, ainda não enviados).
-  const { data: pending } = await supabase.from("store_orders")
-    .select("sale_number,tracking_code")
-    .eq("company_id", company).eq("connector_id", connectorId)
-    .not("tracking_code", "is", null).is("tracking_pushed_at", null).is("deleted_at", null)
-    .limit(MAX_BATCH);
-
+  // 2) Monta a fila a enviar.
+  //    - Com itens explícitos (botão 📮 de uma linha): envia SÓ esses (não varre a fila),
+  //      senão o clique de uma linha notificaria todos os pendentes de uma vez.
+  //    - Sem itens (botão em lote): envia todos os pendentes (com rastreio, ainda não enviados).
   const byNumber = new Map<string, string>();
-  for (const p of (pending ?? [])) if (p.sale_number && p.tracking_code) byNumber.set(String(p.sale_number), p.tracking_code);
-  for (const it of explicit) byNumber.set(it.sale_number, it.tracking_code); // explícito tem prioridade
+  if (explicit.length > 0) {
+    for (const it of explicit) byNumber.set(it.sale_number, it.tracking_code);
+  } else {
+    const { data: pending } = await supabase.from("store_orders")
+      .select("sale_number,tracking_code")
+      .eq("company_id", company).eq("connector_id", connectorId)
+      .not("tracking_code", "is", null).is("tracking_pushed_at", null).is("deleted_at", null)
+      .limit(MAX_BATCH);
+    for (const p of (pending ?? [])) if (p.sale_number && p.tracking_code) byNumber.set(String(p.sale_number), p.tracking_code);
+  }
   // Monetizze exige transaction NUMÉRICO (cód. da venda). Vendas cujo número não é
   // numérico (ex.: fallback para chave_unica) não têm como receber rastreio lá.
   const all: PushItem[] = Array.from(byNumber, ([sale_number, tracking_code]) => ({ sale_number, tracking_code }));

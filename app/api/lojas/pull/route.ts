@@ -189,7 +189,7 @@ export async function POST(req: Request) {
   if (!hasMore) {
     await supabase.from("store_connectors")
       .update({ metadata: { ...meta, last_pull_at: new Date().toISOString() } })
-      .eq("id", connectorId).eq("company_id", company);
+      .eq("id", connectorId).eq("company_id", company).is("deleted_at", null);
   }
 
   const r: any = data ?? {};
