@@ -42,6 +42,7 @@ export const NAV: NavItem[] = [
   { slug: "central-expedicao", label: "Smart Shipping Center (IA)", icon: "🧠", group: "Expedição & Distribuição", vol: 7, description: "Wave picking, escolha de transportadora, embalagem ótima, docas, cargas, gargalos" },
   { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Expedição & Distribuição", vol: 7, description: "Transferências, cross-dock, hubs, entregas" },
   { slug: "ultima-milha", label: "Última Milha (LMDP)", icon: "🛵", group: "Expedição & Distribuição", vol: 40, description: "Roteirização inteligente, paradas, POD, geocercas, OTIF/OTD" },
+  { slug: "encomendas", label: "Encomendas & Volumes (PMS)", icon: "📦", group: "Expedição & Distribuição", vol: 42, description: "LPN/etiquetas, scan events, rastreabilidade, hubs, lockers, consolidação" },
   { slug: "devolucoes", label: "RMA & Logística Reversa", icon: "↩", group: "Expedição & Distribuição", vol: 1, description: "Devoluções, conferência, quarentena, retrabalho, reintegração ao estoque" },
   { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Expedição & Distribuição", vol: 2, description: "Etiqueta→PLP→postagem→1ª movimentação, objetos parados, CEP inválido, SLA, alertas" },
 
