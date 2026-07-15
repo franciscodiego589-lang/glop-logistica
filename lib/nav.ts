@@ -33,6 +33,7 @@ export const NAV: NavItem[] = [
   { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Distribuição", vol: 4, description: "Transportadoras, fretes, rotas e tracking" },
   { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Distribuição", vol: 5, description: "Docas, agendamento e pátio" },
   { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Distribuição", vol: 13, description: "Transferências, cross-dock, entregas" },
+  { slug: "devolucoes", label: "Devoluções (RMA)", icon: "↩", group: "Distribuição", vol: 14, description: "Logística reversa, conferência, reintegração ao estoque" },
 
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
