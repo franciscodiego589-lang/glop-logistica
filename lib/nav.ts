@@ -59,6 +59,7 @@ export const NAV: NavItem[] = [
 
   // ── Comércio Exterior ─────────────────────────────────────────────────────
   { slug: "comex", label: "Global Trade Management (GTM)", icon: "🌍", group: "Comércio Exterior", vol: 14, description: "Importação/exportação, Incoterms, portos/aeroportos, aduana, containers, drawback, RECOF" },
+  { slug: "embarques-internacionais", label: "Embarques Internacionais (GTM Ops)", icon: "🚢", group: "Comércio Exterior", vol: 44, description: "Embarques multimodais, bookings, agentes logísticos, incoterms, eventos internacionais, timeline" },
 
   // ── Cliente & Pós-Venda ───────────────────────────────────────────────────
   { slug: "portal-cliente", label: "Portal do Cliente Logístico", icon: "💬", group: "Cliente & Pós-Venda", vol: 8, description: "Timeline, tracking, ETA, notificações, comprovantes, self-service, devoluções, NPS" },
