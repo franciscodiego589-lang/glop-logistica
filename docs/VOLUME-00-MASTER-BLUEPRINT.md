@@ -221,6 +221,83 @@ integrações · estratégia de testes · critérios de aceite.
 
 ---
 
+# CAPÍTULO 3 — Arquitetura Funcional *(pendente)*
+
+> **Placeholder.** Este capítulo descreverá o mapa funcional e o **fluxo mestre**
+> `pedido → armazenagem → transporte → entrega → devolução`, com os fluxos BPMN de ponta a
+> ponta e como os domínios do Cap. 4 se encadeiam. A definir com o dono (proposta de rascunho
+> a partir dos módulos atuais está disponível).
+
+---
+
+# CAPÍTULO 4 — Domínios Funcionais da Plataforma
+
+**Classificação:** Arquitetura Funcional Logística.
+**Regra-mestra:** cada domínio tem responsabilidade **exclusiva**; nenhum domínio executa
+funções de outro; **nenhum domínio altera dados de outro domínio sem passar pelas interfaces
+oficiais** (no GLOP, as interfaces oficiais são as **RPCs `security definer`** + o **event bus**).
+
+## 4.1 Os 13 Domínios Logísticos
+
+| # | Domínio | Responsabilidade | Funções-núcleo |
+|---|---------|------------------|----------------|
+| 01 | **Logistics Order Management** | Ciclo operacional do pedido até a entrega | receber · validar · disponibilidade · prioridade · encaminhar p/ separação · status · SLA · cancelamento · bloqueio · histórico |
+| 02 | **Warehouse Management** | Operação interna do armazém | recebimento · conferência · endereçamento · slotting · picking · packing · inventário · reabastecimento · cross-dock |
+| 03 | **Transportation Management** | Todos os transportes | planejamento · viagens · rotas · coletas · entregas · custos · SLA · ETA · tracking · consolidação |
+| 04 | **Yard Management** | Área externa do CD | portaria · OCR · RFID · docas · agendamentos · filas · balanças · containers · segurança |
+| 05 | **Smart Shipping** | Expedição | conferência final · consolidação · embalagem · manifestação · etiquetas · separação por transportadora |
+| 06 | **Correios Enterprise** | Operações Correios | PLP · coletas · contratos · etiquetas · rastreamento · reversa · auditoria · custos · SLA |
+| 07 | **Transportadoras** | Gestão de carriers | contratos · custos · performance · SLA · coletas · entregas · tracking · auditorias |
+| 08 | **Control Tower** | Monitorar toda a operação | painel · alertas · IA · KPIs · eventos · heat maps · digital twin · centro de crises |
+| 09 | **Logística Reversa** | Devoluções | solicitações · recebimento · bipagem · conferência · qualidade · reintegração · descarte · reembolso |
+| 10 | **Global Trade** | Logística internacional | importação · exportação · portos · aeroportos · Incoterms · containers · compliance · aduana |
+| 11 | **Returnable Asset Management** | Ativos retornáveis | pallets · gaiolas · containers · caixas · IBC · racks · RFID · manutenção · inventário |
+| 12 | **Logistics Analytics** | Inteligência operacional | dashboards · KPIs · BI · forecast · DW · data lake · simulações |
+| 13 | **Logistics AI** | IA da plataforma | IA operacional/WMS/TMS/Correios/carriers/torre/auditoria · preditiva · prescritiva |
+
+## 4.2 Matriz de Responsabilidades (invariantes de todo domínio)
+Cada domínio possui: responsabilidade exclusiva · banco lógico próprio · APIs próprias ·
+eventos próprios · KPIs próprios · dashboards próprios · auditoria própria · permissões
+próprias · configurações próprias · integrações controladas.
+
+## 4.3 Regras de Comunicação e Evolução
+- Troca de dados **apenas** por mecanismos controlados: validar · logar · gerar evento ·
+  rastrear · suportar retentativa · informar falha · auditar · manter compatibilidade de versão.
+- Todo módulo futuro **pertence a um domínio existente** ou **cria um novo domínio** claramente
+  documentado — nada é desenvolvido sem domínio de responsabilidade previamente definido.
+- Princípios de integração: baixo acoplamento · alta coesão · responsabilidade única ·
+  escalabilidade · independência funcional · versionamento · observabilidade · auditoria.
+
+## 4.4 Mapa Domínio → Implementação Atual (honesto, com gaps)
+
+| Domínio | Rotas atuais | Interface oficial (RPCs) | Status |
+|---------|--------------|--------------------------|--------|
+| 01 Logistics Order Mgmt | *(parcial: `expedicao`)* | `ship_outbound_order` | ⚠️ **GAP** — não há módulo dedicado de pedido logístico (o `pedidos`/OMS comercial foi removido no pivô). É o **ponto de entrada do fluxo mestre**; candidato nº 1 a especificar. |
+| 02 Warehouse Mgmt | `wms`, `operacao-armazem`, `estoque`, `inventario`, `produtos` | `register_stock_movement`, `apply_inventory_count` | ✅ |
+| 03 Transportation Mgmt | `tms`, `frota`, `transporte` | `tms_dashboard`, `trip_cost`, `award_freight_quote` | ✅ |
+| 04 Yard Mgmt | `yms`, `patio` | `recommend_dock`, `yard_dashboard` | ✅ |
+| 05 Smart Shipping | `central-expedicao`, `expedicao` | `shipping_center`, `recommend_carrier`, `optimize_packing` | ✅ |
+| 06 Correios Enterprise | `correios`, `postagens` | `correios_dashboard`, `audit_postal_freight` | ✅ |
+| 07 Transportadoras | *(dentro de `tms`)* | `cost_by_carrier`, `carrier` perf | 🟡 existe embutido no TMS; separar em domínio próprio é opcional |
+| 08 Control Tower | `comando`, `control-tower` | `command_overview`, `lct_command_center` | ✅ |
+| 09 Logística Reversa | `devolucoes` | `process_rma_item`, `rma_dashboard` | ✅ |
+| 10 Global Trade | `comex` | `import_cost_simulator` | ✅ |
+| 11 Returnable Asset Mgmt | `ativos-retornaveis` | `rams_dashboard`, `generate_retention_charges` | ✅ |
+| 12 Logistics Analytics | `analytics`, `engenharia-logistica` | `bi_overview`, `kpi_trend`, `demand_heatmap` | ✅ |
+| 13 Logistics AI | `ia-central` (LAIOS), `logia` | `laios_orchestrate`, `laios_executive_brief` | ✅ |
+
+**Domínios de suporte transversais** (existem, mas fora dos 13 núcleo — servem a todos):
+`portal-cliente`/`pos-venda` (Portal do Cliente = VOL 08), `auditoria` (Auditoria Logística/LAIS),
+`mdm` (Governança de Dados), `seguranca` (IAM), `integracoes` (iPaaS/event bus), `processos` (BPM),
+`documentos` (ECM), `dispositivos` (Super App), `admin` (config da plataforma).
+
+> **Reconciliação Fase 1 × Cap. 4:** a lista de 16 volumes da Fase 1 e os 13 domínios batem,
+> exceto: (a) **Domínio 01** ainda sem módulo dedicado (gap acima); (b) **Transportadoras**
+> hoje vive dentro do TMS; (c) **Portal do Cliente** e **Auditoria Logística** são tratados
+> como domínios de suporte, não como um dos 13 núcleo.
+
+---
+
 ## Anexo A — Mapa de Implementação (Fase 1, 16 volumes)
 
 Estado atual da base sobre a qual o GLOP evolui (rotas já existentes):

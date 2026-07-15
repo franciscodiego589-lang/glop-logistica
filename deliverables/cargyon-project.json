@@ -1,0 +1,1994 @@
+{
+  "name": "Cargyon",
+  "tagline": "Enterprise ERP — Logística, Supply Chain & Governança Corporativa",
+  "generated_at": "2026-07-15",
+  "stack": {
+    "database": "Supabase (PostgreSQL)",
+    "frontend": "Next.js 14 (App Router) + TypeScript + Tailwind",
+    "auth": "Supabase Auth (JWT) + RLS + RBAC",
+    "ai_brain": "LAIOS (multiagente, insights auto-descobertos, pg_cron 24/7)",
+    "pwa": "instalável + offline (service worker)"
+  },
+  "architecture": {
+    "multi_tenant": "tenant → company → branch → membership",
+    "rls": "habilitado em 100% das tabelas de negócio",
+    "rbac": "app.has_permission('<recurso>.<ação>', company_id)",
+    "audit": "app.tg_write_audit() em toda tabela (quem/quando/antes/depois)",
+    "soft_delete": "deleted_at / reason_deleted (sem DELETE físico)"
+  },
+  "totals": {
+    "modules": 38,
+    "groups": 8,
+    "migrations": 70,
+    "tables": 378,
+    "functions_rpc": 265,
+    "insight_engines": 45
+  },
+  "groups": [
+    {
+      "name": "Visão Geral & Inteligência",
+      "modules": [
+        {
+          "slug": "dashboard",
+          "label": "Cockpit Executivo",
+          "icon": "◎",
+          "group": "Visão Geral & Inteligência",
+          "vol": 16,
+          "description": "KPIs logísticos cross-módulo em tempo real"
+        },
+        {
+          "slug": "comando",
+          "label": "Command Center (tempo real)",
+          "icon": "◉",
+          "group": "Visão Geral & Inteligência",
+          "vol": 5,
+          "description": "Mission control: estado vivo da operação, central de alertas, sala de crise"
+        },
+        {
+          "slug": "control-tower",
+          "label": "Logistics Control Tower",
+          "icon": "⛭",
+          "group": "Visão Geral & Inteligência",
+          "vol": 5,
+          "description": "Eventos, SLA, alertas e exceções da cadeia logística"
+        },
+        {
+          "slug": "ia-central",
+          "label": "LAIOS — Logistics AI OS",
+          "icon": "✦",
+          "group": "Visão Geral & Inteligência",
+          "vol": 15,
+          "description": "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa"
+        },
+        {
+          "slug": "logia",
+          "label": "LOGIA (Insights)",
+          "icon": "✧",
+          "group": "Visão Geral & Inteligência",
+          "vol": 15,
+          "description": "Insights, previsões e planos de ação logísticos"
+        },
+        {
+          "slug": "analytics",
+          "label": "Logistics Data Platform (BI)",
+          "icon": "📈",
+          "group": "Visão Geral & Inteligência",
+          "vol": 16,
+          "description": "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados"
+        },
+        {
+          "slug": "auditoria",
+          "label": "Auditoria Logística & Custos",
+          "icon": "🔎",
+          "group": "Visão Geral & Inteligência",
+          "vol": 6,
+          "description": "Auditoria de fretes/operacional, custos, rentabilidade, riscos, compliance logístico, score"
+        },
+        {
+          "slug": "engenharia-logistica",
+          "label": "Logistics Planning & Rede",
+          "icon": "🗺",
+          "group": "Visão Geral & Inteligência",
+          "vol": 10,
+          "description": "Digital twin, mapa de demanda, IA de localização de CD, simulações, ROI/payback"
+        }
+      ]
+    },
+    {
+      "name": "Estoque & Armazém",
+      "modules": [
+        {
+          "slug": "produtos",
+          "label": "Cadastro Mestre (SKU)",
+          "icon": "▤",
+          "group": "Estoque & Armazém",
+          "vol": 11,
+          "description": "SKU, dimensões, peso, categorias, fornecedores, embalagens"
+        },
+        {
+          "slug": "estoque",
+          "label": "Estoque Inteligente",
+          "icon": "▦",
+          "group": "Estoque & Armazém",
+          "vol": 11,
+          "description": "Saldos, curva ABC, ponto de pedido"
+        },
+        {
+          "slug": "wms",
+          "label": "WMS / Armazém",
+          "icon": "⌗",
+          "group": "Estoque & Armazém",
+          "vol": 11,
+          "description": "Endereçamento, tarefas, ondas, packing"
+        },
+        {
+          "slug": "operacao-armazem",
+          "label": "WMS Enterprise (IA)",
+          "icon": "🏬",
+          "group": "Estoque & Armazém",
+          "vol": 11,
+          "description": "Slotting IA, putaway, reabastecimento, RFID, robótica, produtividade, ESG"
+        },
+        {
+          "slug": "inventario",
+          "label": "Inventário & Rastreio",
+          "icon": "⎗",
+          "group": "Estoque & Armazém",
+          "vol": 11,
+          "description": "Contagens cíclicas e genealogia de lote"
+        },
+        {
+          "slug": "ativos-retornaveis",
+          "label": "Ativos Retornáveis (RAMS)",
+          "icon": "♻️",
+          "group": "Estoque & Armazém",
+          "vol": 13,
+          "description": "Pallets/containers/gaiolas/IBCs: empréstimos, retenção, manutenção, ESG"
+        }
+      ]
+    },
+    {
+      "name": "Suprimentos",
+      "modules": [
+        {
+          "slug": "compras",
+          "label": "Suprimentos / Compras",
+          "icon": "🛒",
+          "group": "Suprimentos",
+          "vol": 10,
+          "description": "Requisição → cotação → pedido → recebimento"
+        },
+        {
+          "slug": "demanda",
+          "label": "Demand Planning",
+          "icon": "📈",
+          "group": "Suprimentos",
+          "vol": 10,
+          "description": "Histórico, previsões e S&OP"
+        },
+        {
+          "slug": "manutencao",
+          "label": "EAM / Manutenção de Frota & Ativos",
+          "icon": "🔧",
+          "group": "Suprimentos",
+          "vol": 9,
+          "description": "Ativos, ordens de serviço, preventiva, MTTR/MTBF"
+        }
+      ]
+    },
+    {
+      "name": "Expedição & Distribuição",
+      "modules": [
+        {
+          "slug": "expedicao",
+          "label": "Expedição",
+          "icon": "📦",
+          "group": "Expedição & Distribuição",
+          "vol": 7,
+          "description": "Pedidos, picking, packing e embarque"
+        },
+        {
+          "slug": "central-expedicao",
+          "label": "Smart Shipping Center (IA)",
+          "icon": "🧠",
+          "group": "Expedição & Distribuição",
+          "vol": 7,
+          "description": "Wave picking, escolha de transportadora, embalagem ótima, docas, cargas, gargalos"
+        },
+        {
+          "slug": "distribuicao",
+          "label": "Distribuição & Last Mile",
+          "icon": "🗺",
+          "group": "Expedição & Distribuição",
+          "vol": 7,
+          "description": "Transferências, cross-dock, hubs, entregas"
+        },
+        {
+          "slug": "devolucoes",
+          "label": "RMA & Logística Reversa",
+          "icon": "↩",
+          "group": "Expedição & Distribuição",
+          "vol": 1,
+          "description": "Devoluções, conferência, quarentena, retrabalho, reintegração ao estoque"
+        },
+        {
+          "slug": "postagens",
+          "label": "Torre de Postagens",
+          "icon": "🛰",
+          "group": "Expedição & Distribuição",
+          "vol": 2,
+          "description": "Etiqueta→PLP→postagem→1ª movimentação, objetos parados, CEP inválido, SLA, alertas"
+        }
+      ]
+    },
+    {
+      "name": "Transporte & Pátio",
+      "modules": [
+        {
+          "slug": "tms",
+          "label": "TMS / Transporte",
+          "icon": "🚚",
+          "group": "Transporte & Pátio",
+          "vol": 9,
+          "description": "Transportadoras, fretes, rotas e tracking"
+        },
+        {
+          "slug": "frota",
+          "label": "TMS Enterprise / Frota",
+          "icon": "🚛",
+          "group": "Transporte & Pátio",
+          "vol": 9,
+          "description": "Viagens, custos, combustível, telemetria, manutenção, leilão de fretes, carbono"
+        },
+        {
+          "slug": "transporte",
+          "label": "Torre de Transporte",
+          "icon": "🌐",
+          "group": "Transporte & Pátio",
+          "vol": 3,
+          "description": "Monitoramento em trânsito, ETA, score de risco, ocorrências, heat map, OTIF"
+        },
+        {
+          "slug": "correios",
+          "label": "Correios (Gestão Enterprise)",
+          "icon": "📮",
+          "group": "Transporte & Pátio",
+          "vol": 4,
+          "description": "Contratos, cartões de postagem, PLP, objetos, SRO, auditoria de fretes, SLA"
+        },
+        {
+          "slug": "yms",
+          "label": "YMS / Pátio & Docas",
+          "icon": "🏗",
+          "group": "Transporte & Pátio",
+          "vol": 12,
+          "description": "Docas, agendamento e pátio"
+        },
+        {
+          "slug": "patio",
+          "label": "YMS Enterprise (Pátio)",
+          "icon": "🚧",
+          "group": "Transporte & Pátio",
+          "vol": 12,
+          "description": "Portaria/OCR, balanças, filas, carga/descarga, containers, lacres, AI dock scheduler"
+        }
+      ]
+    },
+    {
+      "name": "Comércio Exterior",
+      "modules": [
+        {
+          "slug": "comex",
+          "label": "Global Trade Management (GTM)",
+          "icon": "🌍",
+          "group": "Comércio Exterior",
+          "vol": 14,
+          "description": "Importação/exportação, Incoterms, portos/aeroportos, aduana, containers, drawback, RECOF"
+        }
+      ]
+    },
+    {
+      "name": "Cliente & Pós-Venda",
+      "modules": [
+        {
+          "slug": "portal-cliente",
+          "label": "Portal do Cliente Logístico",
+          "icon": "💬",
+          "group": "Cliente & Pós-Venda",
+          "vol": 8,
+          "description": "Timeline, tracking, ETA, notificações, comprovantes, self-service, devoluções, NPS"
+        },
+        {
+          "slug": "pos-venda",
+          "label": "Pós-Venda & Ocorrências (CLX)",
+          "icon": "🎧",
+          "group": "Cliente & Pós-Venda",
+          "vol": 8,
+          "description": "Rastreio público, ocorrências, chamados/SLA, NPS/CSAT"
+        }
+      ]
+    },
+    {
+      "name": "Plataforma",
+      "modules": [
+        {
+          "slug": "processos",
+          "label": "BPM & Workflows",
+          "icon": "🔀",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos"
+        },
+        {
+          "slug": "documentos",
+          "label": "Documentos (ECM / GED)",
+          "icon": "🗂",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca"
+        },
+        {
+          "slug": "mdm",
+          "label": "Governança de Dados (MDM)",
+          "icon": "🧬",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário"
+        },
+        {
+          "slug": "integracoes",
+          "label": "Integrações (iPaaS)",
+          "icon": "🔌",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API"
+        },
+        {
+          "slug": "seguranca",
+          "label": "Identidade & Segurança (IAM)",
+          "icon": "🛡",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos"
+        },
+        {
+          "slug": "admin",
+          "label": "Administração da Plataforma",
+          "icon": "⚙",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças"
+        },
+        {
+          "slug": "dispositivos",
+          "label": "Super App & Dispositivos",
+          "icon": "📲",
+          "group": "Plataforma",
+          "vol": 16,
+          "description": "PWA instalável, dispositivos, sync offline, push, modos operacionais (coletor/motorista)"
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "slug": "dashboard",
+      "label": "Cockpit Executivo",
+      "icon": "◎",
+      "group": "Visão Geral & Inteligência",
+      "vol": 16,
+      "description": "KPIs logísticos cross-módulo em tempo real"
+    },
+    {
+      "slug": "comando",
+      "label": "Command Center (tempo real)",
+      "icon": "◉",
+      "group": "Visão Geral & Inteligência",
+      "vol": 5,
+      "description": "Mission control: estado vivo da operação, central de alertas, sala de crise"
+    },
+    {
+      "slug": "control-tower",
+      "label": "Logistics Control Tower",
+      "icon": "⛭",
+      "group": "Visão Geral & Inteligência",
+      "vol": 5,
+      "description": "Eventos, SLA, alertas e exceções da cadeia logística"
+    },
+    {
+      "slug": "ia-central",
+      "label": "LAIOS — Logistics AI OS",
+      "icon": "✦",
+      "group": "Visão Geral & Inteligência",
+      "vol": 15,
+      "description": "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa"
+    },
+    {
+      "slug": "logia",
+      "label": "LOGIA (Insights)",
+      "icon": "✧",
+      "group": "Visão Geral & Inteligência",
+      "vol": 15,
+      "description": "Insights, previsões e planos de ação logísticos"
+    },
+    {
+      "slug": "analytics",
+      "label": "Logistics Data Platform (BI)",
+      "icon": "📈",
+      "group": "Visão Geral & Inteligência",
+      "vol": 16,
+      "description": "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados"
+    },
+    {
+      "slug": "auditoria",
+      "label": "Auditoria Logística & Custos",
+      "icon": "🔎",
+      "group": "Visão Geral & Inteligência",
+      "vol": 6,
+      "description": "Auditoria de fretes/operacional, custos, rentabilidade, riscos, compliance logístico, score"
+    },
+    {
+      "slug": "engenharia-logistica",
+      "label": "Logistics Planning & Rede",
+      "icon": "🗺",
+      "group": "Visão Geral & Inteligência",
+      "vol": 10,
+      "description": "Digital twin, mapa de demanda, IA de localização de CD, simulações, ROI/payback"
+    },
+    {
+      "slug": "produtos",
+      "label": "Cadastro Mestre (SKU)",
+      "icon": "▤",
+      "group": "Estoque & Armazém",
+      "vol": 11,
+      "description": "SKU, dimensões, peso, categorias, fornecedores, embalagens"
+    },
+    {
+      "slug": "estoque",
+      "label": "Estoque Inteligente",
+      "icon": "▦",
+      "group": "Estoque & Armazém",
+      "vol": 11,
+      "description": "Saldos, curva ABC, ponto de pedido"
+    },
+    {
+      "slug": "wms",
+      "label": "WMS / Armazém",
+      "icon": "⌗",
+      "group": "Estoque & Armazém",
+      "vol": 11,
+      "description": "Endereçamento, tarefas, ondas, packing"
+    },
+    {
+      "slug": "operacao-armazem",
+      "label": "WMS Enterprise (IA)",
+      "icon": "🏬",
+      "group": "Estoque & Armazém",
+      "vol": 11,
+      "description": "Slotting IA, putaway, reabastecimento, RFID, robótica, produtividade, ESG"
+    },
+    {
+      "slug": "inventario",
+      "label": "Inventário & Rastreio",
+      "icon": "⎗",
+      "group": "Estoque & Armazém",
+      "vol": 11,
+      "description": "Contagens cíclicas e genealogia de lote"
+    },
+    {
+      "slug": "ativos-retornaveis",
+      "label": "Ativos Retornáveis (RAMS)",
+      "icon": "♻️",
+      "group": "Estoque & Armazém",
+      "vol": 13,
+      "description": "Pallets/containers/gaiolas/IBCs: empréstimos, retenção, manutenção, ESG"
+    },
+    {
+      "slug": "compras",
+      "label": "Suprimentos / Compras",
+      "icon": "🛒",
+      "group": "Suprimentos",
+      "vol": 10,
+      "description": "Requisição → cotação → pedido → recebimento"
+    },
+    {
+      "slug": "demanda",
+      "label": "Demand Planning",
+      "icon": "📈",
+      "group": "Suprimentos",
+      "vol": 10,
+      "description": "Histórico, previsões e S&OP"
+    },
+    {
+      "slug": "manutencao",
+      "label": "EAM / Manutenção de Frota & Ativos",
+      "icon": "🔧",
+      "group": "Suprimentos",
+      "vol": 9,
+      "description": "Ativos, ordens de serviço, preventiva, MTTR/MTBF"
+    },
+    {
+      "slug": "expedicao",
+      "label": "Expedição",
+      "icon": "📦",
+      "group": "Expedição & Distribuição",
+      "vol": 7,
+      "description": "Pedidos, picking, packing e embarque"
+    },
+    {
+      "slug": "central-expedicao",
+      "label": "Smart Shipping Center (IA)",
+      "icon": "🧠",
+      "group": "Expedição & Distribuição",
+      "vol": 7,
+      "description": "Wave picking, escolha de transportadora, embalagem ótima, docas, cargas, gargalos"
+    },
+    {
+      "slug": "distribuicao",
+      "label": "Distribuição & Last Mile",
+      "icon": "🗺",
+      "group": "Expedição & Distribuição",
+      "vol": 7,
+      "description": "Transferências, cross-dock, hubs, entregas"
+    },
+    {
+      "slug": "devolucoes",
+      "label": "RMA & Logística Reversa",
+      "icon": "↩",
+      "group": "Expedição & Distribuição",
+      "vol": 1,
+      "description": "Devoluções, conferência, quarentena, retrabalho, reintegração ao estoque"
+    },
+    {
+      "slug": "postagens",
+      "label": "Torre de Postagens",
+      "icon": "🛰",
+      "group": "Expedição & Distribuição",
+      "vol": 2,
+      "description": "Etiqueta→PLP→postagem→1ª movimentação, objetos parados, CEP inválido, SLA, alertas"
+    },
+    {
+      "slug": "tms",
+      "label": "TMS / Transporte",
+      "icon": "🚚",
+      "group": "Transporte & Pátio",
+      "vol": 9,
+      "description": "Transportadoras, fretes, rotas e tracking"
+    },
+    {
+      "slug": "frota",
+      "label": "TMS Enterprise / Frota",
+      "icon": "🚛",
+      "group": "Transporte & Pátio",
+      "vol": 9,
+      "description": "Viagens, custos, combustível, telemetria, manutenção, leilão de fretes, carbono"
+    },
+    {
+      "slug": "transporte",
+      "label": "Torre de Transporte",
+      "icon": "🌐",
+      "group": "Transporte & Pátio",
+      "vol": 3,
+      "description": "Monitoramento em trânsito, ETA, score de risco, ocorrências, heat map, OTIF"
+    },
+    {
+      "slug": "correios",
+      "label": "Correios (Gestão Enterprise)",
+      "icon": "📮",
+      "group": "Transporte & Pátio",
+      "vol": 4,
+      "description": "Contratos, cartões de postagem, PLP, objetos, SRO, auditoria de fretes, SLA"
+    },
+    {
+      "slug": "yms",
+      "label": "YMS / Pátio & Docas",
+      "icon": "🏗",
+      "group": "Transporte & Pátio",
+      "vol": 12,
+      "description": "Docas, agendamento e pátio"
+    },
+    {
+      "slug": "patio",
+      "label": "YMS Enterprise (Pátio)",
+      "icon": "🚧",
+      "group": "Transporte & Pátio",
+      "vol": 12,
+      "description": "Portaria/OCR, balanças, filas, carga/descarga, containers, lacres, AI dock scheduler"
+    },
+    {
+      "slug": "comex",
+      "label": "Global Trade Management (GTM)",
+      "icon": "🌍",
+      "group": "Comércio Exterior",
+      "vol": 14,
+      "description": "Importação/exportação, Incoterms, portos/aeroportos, aduana, containers, drawback, RECOF"
+    },
+    {
+      "slug": "portal-cliente",
+      "label": "Portal do Cliente Logístico",
+      "icon": "💬",
+      "group": "Cliente & Pós-Venda",
+      "vol": 8,
+      "description": "Timeline, tracking, ETA, notificações, comprovantes, self-service, devoluções, NPS"
+    },
+    {
+      "slug": "pos-venda",
+      "label": "Pós-Venda & Ocorrências (CLX)",
+      "icon": "🎧",
+      "group": "Cliente & Pós-Venda",
+      "vol": 8,
+      "description": "Rastreio público, ocorrências, chamados/SLA, NPS/CSAT"
+    },
+    {
+      "slug": "processos",
+      "label": "BPM & Workflows",
+      "icon": "🔀",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos"
+    },
+    {
+      "slug": "documentos",
+      "label": "Documentos (ECM / GED)",
+      "icon": "🗂",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca"
+    },
+    {
+      "slug": "mdm",
+      "label": "Governança de Dados (MDM)",
+      "icon": "🧬",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário"
+    },
+    {
+      "slug": "integracoes",
+      "label": "Integrações (iPaaS)",
+      "icon": "🔌",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API"
+    },
+    {
+      "slug": "seguranca",
+      "label": "Identidade & Segurança (IAM)",
+      "icon": "🛡",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos"
+    },
+    {
+      "slug": "admin",
+      "label": "Administração da Plataforma",
+      "icon": "⚙",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças"
+    },
+    {
+      "slug": "dispositivos",
+      "label": "Super App & Dispositivos",
+      "icon": "📲",
+      "group": "Plataforma",
+      "vol": 16,
+      "description": "PWA instalável, dispositivos, sync offline, push, modos operacionais (coletor/motorista)"
+    }
+  ],
+  "migrations": [
+    {
+      "file": "20260713000001_foundation.sql",
+      "tables": [
+        "audit_logs",
+        "branches",
+        "companies",
+        "memberships",
+        "permissions",
+        "profiles",
+        "role_permissions",
+        "roles",
+        "tenants"
+      ],
+      "functions": [
+        "bootstrap_organization"
+      ],
+      "statements": 138,
+      "bytes": 20425
+    },
+    {
+      "file": "20260713000002_master_data.sql",
+      "tables": [
+        "kit_items",
+        "product_categories",
+        "product_lots",
+        "product_packagings",
+        "product_serials",
+        "products",
+        "storage_locations",
+        "storage_zones",
+        "suppliers",
+        "units_of_measure",
+        "warehouses"
+      ],
+      "functions": [],
+      "statements": 76,
+      "bytes": 21105
+    },
+    {
+      "file": "20260713000003_wms.sql",
+      "tables": [
+        "inbound_receipt_items",
+        "inbound_receipts",
+        "package_items",
+        "packages",
+        "pick_waves",
+        "stock_balances",
+        "stock_movements",
+        "stock_reservations",
+        "warehouse_tasks"
+      ],
+      "functions": [
+        "register_stock_movement"
+      ],
+      "statements": 83,
+      "bytes": 21017
+    },
+    {
+      "file": "20260713000004_tms.sql",
+      "tables": [
+        "carriers",
+        "drivers",
+        "freight_rates",
+        "routes",
+        "shipment_events",
+        "shipment_items",
+        "shipments",
+        "vehicles"
+      ],
+      "functions": [],
+      "statements": 46,
+      "bytes": 13595
+    },
+    {
+      "file": "20260713000005_yms.sql",
+      "tables": [
+        "dock_appointments",
+        "docks",
+        "yard_visits",
+        "yard_zones"
+      ],
+      "functions": [],
+      "statements": 35,
+      "bytes": 8306
+    },
+    {
+      "file": "20260713000006_purchasing.sql",
+      "tables": [
+        "purchase_order_items",
+        "purchase_orders",
+        "purchase_requisition_items",
+        "purchase_requisitions",
+        "rfq_items",
+        "rfqs",
+        "supplier_quote_items",
+        "supplier_quotes"
+      ],
+      "functions": [
+        "receive_purchase_order"
+      ],
+      "statements": 61,
+      "bytes": 13639
+    },
+    {
+      "file": "20260713000007_demand_planning.sql",
+      "tables": [
+        "demand_forecasts",
+        "demand_history",
+        "demand_plan_lines",
+        "demand_plans"
+      ],
+      "functions": [
+        "forecast_moving_average"
+      ],
+      "statements": 51,
+      "bytes": 8532
+    },
+    {
+      "file": "20260713000008_mrp_aps.sql",
+      "tables": [
+        "bills_of_materials",
+        "bom_components",
+        "mrp_planned_orders",
+        "mrp_runs",
+        "routing_operations",
+        "work_centers"
+      ],
+      "functions": [
+        "run_mrp"
+      ],
+      "statements": 59,
+      "bytes": 11804
+    },
+    {
+      "file": "20260713000009_production.sql",
+      "tables": [
+        "production_consumptions",
+        "production_operations",
+        "production_orders"
+      ],
+      "functions": [
+        "finish_production_order"
+      ],
+      "statements": 55,
+      "bytes": 9033
+    },
+    {
+      "file": "20260713000010_smart_inventory.sql",
+      "tables": [
+        "reorder_suggestions",
+        "stock_snapshots"
+      ],
+      "functions": [
+        "calculate_abc",
+        "generate_reorder_suggestions",
+        "inventory_kpis"
+      ],
+      "statements": 58,
+      "bytes": 9484
+    },
+    {
+      "file": "20260713000011_inventory_traceability.sql",
+      "tables": [
+        "inventory_count_items",
+        "inventory_counts",
+        "lot_genealogy"
+      ],
+      "functions": [
+        "apply_inventory_count"
+      ],
+      "statements": 49,
+      "bytes": 7649
+    },
+    {
+      "file": "20260713000012_shipping.sql",
+      "tables": [
+        "customers",
+        "outbound_order_items",
+        "outbound_orders"
+      ],
+      "functions": [
+        "ship_outbound_order"
+      ],
+      "statements": 50,
+      "bytes": 8415
+    },
+    {
+      "file": "20260713000013_distribution.sql",
+      "tables": [
+        "deliveries",
+        "delivery_attempts",
+        "stock_transfer_items",
+        "stock_transfers"
+      ],
+      "functions": [
+        "receive_stock_transfer"
+      ],
+      "statements": 52,
+      "bytes": 9389
+    },
+    {
+      "file": "20260713000014_control_tower.sql",
+      "tables": [
+        "alerts",
+        "logistics_events",
+        "logistics_exceptions",
+        "sla_breaches",
+        "sla_policies"
+      ],
+      "functions": [
+        "control_tower_kpis"
+      ],
+      "statements": 37,
+      "bytes": 9340
+    },
+    {
+      "file": "20260713000015_logia.sql",
+      "tables": [
+        "logia_action_plans",
+        "logia_conversations",
+        "logia_insights",
+        "logia_knowledge",
+        "logia_messages"
+      ],
+      "functions": [
+        "logia_scan"
+      ],
+      "statements": 53,
+      "bytes": 10536
+    },
+    {
+      "file": "20260713000016_bi_dashboards.sql",
+      "tables": [
+        "dashboard_widgets",
+        "dashboards",
+        "saved_reports"
+      ],
+      "functions": [
+        "executive_dashboard"
+      ],
+      "statements": 29,
+      "bytes": 6959
+    },
+    {
+      "file": "20260713000017_mdm_expansion.sql",
+      "tables": [
+        "product_brands",
+        "product_costs",
+        "product_customers",
+        "product_documents",
+        "product_media",
+        "product_suppliers",
+        "product_taxes"
+      ],
+      "functions": [
+        "compute_data_quality",
+        "mdm_dashboard"
+      ],
+      "statements": 54,
+      "bytes": 16404
+    },
+    {
+      "file": "20260713000018_mdm_dedup.sql",
+      "tables": [],
+      "functions": [
+        "detect_duplicate_products"
+      ],
+      "statements": 3,
+      "bytes": 1197
+    },
+    {
+      "file": "20260713000019_storage_products.sql",
+      "tables": [],
+      "functions": [],
+      "statements": 9,
+      "bytes": 958
+    },
+    {
+      "file": "20260713000020_mes.sql",
+      "tables": [
+        "equipment",
+        "process_readings",
+        "production_appointments",
+        "production_downtimes"
+      ],
+      "functions": [
+        "equipment_oee"
+      ],
+      "statements": 58,
+      "bytes": 10964
+    },
+    {
+      "file": "20260713000021_manufacturing.sql",
+      "tables": [
+        "bom_revisions",
+        "production_lines"
+      ],
+      "functions": [
+        "approve_bom"
+      ],
+      "statements": 44,
+      "bytes": 6633
+    },
+    {
+      "file": "20260713000022_lims.sql",
+      "tables": [
+        "lab_instruments",
+        "lab_methods",
+        "lab_reagents",
+        "lab_samples",
+        "lab_tests",
+        "product_specifications"
+      ],
+      "functions": [
+        "release_sample"
+      ],
+      "statements": 69,
+      "bytes": 12869
+    },
+    {
+      "file": "20260713000022_security_fix_mv_leak.sql",
+      "tables": [],
+      "functions": [],
+      "statements": 1,
+      "bytes": 689
+    },
+    {
+      "file": "20260713000023_qms.sql",
+      "tables": [
+        "audit_findings",
+        "batch_releases",
+        "capas",
+        "certificates_of_analysis",
+        "complaints",
+        "inspection_plan_items",
+        "inspection_plans",
+        "inspection_results",
+        "nonconformities",
+        "quality_audits",
+        "quality_documents",
+        "quality_inspections",
+        "quality_risks",
+        "quality_specifications",
+        "recalls",
+        "stability_studies",
+        "training_records",
+        "trainings",
+        "validations"
+      ],
+      "functions": [
+        "quality_dashboard",
+        "release_batch"
+      ],
+      "statements": 99,
+      "bytes": 32692
+    },
+    {
+      "file": "20260713000024_qms_automation.sql",
+      "tables": [
+        "electronic_signatures",
+        "quality_evidences"
+      ],
+      "functions": [
+        "evaluate_inspection",
+        "quality_predict",
+        "sign_record",
+        "spc_analysis",
+        "spc_parameters"
+      ],
+      "statements": 148,
+      "bytes": 17912
+    },
+    {
+      "file": "20260713000025_eam.sql",
+      "tables": [
+        "asset_failures",
+        "asset_readings",
+        "assets",
+        "maintenance_plans",
+        "wo_parts",
+        "work_orders"
+      ],
+      "functions": [
+        "complete_work_order",
+        "generate_preventive_wos",
+        "maintenance_kpis"
+      ],
+      "statements": 78,
+      "bytes": 16438
+    },
+    {
+      "file": "20260713000026_finance.sql",
+      "tables": [
+        "bank_accounts",
+        "bank_transactions",
+        "cost_centers",
+        "payables",
+        "receivables"
+      ],
+      "functions": [
+        "finance_kpis",
+        "pay_payable",
+        "receive_receivable",
+        "sync_financial_documents"
+      ],
+      "statements": 100,
+      "bytes": 17160
+    },
+    {
+      "file": "20260713000027_finance_efp.sql",
+      "tables": [
+        "allocation_rules",
+        "allocation_targets",
+        "bank_statement_lines",
+        "bank_statements",
+        "customer_credit",
+        "dunning_rules",
+        "financial_budget_lines",
+        "financial_budgets",
+        "intercompany_transactions",
+        "treasury_positions"
+      ],
+      "functions": [
+        "compute_batch_cost",
+        "compute_credit_score",
+        "consolidated_finance",
+        "detect_financial_anomalies",
+        "finance_dashboard",
+        "forecast_cashflow",
+        "reconcile_bank_statement",
+        "run_allocation"
+      ],
+      "statements": 131,
+      "bytes": 29032
+    },
+    {
+      "file": "20260713000028_controlling.sql",
+      "tables": [
+        "cost_drivers",
+        "cost_entries",
+        "cost_objects",
+        "cost_simulations",
+        "dre_accounts",
+        "profit_centers",
+        "standard_costs"
+      ],
+      "functions": [
+        "controlling_dashboard",
+        "controlling_insights",
+        "dre_managerial",
+        "post_cost_allocation",
+        "product_margin",
+        "variance_analysis"
+      ],
+      "statements": 101,
+      "bytes": 20704
+    },
+    {
+      "file": "20260713000029_rma.sql",
+      "tables": [
+        "return_reasons",
+        "rma_events",
+        "rma_inspections",
+        "rma_items",
+        "rma_requests"
+      ],
+      "functions": [
+        "process_rma_item",
+        "rma_dashboard",
+        "rma_insights"
+      ],
+      "statements": 80,
+      "bytes": 16618
+    },
+    {
+      "file": "20260713000030_dispatch_tower.sql",
+      "tables": [
+        "dispatch_events",
+        "dispatch_issues",
+        "dispatches"
+      ],
+      "functions": [
+        "detect_dispatch_issues",
+        "dispatch_dashboard",
+        "dispatch_insights",
+        "generate_dispatches"
+      ],
+      "statements": 104,
+      "bytes": 15511
+    },
+    {
+      "file": "20260713000031_transport_tower.sql",
+      "tables": [
+        "transport_occurrences"
+      ],
+      "functions": [
+        "compute_shipment_risk",
+        "detect_transport_issues",
+        "transport_control_tower",
+        "transport_insights"
+      ],
+      "statements": 85,
+      "bytes": 13650
+    },
+    {
+      "file": "20260713000032_correios.sql",
+      "tables": [
+        "freight_divergences",
+        "plps",
+        "postal_contracts",
+        "postal_events",
+        "postal_objects",
+        "postal_services"
+      ],
+      "functions": [
+        "audit_postal_freight",
+        "correios_dashboard",
+        "correios_insights",
+        "freight_simulator"
+      ],
+      "statements": 82,
+      "bytes": 18267
+    },
+    {
+      "file": "20260713000033_lct.sql",
+      "tables": [
+        "incidents",
+        "operational_scores"
+      ],
+      "functions": [
+        "_upsert_score",
+        "compute_operational_scores",
+        "lct_command_center",
+        "lct_scan"
+      ],
+      "statements": 74,
+      "bytes": 13610
+    },
+    {
+      "file": "20260713000034_lais.sql",
+      "tables": [
+        "logistics_audit_findings",
+        "logistics_risks",
+        "savings_opportunities"
+      ],
+      "functions": [
+        "compute_igel",
+        "cost_by_carrier",
+        "detect_waste_opportunities",
+        "lais_dashboard",
+        "run_logistics_audit"
+      ],
+      "statements": 109,
+      "bytes": 17668
+    },
+    {
+      "file": "20260713000035_ssc.sql",
+      "tables": [
+        "packaging_boxes",
+        "shipping_load_items",
+        "shipping_loads"
+      ],
+      "functions": [
+        "generate_shipping_waves",
+        "optimize_packing",
+        "recommend_carrier",
+        "shipping_center",
+        "ssc_insights"
+      ],
+      "statements": 69,
+      "bytes": 13060
+    },
+    {
+      "file": "20260713000036_clx.sql",
+      "tables": [
+        "customer_notifications",
+        "customer_occurrences",
+        "satisfaction_surveys"
+      ],
+      "functions": [
+        "clx_dashboard",
+        "clx_insights",
+        "compute_nps",
+        "public_track"
+      ],
+      "statements": 68,
+      "bytes": 12771
+    },
+    {
+      "file": "20260713000037_tms_enterprise.sql",
+      "tables": [
+        "fleet_maintenance",
+        "freight_contracts",
+        "freight_quote_bids",
+        "freight_quote_requests",
+        "fuel_logs",
+        "trip_expenses",
+        "trips"
+      ],
+      "functions": [
+        "award_freight_quote",
+        "compute_carbon_footprint",
+        "tms_dashboard",
+        "tms_insights",
+        "trip_cost"
+      ],
+      "statements": 98,
+      "bytes": 18767
+    },
+    {
+      "file": "20260713000038_lpnd.sql",
+      "tables": [
+        "network_scenarios"
+      ],
+      "functions": [
+        "capacity_planning",
+        "demand_heatmap",
+        "lpnd_dashboard",
+        "lpnd_insights",
+        "recommend_cd_location",
+        "simulate_network_finance"
+      ],
+      "statements": 58,
+      "bytes": 11113
+    },
+    {
+      "file": "20260713000039_wms_enterprise.sql",
+      "tables": [
+        "labor_shifts",
+        "slotting_recommendations",
+        "warehouse_utilities"
+      ],
+      "functions": [
+        "generate_replenishment_tasks",
+        "operator_productivity",
+        "recommend_slotting",
+        "suggest_putaway",
+        "warehouse_esg",
+        "wms_enterprise_dashboard",
+        "wms_insights"
+      ],
+      "statements": 95,
+      "bytes": 17061
+    },
+    {
+      "file": "20260713000040_yms_enterprise.sql",
+      "tables": [
+        "containers",
+        "gate_events",
+        "loading_operations",
+        "seals",
+        "weighings"
+      ],
+      "functions": [
+        "recommend_dock",
+        "yard_dashboard",
+        "yard_performance",
+        "yms_insights"
+      ],
+      "statements": 63,
+      "bytes": 15256
+    },
+    {
+      "file": "20260713000041_rams.sql",
+      "tables": [
+        "asset_charges",
+        "asset_loans",
+        "asset_maintenance",
+        "returnable_asset_types"
+      ],
+      "functions": [
+        "asset_esg",
+        "generate_retention_charges",
+        "rams_dashboard",
+        "rams_insights",
+        "return_asset_loan"
+      ],
+      "statements": 91,
+      "bytes": 14589
+    },
+    {
+      "file": "20260713000042_gtm.sql",
+      "tables": [
+        "drawback_acts",
+        "hs_classifications",
+        "trade_documents",
+        "trade_locations",
+        "trade_partners",
+        "trade_processes"
+      ],
+      "functions": [
+        "gtm_dashboard",
+        "gtm_insights",
+        "import_cost_simulator"
+      ],
+      "statements": 82,
+      "bytes": 15867
+    },
+    {
+      "file": "20260713000043_laios.sql",
+      "tables": [
+        "ai_agents",
+        "ai_conversations",
+        "ai_decisions",
+        "ai_knowledge",
+        "ai_messages",
+        "ai_runs",
+        "ai_workflows"
+      ],
+      "functions": [
+        "decide_ai_action",
+        "laios_dashboard",
+        "laios_executive_brief",
+        "laios_orchestrate"
+      ],
+      "statements": 111,
+      "bytes": 23606
+    },
+    {
+      "file": "20260713000044_laios_system_actor.sql",
+      "tables": [],
+      "functions": [],
+      "statements": 33,
+      "bytes": 4331
+    },
+    {
+      "file": "20260713000045_gl.sql",
+      "tables": [
+        "accounting_periods",
+        "chart_of_accounts",
+        "gl_reconciliations",
+        "journal_entries",
+        "journal_entry_lines",
+        "posting_rules"
+      ],
+      "functions": [
+        "balance_sheet",
+        "close_accounting_period",
+        "create_journal_entry",
+        "gl_dashboard",
+        "gl_insights",
+        "income_statement",
+        "post_accounting_event",
+        "reverse_journal_entry",
+        "trial_balance"
+      ],
+      "statements": 184,
+      "bytes": 35665
+    },
+    {
+      "file": "20260713000046_tax.sql",
+      "tables": [
+        "fiscal_document_taxes",
+        "fiscal_documents",
+        "fiscal_obligations",
+        "operation_natures",
+        "tax_assessments",
+        "tax_rules"
+      ],
+      "functions": [
+        "calculate_tax",
+        "create_fiscal_document",
+        "fiscal_dashboard",
+        "fiscal_insights",
+        "generate_fiscal_obligations",
+        "run_tax_assessment"
+      ],
+      "statements": 166,
+      "bytes": 28707
+    },
+    {
+      "file": "20260713000047_aa.sql",
+      "tables": [
+        "asset_categories",
+        "asset_insurances",
+        "asset_inventory_counts",
+        "asset_revaluations",
+        "asset_transfers",
+        "depreciation_entries",
+        "fixed_assets"
+      ],
+      "functions": [
+        "aa_dashboard",
+        "aa_insights",
+        "revalue_asset",
+        "run_depreciation",
+        "transfer_asset"
+      ],
+      "statements": 159,
+      "bytes": 26548
+    },
+    {
+      "file": "20260713000048_fpna.sql",
+      "tables": [
+        "budget_lines",
+        "budgets",
+        "goals",
+        "investment_cases",
+        "planning_scenarios"
+      ],
+      "functions": [
+        "budget_vs_actual",
+        "evaluate_investment",
+        "fpna_dashboard",
+        "fpna_insights",
+        "generate_forecast",
+        "project_scenario"
+      ],
+      "statements": 189,
+      "bytes": 25225
+    },
+    {
+      "file": "20260713000049_crm.sql",
+      "tables": [
+        "crm_accounts",
+        "crm_activities",
+        "crm_campaigns",
+        "crm_contacts",
+        "crm_leads",
+        "crm_opportunities",
+        "crm_pipelines",
+        "crm_proposals",
+        "crm_stages"
+      ],
+      "functions": [
+        "convert_lead",
+        "crm_dashboard",
+        "crm_insights",
+        "move_opportunity",
+        "sales_forecast"
+      ],
+      "statements": 133,
+      "bytes": 24632
+    },
+    {
+      "file": "20260713000050_oms.sql",
+      "tables": [
+        "order_events",
+        "order_reservations",
+        "sales_order_items",
+        "sales_orders"
+      ],
+      "functions": [
+        "advance_order",
+        "cancel_order",
+        "check_atp",
+        "create_sales_order",
+        "oms_dashboard",
+        "oms_insights",
+        "reserve_order_stock"
+      ],
+      "statements": 213,
+      "bytes": 24990
+    },
+    {
+      "file": "20260713000051_cxp.sql",
+      "tables": [
+        "customer_documents",
+        "customer_feedback",
+        "cxp_rma_requests",
+        "knowledge_articles",
+        "portal_users",
+        "support_tickets",
+        "ticket_messages"
+      ],
+      "functions": [
+        "customer_portal_snapshot",
+        "cxp_dashboard",
+        "cxp_insights",
+        "open_rma",
+        "open_ticket",
+        "portal_public_open_ticket",
+        "portal_public_snapshot",
+        "reply_ticket",
+        "resolve_ticket"
+      ],
+      "statements": 155,
+      "bytes": 24692
+    },
+    {
+      "file": "20260713000052_dcp.sql",
+      "tables": [
+        "cart_items",
+        "carts",
+        "cms_pages",
+        "marketplace_listings",
+        "price_list_items",
+        "price_lists",
+        "promotions",
+        "stores",
+        "subscriptions"
+      ],
+      "functions": [
+        "apply_coupon",
+        "commerce_catalog",
+        "dcp_dashboard",
+        "dcp_insights",
+        "get_price",
+        "storefront_order"
+      ],
+      "statements": 137,
+      "bytes": 24916
+    },
+    {
+      "file": "20260713000053_hcm.sql",
+      "tables": [
+        "candidates",
+        "competencies",
+        "departments",
+        "employee_benefits",
+        "employee_competencies",
+        "employees",
+        "hr_training_records",
+        "hr_trainings",
+        "job_vacancies",
+        "performance_reviews",
+        "positions",
+        "time_off_requests"
+      ],
+      "functions": [
+        "decide_time_off",
+        "hcm_dashboard",
+        "hcm_insights",
+        "hire_candidate",
+        "request_time_off"
+      ],
+      "statements": 144,
+      "bytes": 27496
+    },
+    {
+      "file": "20260713000054_pwm.sql",
+      "tables": [
+        "payroll_event_lines",
+        "payroll_items",
+        "payroll_runs",
+        "terminations",
+        "time_bank_movements",
+        "time_entries",
+        "work_schedules"
+      ],
+      "functions": [
+        "approve_payroll",
+        "compute_termination",
+        "pwm_dashboard",
+        "pwm_insights",
+        "register_time",
+        "run_payroll"
+      ],
+      "statements": 200,
+      "bytes": 26883
+    },
+    {
+      "file": "20260713000055_bpm.sql",
+      "tables": [
+        "automation_rules",
+        "business_rules",
+        "form_definitions",
+        "process_definitions",
+        "process_events",
+        "process_instances",
+        "process_tasks"
+      ],
+      "functions": [
+        "bpm_dashboard",
+        "bpm_insights",
+        "complete_task",
+        "evaluate_rule",
+        "start_process"
+      ],
+      "statements": 190,
+      "bytes": 25997
+    },
+    {
+      "file": "20260713000056_ecm.sql",
+      "tables": [
+        "document_comments",
+        "document_folders",
+        "document_signatures",
+        "document_versions",
+        "documents",
+        "retention_policies"
+      ],
+      "functions": [
+        "checkin_document",
+        "checkout_document",
+        "ecm_dashboard",
+        "ecm_insights",
+        "request_signatures",
+        "search_documents",
+        "sign_document"
+      ],
+      "statements": 153,
+      "bytes": 23178
+    },
+    {
+      "file": "20260713000057_bi.sql",
+      "tables": [
+        "bi_alerts",
+        "bi_dashboards",
+        "bi_widgets",
+        "data_catalog",
+        "kpi_definitions",
+        "kpi_snapshots"
+      ],
+      "functions": [
+        "bi_insights",
+        "bi_overview",
+        "compute_kpi",
+        "kpi_trend",
+        "snapshot_kpis"
+      ],
+      "statements": 108,
+      "bytes": 20442
+    },
+    {
+      "file": "20260713000058_mdm.sql",
+      "tables": [
+        "data_lineage",
+        "mdm_change_requests",
+        "mdm_domains",
+        "mdm_duplicates",
+        "mdm_glossary",
+        "mdm_quality_rules"
+      ],
+      "functions": [
+        "assess_domain_quality",
+        "detect_duplicates",
+        "mdm_dashboard",
+        "mdm_insights",
+        "merge_records"
+      ],
+      "statements": 142,
+      "bytes": 24290
+    },
+    {
+      "file": "20260713000059_eip.sql",
+      "tables": [
+        "api_endpoints",
+        "api_keys",
+        "event_bus",
+        "integration_connectors",
+        "integration_flows",
+        "integration_messages",
+        "webhooks"
+      ],
+      "functions": [
+        "deliver_message",
+        "eip_dashboard",
+        "eip_insights",
+        "generate_api_key",
+        "process_queue",
+        "publish_event",
+        "run_integration_flow"
+      ],
+      "statements": 156,
+      "bytes": 24370
+    },
+    {
+      "file": "20260713000060_iam.sql",
+      "tables": [
+        "access_certifications",
+        "access_policies",
+        "auth_methods",
+        "iam_identities",
+        "login_attempts",
+        "pam_requests",
+        "security_incidents",
+        "trusted_devices",
+        "user_sessions"
+      ],
+      "functions": [
+        "decide_pam",
+        "detect_security_threats",
+        "iam_dashboard",
+        "record_login_attempt",
+        "request_pam",
+        "revoke_session",
+        "security_insights"
+      ],
+      "statements": 147,
+      "bytes": 26463
+    },
+    {
+      "file": "20260713000061_epa.sql",
+      "tables": [
+        "config_history",
+        "currencies",
+        "environments",
+        "feature_flags",
+        "languages",
+        "licenses",
+        "module_registry",
+        "platform_settings"
+      ],
+      "functions": [
+        "convert_currency",
+        "epa_dashboard",
+        "epa_insights",
+        "rollback_setting",
+        "set_setting"
+      ],
+      "statements": 140,
+      "bytes": 25400
+    },
+    {
+      "file": "20260713000062_eaaf.sql",
+      "tables": [
+        "ai_automations",
+        "ai_models",
+        "ai_prompts",
+        "ai_providers",
+        "ai_tools",
+        "ai_usage_logs"
+      ],
+      "functions": [
+        "ai_ask",
+        "eaaf_dashboard",
+        "eaaf_insights",
+        "register_ai_usage",
+        "set_default_provider"
+      ],
+      "statements": 158,
+      "bytes": 24604
+    },
+    {
+      "file": "20260713000063_ecc.sql",
+      "tables": [
+        "command_alerts",
+        "crisis_rooms",
+        "crisis_updates"
+      ],
+      "functions": [
+        "ack_alert",
+        "command_overview",
+        "ecc_dashboard",
+        "ecc_insights",
+        "open_crisis",
+        "sync_command_alerts",
+        "update_crisis"
+      ],
+      "statements": 123,
+      "bytes": 18406
+    },
+    {
+      "file": "20260713000064_esap.sql",
+      "tables": [
+        "devices",
+        "home_widgets",
+        "mobile_profiles",
+        "push_notifications",
+        "sync_queue"
+      ],
+      "functions": [
+        "enqueue_sync",
+        "esap_dashboard",
+        "esap_insights",
+        "process_sync",
+        "register_device",
+        "send_push"
+      ],
+      "statements": 118,
+      "bytes": 18670
+    },
+    {
+      "file": "20260713000065_elcp.sql",
+      "tables": [
+        "app_templates",
+        "custom_apps",
+        "custom_components",
+        "custom_entities",
+        "custom_forms",
+        "custom_pages",
+        "custom_records",
+        "elcp_deployments"
+      ],
+      "functions": [
+        "create_custom_record",
+        "elcp_dashboard",
+        "elcp_insights",
+        "instantiate_template",
+        "publish_app"
+      ],
+      "statements": 127,
+      "bytes": 23219
+    },
+    {
+      "file": "20260713000066_edop.sql",
+      "tables": [
+        "ops_alerts",
+        "ops_incidents",
+        "pipeline_runs",
+        "pipelines",
+        "platform_deployments",
+        "service_metrics",
+        "services",
+        "slo_definitions"
+      ],
+      "functions": [
+        "edop_dashboard",
+        "edop_insights",
+        "health_check",
+        "open_ops_incident",
+        "record_deployment",
+        "resolve_ops_incident",
+        "rollback_deployment",
+        "run_pipeline"
+      ],
+      "statements": 181,
+      "bytes": 27087
+    },
+    {
+      "file": "20260713000067_grc.sql",
+      "tables": [
+        "action_plans",
+        "compliance_requirements",
+        "continuity_plans",
+        "grc_audits",
+        "grc_policies",
+        "grc_risks",
+        "internal_controls",
+        "sod_rules"
+      ],
+      "functions": [
+        "assess_compliance",
+        "check_sod_violations",
+        "grc_dashboard",
+        "grc_insights",
+        "grc_risk_matrix"
+      ],
+      "statements": 123,
+      "bytes": 26409
+    },
+    {
+      "file": "20260713000068_grc_complement.sql",
+      "tables": [
+        "authority_delegations",
+        "compliance_obligations",
+        "governance_bodies",
+        "grc_evidence",
+        "key_risk_indicators"
+      ],
+      "functions": [
+        "attach_evidence",
+        "complete_obligation",
+        "egrc_insights",
+        "generate_grc_obligations",
+        "governance_overview",
+        "grc_kri_panel",
+        "grc_obligations_calendar",
+        "record_kri"
+      ],
+      "statements": 144,
+      "bytes": 27958
+    },
+    {
+      "file": "20260713000069_fix_mdm_dashboard.sql",
+      "tables": [],
+      "functions": [
+        "mdm_dashboard",
+        "mdm_governance_dashboard"
+      ],
+      "statements": 10,
+      "bytes": 5308
+    }
+  ],
+  "insight_engines": [
+    "aa_insights",
+    "audit_postal_freight",
+    "bi_insights",
+    "bpm_insights",
+    "clx_insights",
+    "controlling_insights",
+    "correios_insights",
+    "crm_insights",
+    "cxp_insights",
+    "dcp_insights",
+    "detect_dispatch_issues",
+    "detect_duplicate_products",
+    "detect_duplicates",
+    "detect_financial_anomalies",
+    "detect_security_threats",
+    "detect_transport_issues",
+    "detect_waste_opportunities",
+    "dispatch_insights",
+    "eaaf_insights",
+    "ecc_insights",
+    "ecm_insights",
+    "edop_insights",
+    "egrc_insights",
+    "eip_insights",
+    "elcp_insights",
+    "epa_insights",
+    "esap_insights",
+    "fiscal_insights",
+    "fpna_insights",
+    "gl_insights",
+    "grc_insights",
+    "gtm_insights",
+    "hcm_insights",
+    "lpnd_insights",
+    "mdm_insights",
+    "oms_insights",
+    "pwm_insights",
+    "rams_insights",
+    "rma_insights",
+    "security_insights",
+    "ssc_insights",
+    "tms_insights",
+    "transport_insights",
+    "wms_insights",
+    "yms_insights"
+  ],
+  "supabase_project_ref": "ittbmqnwomhkxnvlqjvl",
+  "repo": "~/Downloads/erp-logistica"
+}
