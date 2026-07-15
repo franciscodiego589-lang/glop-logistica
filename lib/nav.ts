@@ -50,6 +50,7 @@ export const NAV: NavItem[] = [
   { slug: "comex", label: "Comércio Exterior (GTM)", icon: "🌍", group: "Distribuição", vol: 14, description: "Importação/exportação, Incoterms, aduana, NCM, drawback, custo nacionalizado" },
 
   { slug: "comercial", label: "CRM & Vendas", icon: "🤝", group: "Comercial", vol: 17, description: "Contas 360°, leads, pipeline Kanban, oportunidades, propostas, IA comercial" },
+  { slug: "pedidos", label: "Pedidos (OMS)", icon: "🧾", group: "Comercial", vol: 18, description: "Ciclo do pedido: ATP, reserva de estoque, expedição, faturamento (NF-e+GL), timeline" },
 
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
