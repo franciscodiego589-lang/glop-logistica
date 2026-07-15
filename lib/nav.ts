@@ -54,6 +54,8 @@ export const NAV: NavItem[] = [
   { slug: "portal-cliente", label: "Portal do Cliente (CXP)", icon: "💬", group: "Comercial", vol: 19, description: "Chamados/SLA, RMA, documentos, base de conhecimento, NPS/CSAT + área pública do cliente" },
   { slug: "commerce", label: "Loja & Comércio Digital", icon: "🛍", group: "Comercial", vol: 20, description: "E-commerce B2B/B2C, catálogo, preços, promoções, assinaturas, marketplace + vitrine pública" },
 
+  { slug: "rh", label: "RH / Capital Humano (HCM)", icon: "👥", group: "Pessoas & Governança", vol: 21, description: "Colaboradores, organograma, recrutamento, férias, treinamentos BPF, competências" },
+
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
   { slug: "contabilidade", label: "Contabilidade Geral (GL)", icon: "📒", group: "Financeiro", vol: 13, description: "Plano de contas, partidas dobradas, motor de contabilização, DRE, Balanço, fechamento" },
