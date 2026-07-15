@@ -23,6 +23,7 @@ export const NAV: NavItem[] = [
   { slug: "integracoes", label: "Integrações (iPaaS)", icon: "🔌", group: "Pessoas & Governança", vol: 27, description: "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API" },
   { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Pessoas & Governança", vol: 28, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
   { slug: "admin", label: "Administração da Plataforma", icon: "⚙", group: "Pessoas & Governança", vol: 29, description: "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças" },
+  { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Pessoas & Governança", vol: 32, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais" },
   { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
 
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },

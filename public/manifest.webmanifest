@@ -1,0 +1,23 @@
+{
+  "name": "Cargyon — Enterprise ERP",
+  "short_name": "Cargyon",
+  "description": "Plataforma corporativa Cargyon: Supply Chain, Financeiro, Comercial, RH, BPM, BI e IA.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1830",
+  "theme_color": "#2f56e6",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Command Center", "url": "/comando" },
+    { "name": "Cockpit", "url": "/" },
+    { "name": "Pedidos", "url": "/pedidos" },
+    { "name": "IA & Assistente", "url": "/ia-plataforma" }
+  ]
+}
