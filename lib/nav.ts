@@ -53,6 +53,7 @@ export const NAV: NavItem[] = [
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
   { slug: "contabilidade", label: "Contabilidade Geral (GL)", icon: "📒", group: "Financeiro", vol: 13, description: "Plano de contas, partidas dobradas, motor de contabilização, DRE, Balanço, fechamento" },
   { slug: "fiscal", label: "Fiscal & Tributário", icon: "🧾", group: "Financeiro", vol: 14, description: "Motor tributário, NF-e/NFS-e/CT-e, apuração, obrigações acessórias, IA fiscal" },
+  { slug: "patrimonio", label: "Patrimônio & Ativos Fixos", icon: "🏛", group: "Financeiro", vol: 15, description: "Ativos fixos, depreciação (posta no GL), reavaliação, seguros, inventário patrimonial" },
 ];
 
 export const NAV_GROUPS = Array.from(new Set(NAV.map((n) => n.group)));
