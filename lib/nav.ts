@@ -18,6 +18,7 @@ export const NAV: NavItem[] = [
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
   { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 10, description: "Saldos, curva ABC, ponto de pedido" },
   { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Armazém", vol: 3, description: "Endereçamento, tarefas, ondas, packing" },
+  { slug: "operacao-armazem", label: "WMS Enterprise (IA)", icon: "🏬", group: "Estoque & Armazém", vol: 22, description: "Slotting IA, putaway, reabastecimento, produtividade, ESG, congestão" },
   { slug: "inventario", label: "Inventário & Rastreio", icon: "⎗", group: "Estoque & Armazém", vol: 11, description: "Contagens cíclicas e genealogia de lote" },
 
   { slug: "compras", label: "Compras", icon: "🛒", group: "Suprimentos", vol: 6, description: "Requisição → cotação → pedido → recebimento" },
