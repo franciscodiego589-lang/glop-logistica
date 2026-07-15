@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { MZ_BASE, monetizzeToken, mzSignal } from "@/lib/monetizze";
 
 export const dynamic = "force-dynamic";
 
@@ -21,21 +22,6 @@ function pick(...vals: any[]) {
 // A lista de vendas vem em "dados"; o nº da venda é venda.codigo; o comprador
 // (nome/cpf/endereço) vem em "comprador". A resposta traz um pix_imagem_qrcode
 // gigante (base64) que NÃO guardamos.
-const MZ_BASE = "https://api.monetizze.com.br/2.1";
-
-async function monetizzeToken(apiKey: string): Promise<string> {
-  const res = await fetch(`${MZ_BASE}/token`, {
-    headers: { X_CONSUMER_KEY: apiKey, Accept: "application/json" },
-    cache: "no-store",
-  });
-  const json: any = await res.json().catch(() => ({}));
-  if (res.status === 401 || res.status === 403 || json?.status === 403 || json?.Error) {
-    throw new Error("Chave da Monetizze inválida ou sem permissão de API. Gere a chave em Ferramentas → API no painel da Monetizze.");
-  }
-  if (!res.ok || !json?.token) throw new Error("Não foi possível autenticar na Monetizze (HTTP " + res.status + ")");
-  return json.token as string;
-}
-
 function monetizzeStatusToEvent(status: any): string {
   const s = String(status ?? "").toLowerCase();
   if (s.includes("cancel")) return "canceled";
@@ -79,10 +65,22 @@ function mapMonetizze(t: any): Pulled {
 
 type PageResult = { sales: Pulled[]; pages: number; recordCount: number };
 
-async function monetizzePage(token: string, page: number): Promise<PageResult> {
-  const res = await fetch(`${MZ_BASE}/transactions?page=${page}`, {
+// Sync incremental: filtra por data de cadastro (date_min, formato yyyy-mm-dd hh:mm:ss).
+// Aplica uma sobreposição para capturar mudanças de status recentes (pago/reembolso)
+// em vendas que já existiam — a idempotência evita duplicar.
+const INCREMENTAL_OVERLAP_MS = 2 * 24 * 60 * 60 * 1000;
+function monetizzeIncrementalQS(sinceISO: string | null): string {
+  if (!sinceISO) return "";
+  const since = new Date(new Date(sinceISO).getTime() - INCREMENTAL_OVERLAP_MS);
+  if (isNaN(since.getTime())) return "";
+  const s = since.toISOString().slice(0, 19).replace("T", " ");
+  return "&date_min=" + encodeURIComponent(s);
+}
+
+async function monetizzePage(token: string, page: number, filterQS: string): Promise<PageResult> {
+  const res = await fetch(`${MZ_BASE}/transactions?page=${page}${filterQS}`, {
     headers: { TOKEN: token, Accept: "application/json" },
-    cache: "no-store",
+    cache: "no-store", signal: mzSignal(),
   });
   const json: any = await res.json().catch(() => ({}));
   if (!res.ok || json?.status === 403) throw new Error("Falha ao ler vendas da Monetizze (HTTP " + res.status + ")");
@@ -98,7 +96,7 @@ async function monetizzePage(token: string, page: number): Promise<PageResult> {
 async function pullGeneric(baseUrl: string, key: string): Promise<Pulled[]> {
   if (!baseUrl) throw new Error("Defina a Base URL do conector para a API genérica.");
   const url = baseUrl.replace(/\/$/, "") + "/orders";
-  const res = await fetch(url, { headers: { Authorization: "Bearer " + key, Accept: "application/json" }, cache: "no-store" });
+  const res = await fetch(url, { headers: { Authorization: "Bearer " + key, Accept: "application/json" }, cache: "no-store", signal: mzSignal() });
   if (!res.ok) throw new Error("API HTTP " + res.status);
   const json: any = await res.json();
   const arr = json?.orders ?? json?.data ?? (Array.isArray(json) ? json : []);
@@ -132,13 +130,21 @@ export async function POST(req: Request) {
   try { body = await req.json(); } catch {}
   const connectorId = body.connector_id;
   const fromPage = Math.max(1, Number(body.from_page) || 1);
+  // "full" = puxa tudo; "incremental" = só vendas novas desde a última sincronização.
+  const mode = body.mode === "incremental" ? "incremental" : "full";
   if (!connectorId) return Response.json({ error: "connector_id ausente" }, { status: 400 });
 
   const { data: conn, error: ce } = await supabase
-    .from("store_connectors").select("id,platform,webhook_token,api_base_url,producer_ref,name")
-    .eq("id", connectorId).eq("company_id", company).single();
+    .from("store_connectors").select("id,platform,webhook_token,api_base_url,producer_ref,name,metadata")
+    .eq("id", connectorId).eq("company_id", company).is("deleted_at", null).single();
   if (ce || !conn) return Response.json({ error: "Conector não encontrado" }, { status: 404 });
   if (!conn.webhook_token) return Response.json({ error: "Cole a chave da API neste conector antes de puxar." }, { status: 400 });
+
+  // No incremental, filtra pela última sincronização; se nunca sincronizou, últimos 30 dias.
+  const meta = (conn.metadata ?? {}) as Record<string, any>;
+  const sinceISO = mode === "incremental"
+    ? (meta.last_pull_at ?? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+    : null;
 
   let sales: Pulled[] = [];
   let hasMore = false, nextPage: number | null = null, pagesTotal = fromPage, recordCount = 0, pageTo = fromPage;
@@ -146,10 +152,11 @@ export async function POST(req: Request) {
   try {
     if (conn.platform === "monetizze") {
       const token = await monetizzeToken(conn.webhook_token);
+      const filterQS = monetizzeIncrementalQS(sinceISO);
       const started = Date.now();
       let page = fromPage;
       do {
-        const pr = await monetizzePage(token, page);
+        const pr = await monetizzePage(token, page, filterQS);
         pagesTotal = pr.pages;
         recordCount = pr.recordCount;
         sales.push(...pr.sales);
@@ -178,12 +185,20 @@ export async function POST(req: Request) {
     return Response.json({ error: "Erro ao gravar pedidos: " + error.message }, { status: 500 });
   }
 
+  // Ao concluir a sincronização (último bloco), marca a data para o próximo incremental.
+  if (!hasMore) {
+    await supabase.from("store_connectors")
+      .update({ metadata: { ...meta, last_pull_at: new Date().toISOString() } })
+      .eq("id", connectorId).eq("company_id", company);
+  }
+
   const r: any = data ?? {};
   return Response.json({
     total: r.total ?? sales.length,
     imported: r.imported ?? 0,
     duplicates: r.duplicates ?? 0,
     errors: r.errors ?? 0,
+    mode,
     page_from: fromPage,
     page_to: pageTo,
     pages_total: pagesTotal,

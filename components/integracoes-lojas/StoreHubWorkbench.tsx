@@ -18,6 +18,7 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   const [busy, setBusy] = useState("");
   const [prog, setProg] = useState("");
   const [showConn, setShowConn] = useState(connectors.length === 0);
+  const [trk, setTrk] = useState<Record<string, string>>({});
 
   const conn = connectors.find((c) => c.id === sel) ?? connectors[0];
   const rows = useMemo(() => orders.filter((o) => o.connector_id === sel), [orders, sel]);
@@ -25,33 +26,56 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   const importadas = rows.filter((o) => o.state !== "sem_plano" && o.state !== "cancelado").length;
   const semPlano = rows.filter((o) => o.state === "sem_plano").length;
   const valor = rows.reduce((s, o) => s + Number(o.value ?? 0), 0);
+  const rastreiosPendentes = rows.filter((o) => o.tracking_code && !o.tracking_pushed_at).length;
 
   async function saveKey() {
     if (!supabase || !conn || !key) return; setBusy("save");
     const { error } = await supabase.from("store_connectors").update({ webhook_token: key, status: "active", metadata: { ...(conn.metadata ?? {}), key_set: true } }).eq("id", conn.id);
     setBusy(""); if (error) alert("Erro ao salvar: " + error.message); else { setKey(""); router.refresh(); }
   }
-  // Puxa TODOS os pedidos: a rota devolve blocos de páginas (has_more/next_page)
-  // para não estourar o timeout; aqui seguimos puxando até acabar, com progresso.
-  async function pull() {
+  // Puxa os pedidos: a rota devolve blocos de páginas (has_more/next_page) para
+  // não estourar o timeout; aqui seguimos puxando até acabar, com progresso.
+  // mode "full" = tudo; "incremental" = só novas vendas desde a última sincronização.
+  async function pull(mode: "full" | "incremental" = "full") {
     if (!conn) return; setBusy("pull"); setProg("");
+    const verbo = mode === "incremental" ? "Sincronizando" : "Puxando";
     let fromPage = 1, tot = 0, imp = 0, dup = 0, err = 0, guard = 0;
     try {
       while (true) {
         const res = await fetch("/api/lojas/pull", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ connector_id: conn.id, from_page: fromPage }),
+          body: JSON.stringify({ connector_id: conn.id, from_page: fromPage, mode }),
         });
         const j = await res.json();
         if (!res.ok) { alert("🚫 " + (j.error ?? "Falha ao puxar")); break; }
         tot += j.total ?? 0; imp += j.imported ?? 0; dup += j.duplicates ?? 0; err += j.errors ?? 0;
-        if (j.pages_total > 1) setProg(`Puxando… página ${j.page_to}/${j.pages_total} · ${tot} de ${j.record_count} vendas`);
+        if (j.pages_total > 1) setProg(`${verbo}… página ${j.page_to}/${j.pages_total} · ${tot} de ${j.record_count} vendas`);
         if (j.has_more && j.next_page && guard++ < 500) { fromPage = j.next_page; router.refresh(); continue; }
-        alert(`✅ Concluído: ${tot} venda(s) processada(s) — ${imp} novas, ${dup} já existiam${err ? `, ${err} com erro` : ""}.`);
+        alert(`✅ ${mode === "incremental" ? "Sincronização" : "Concluído"}: ${tot} venda(s) — ${imp} novas, ${dup} já existiam${err ? `, ${err} com erro` : ""}.`);
         break;
       }
     } catch (e: any) { alert("Erro de rede: " + e.message); }
     setBusy(""); setProg(""); router.refresh();
+  }
+
+  // Devolve os códigos de rastreio à plataforma (Monetizze notifica o comprador).
+  // Sem itens = envia todos os pendentes (com rastreio, ainda não enviados).
+  async function pushTracking(items?: { sale_number: string; tracking_code: string }[]) {
+    if (!conn) return; setBusy("track");
+    try {
+      const res = await fetch("/api/lojas/tracking", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ connector_id: conn.id, ...(items ? { items } : {}) }),
+      });
+      const j = await res.json();
+      if (!res.ok) alert("🚫 " + (j.error ?? "Falha ao enviar rastreio"));
+      else if (j.sent === 0) alert("ℹ️ " + (j.message ?? "Nenhum rastreio pendente."));
+      else {
+        const errs = (j.details ?? []).filter((d: any) => d.status === "error").slice(0, 6).map((d: any) => `#${d.sale_number}: ${d.message}`).join("\n");
+        alert(`📮 Enviado à Monetizze: ${j.success} ok, ${j.errors} com erro (de ${j.sent}).${errs ? "\n\n" + errs : ""}`);
+      }
+    } catch (e: any) { alert("Erro de rede: " + e.message); }
+    setBusy(""); router.refresh();
   }
 
   return (
@@ -88,10 +112,14 @@ export default function StoreHubWorkbench({ connectors, orders }: {
           {conn.metadata?.key_set ? (
             <div className="pt-1 border-t" style={{ borderColor: "var(--border)" }}>
               <div className="flex flex-wrap gap-2">
-                <button onClick={pull} disabled={busy === "pull"} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy === "pull" ? "Puxando…" : "⬇️ Puxar todos os pedidos"}</button>
+                <button onClick={() => pull("full")} disabled={busy === "pull"} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy === "pull" ? "Puxando…" : "⬇️ Puxar todos os pedidos"}</button>
+                <button onClick={() => pull("incremental")} disabled={busy === "pull"} className="px-4 py-2 rounded-lg card text-sm font-semibold disabled:opacity-50">🔁 Sincronizar novas vendas</button>
                 <button onClick={() => router.refresh()} disabled={busy === "pull"} className="px-4 py-2 rounded-lg card text-sm font-semibold disabled:opacity-50">🔄 Atualizar lista</button>
-                <button onClick={pull} disabled={busy === "pull"} className="px-4 py-2 rounded-lg card text-sm font-semibold disabled:opacity-50">🔁 Sincronizar novas vendas</button>
+                {rastreiosPendentes > 0 && (
+                  <button onClick={() => pushTracking()} disabled={busy === "track"} className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold disabled:opacity-50">{busy === "track" ? "Enviando…" : `📮 Enviar ${rastreiosPendentes} rastreio(s) à Monetizze`}</button>
+                )}
               </div>
+              {conn.metadata?.last_pull_at && <div className="text-[11px] muted mt-1.5">Última sincronização: {dt(conn.metadata.last_pull_at)}</div>}
               {prog && <div className="text-xs mt-2 font-medium" style={{ color: "var(--brand)" }}>⏳ {prog}</div>}
             </div>
           ) : (
@@ -121,7 +149,7 @@ export default function StoreHubWorkbench({ connectors, orders }: {
         {rows.length === 0 ? <p className="text-sm muted p-4">Nenhum pedido ainda. Salve a chave da API e clique em <b>Puxar pedidos</b>.</p> : (
           <table className="w-full text-sm mt-2">
             <thead><tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}>
-              <th className="py-2 px-4">Venda</th><th className="px-3">Comprador</th><th className="px-3">Produto</th><th className="px-3">Status</th><th className="px-3 text-right">Valor</th><th className="px-3">Recebido</th></tr></thead>
+              <th className="py-2 px-4">Venda</th><th className="px-3">Comprador</th><th className="px-3">Produto</th><th className="px-3">Status</th><th className="px-3 text-right">Valor</th><th className="px-3">Recebido</th><th className="px-3">Rastreio (Correios → Monetizze)</th></tr></thead>
             <tbody>{rows.map((o) => (
               <tr key={o.id} className="border-b last:border-0" style={{ borderColor: "var(--border)" }}>
                 <td className="py-2 px-4 font-medium">#{o.sale_number}</td>
@@ -130,6 +158,17 @@ export default function StoreHubWorkbench({ connectors, orders }: {
                 <td className="px-3">{o.state === "sem_plano" ? <span className="badge badge-warning">SEM PLANO</span> : o.state === "bloqueado_reembolso" ? <span className="badge badge-danger">reembolso</span> : <span className="badge badge-success">{o.state === "recebido" ? "Recebido" : o.state}</span>}</td>
                 <td className="px-3 text-right tabular-nums">{money(o.value)}</td>
                 <td className="px-3 text-xs muted">{dt(o.created_at)}</td>
+                <td className="px-3">
+                  {o.tracking_pushed_at ? (
+                    <span className="text-xs" title={o.tracking_push_msg ?? ""}><span className="font-mono">{o.tracking_code}</span> <span className="badge badge-success ml-1">✓ notificado</span></span>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <input value={trk[o.id] ?? o.tracking_code ?? ""} onChange={(e) => setTrk({ ...trk, [o.id]: e.target.value.toUpperCase() })} placeholder="PA123456789BR" className="input w-36 font-mono text-[11px] py-1" />
+                      <button onClick={() => { const code = (trk[o.id] ?? o.tracking_code ?? "").trim(); if (!code) { alert("Digite o código de rastreio."); return; } pushTracking([{ sale_number: o.sale_number, tracking_code: code }]); }}
+                        disabled={busy === "track"} className="px-2 py-1 rounded bg-emerald-600 text-white text-xs font-semibold disabled:opacity-50">📮</button>
+                    </div>
+                  )}
+                </td>
               </tr>))}</tbody>
           </table>
         )}
