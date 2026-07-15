@@ -50,7 +50,6 @@ export const NAV: NavItem[] = [
   { slug: "transporte", label: "Torre de Transporte", icon: "🌐", group: "Transporte & Pátio", vol: 3, description: "Monitoramento em trânsito, ETA, score de risco, ocorrências, heat map, OTIF" },
   { slug: "correios", label: "Correios (Gestão Enterprise)", icon: "📮", group: "Transporte & Pátio", vol: 4, description: "Contratos, cartões de postagem, PLP, objetos, SRO, auditoria de fretes, SLA" },
   { slug: "auditoria-fretes", label: "Auditoria de Fretes & Custos (FACMS)", icon: "🧮", group: "Transporte & Pátio", vol: 36, description: "Auditoria automática cobrado×esperado, faturas/CT-e, glosas, custos logísticos, simulador de transportadora" },
-  { slug: "portaria", label: "Portaria & Pátio (YMS)", icon: "🚏", group: "Transporte & Pátio", vol: 37, description: "Portarias, check-in/out, credenciais, visitantes, vagas de pátio, fila, containers, mapa operacional" },
   { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Transporte & Pátio", vol: 12, description: "Docas, agendamento e pátio" },
   { slug: "patio", label: "YMS Enterprise (Pátio)", icon: "🚧", group: "Transporte & Pátio", vol: 12, description: "Portaria/OCR, balanças, filas, carga/descarga, containers, lacres, AI dock scheduler" },
 

@@ -191,7 +191,7 @@ grant execute on function public.record_kri(uuid,uuid,numeric) to authenticated;
 -- gera/atualiza o calendário de obrigações a partir de controles, políticas e auditorias
 create or replace function public.generate_grc_obligations(p_company uuid)
 returns integer language plpgsql security definer set search_path = public, app as $$
-declare v_tenant uuid; v_n int := 0;
+declare v_tenant uuid; v_n int := 0; v_row int := 0;
 begin
   if not (app.can_access_company(p_company) and app.has_permission('grc.update', p_company)) then raise exception 'forbidden'; end if;
   select tenant_id into v_tenant from public.companies where id = p_company;
@@ -211,7 +211,7 @@ begin
   from public.grc_policies p
   where p.company_id = p_company and p.review_date is not null and p.deleted_at is null
     and not exists (select 1 from public.compliance_obligations o where o.source_type='grc_policy' and o.source_id=p.id and o.deleted_at is null);
-  get diagnostics v_n = v_n + row_count;
+  get diagnostics v_row = row_count; v_n := v_n + v_row;
 
   insert into public.compliance_obligations (tenant_id, company_id, title, obligation_kind, framework, due_date, recurrence, status, source_type, source_id, evidence_required)
   select v_tenant, p_company, 'Auditoria: '||a.name, 'audit', a.framework, a.planned_date, 'once',
@@ -219,7 +219,7 @@ begin
   from public.grc_audits a
   where a.company_id = p_company and a.planned_date is not null and a.deleted_at is null
     and not exists (select 1 from public.compliance_obligations o where o.source_type='grc_audit' and o.source_id=a.id and o.deleted_at is null);
-  get diagnostics v_n = v_n + row_count;
+  get diagnostics v_row = row_count; v_n := v_n + v_row;
   return v_n;
 end; $$;
 grant execute on function public.generate_grc_obligations(uuid) to authenticated;
