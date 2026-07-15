@@ -51,6 +51,7 @@ export const NAV: NavItem[] = [
 
   { slug: "comercial", label: "CRM & Vendas", icon: "🤝", group: "Comercial", vol: 17, description: "Contas 360°, leads, pipeline Kanban, oportunidades, propostas, IA comercial" },
   { slug: "pedidos", label: "Pedidos (OMS)", icon: "🧾", group: "Comercial", vol: 18, description: "Ciclo do pedido: ATP, reserva de estoque, expedição, faturamento (NF-e+GL), timeline" },
+  { slug: "portal-cliente", label: "Portal do Cliente (CXP)", icon: "💬", group: "Comercial", vol: 19, description: "Chamados/SLA, RMA, documentos, base de conhecimento, NPS/CSAT + área pública do cliente" },
 
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
