@@ -33,6 +33,7 @@ export const NAV: NavItem[] = [
   { slug: "expedicao", label: "Expedição", icon: "📦", group: "Distribuição", vol: 12, description: "Pedidos, picking, packing e embarque" },
   { slug: "central-expedicao", label: "Central de Expedição (IA)", icon: "🧠", group: "Distribuição", vol: 18, description: "Ondas, escolha de transportadora, embalagem ótima, cargas, gargalos" },
   { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Distribuição", vol: 4, description: "Transportadoras, fretes, rotas e tracking" },
+  { slug: "frota", label: "TMS Enterprise / Frota", icon: "🚛", group: "Distribuição", vol: 20, description: "Viagens, custos, combustível, manutenção, leilão de fretes, carbono" },
   { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Distribuição", vol: 5, description: "Docas, agendamento e pátio" },
   { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Distribuição", vol: 13, description: "Transferências, cross-dock, entregas" },
   { slug: "devolucoes", label: "Devoluções (RMA)", icon: "↩", group: "Distribuição", vol: 14, description: "Logística reversa, conferência, reintegração ao estoque" },
