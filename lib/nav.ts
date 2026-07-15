@@ -15,6 +15,7 @@ export const NAV: NavItem[] = [
   { slug: "dashboard", label: "Cockpit Executivo", icon: "◎", group: "Visão Geral & Inteligência", vol: 16, description: "KPIs logísticos cross-módulo em tempo real" },
   { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Visão Geral & Inteligência", vol: 5, description: "Mission control: estado vivo da operação, central de alertas, sala de crise" },
   { slug: "control-tower", label: "Logistics Control Tower", icon: "⛭", group: "Visão Geral & Inteligência", vol: 5, description: "Eventos, SLA, alertas e exceções da cadeia logística" },
+  { slug: "torre-controle", label: "Torre de Controle Mundial (GLCT)", icon: "🗼", group: "Visão Geral & Inteligência", vol: 47, description: "Painel situacional consolidado, correlação de eventos, incidentes, playbooks, orquestração" },
   { slug: "ia-central", label: "LAIOS — Logistics AI OS", icon: "✦", group: "Visão Geral & Inteligência", vol: 15, description: "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Visão Geral & Inteligência", vol: 15, description: "Insights, previsões e planos de ação logísticos" },
   { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Visão Geral & Inteligência", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
