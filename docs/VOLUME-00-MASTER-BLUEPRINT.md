@@ -369,6 +369,50 @@ próprias · configurações próprias · integrações controladas.
 
 ---
 
+# CAPÍTULO 5 — Fluxo Operacional Logístico Global (End-to-End)
+
+**Classificação:** Arquitetura Operacional Logística.
+**Objetivo:** o fluxo operacional **único, padronizado e auditável** que toda operação segue —
+da criação da demanda logística ao encerramento. Nenhuma movimentação ocorre fora dele; cada
+etapa gera evento, registro, indicador, auditoria e integração. Este é o detalhamento (17
+etapas) do fluxo mestre do Cap. 3, e é **materializado pelo Domínio 01 (LOM)** como máquina de estados.
+
+## 5.1 As 17 Etapas × Domínio-dono × Evento padrão
+
+| # | Etapa | Domínio-dono | Ações/validações-chave | Evento (`logistics_order.*`) |
+|---|-------|--------------|------------------------|------------------------------|
+| 01 | Demanda Logística | LOM | registrar (pedido/transferência/reposição/coleta/devolução/import/export) c/ origem, destino, prioridade, SLA | `created` |
+| 02 | Validação Operacional | LOM | estoque disponível (ATP), endereços/CEP, área de atendimento, carrier habilitado, peso/cubagem, incompatibilidades, janelas → bloqueia se inconsistente | `validated` / `blocked` |
+| 03 | Planejamento Logístico | LOM + Planning | melhor CD, rota, transportadora, modal, janela, SLA previsto, consolidação (IA justifica) | `planned` |
+| 04 | Reserva Operacional | LOM ↔ WMS/YMS | reserva de estoque (lógica), posições, doca, transportadora/veículo | `allocated` |
+| 05 | Separação (Picking) | WMS | gerar tarefas, estratégia, menor percurso, início/fim, divergências | `picking` |
+| 06 | Conferência | WMS | SKU, qtd, lote, validade, peso, integridade + operador/equipamento | `checked` |
+| 07 | Embalagem (Packing) | Smart Shipping | caixa/envelope/proteção/etiqueta/lacre, peso/cubagem final, fotos | `packed` |
+| 08 | Expedição | Smart Shipping | consolidação por transportadora/rota/prioridade/coleta | `staged` |
+| 09 | Manifestação | Smart Shipping / Correios | manifesto, romaneio, lista de carregamento, etiquetas finais | `manifested` |
+| 10 | Postagem / Coleta | Correios / Carriers | horário, motorista/veículo, coleta, objetos não coletados | `posted` |
+| 11 | Transporte | TMS | localização, eventos, ETA, SLA, ocorrências, mudanças de rota | `in_transit` |
+| 12 | Hub / Cross Docking | TMS / WMS | entrada, conferência, permanência, transferência, saída | `at_hub` |
+| 13 | Última Milha | TMS | roteirização urbana, ordem, motorista/veículo, saída p/ entrega | `out_for_delivery` |
+| 14 | Entrega | TMS / Correios | data/hora, recebedor, assinatura, foto, geolocalização, tentativas | `delivered` |
+| 15 | Pós-Entrega | Portal | status, comprovante (POD), NPS, ocorrências, SLA final | `post_delivery` |
+| 16 | Logística Reversa | Reversa (D09) | solicitação, autorização, etiqueta, coleta, inspeção, destinação | `reverse` |
+| 17 | Encerramento | LOM | só após todas as etapas + auditoria + eventos + KPIs + histórico consolidado | `closed` |
+
+## 5.2 Evento obrigatório (contrato)
+Toda etapa emite evento padronizado no **event bus** com: identificador · tipo · origem ·
+destino · data/hora · usuário-ou-sistema responsável · resultado · status · dados complementares.
+
+## 5.3 Indicadores do fluxo (calculados automaticamente)
+Lead Time (ponta a ponta) · tempo por etapa · SLA · OTIF · tempo de espera · tempo de picking ·
+packing · transporte · entrega · devolução · índice de retrabalho · índice de conformidade.
+
+> **Implementação:** o Domínio 01 (LOM) carrega o catálogo `logistics_stages` (as 17 etapas
+> acima) e a máquina de estados; cada transição chama `app.emit_event` publicando o
+> `logistics_order.<evento>` no `event_bus` (fan-out p/ webhooks assinantes).
+
+---
+
 ## Anexo A — Mapa de Implementação (Fase 1, 16 volumes)
 
 Estado atual da base sobre a qual o GLOP evolui (rotas já existentes):

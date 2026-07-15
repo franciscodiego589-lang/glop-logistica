@@ -21,6 +21,9 @@ export const NAV: NavItem[] = [
   { slug: "auditoria", label: "Auditoria Logística & Custos", icon: "🔎", group: "Visão Geral & Inteligência", vol: 6, description: "Auditoria de fretes/operacional, custos, rentabilidade, riscos, compliance logístico, score" },
   { slug: "engenharia-logistica", label: "Logistics Planning & Rede", icon: "🗺", group: "Visão Geral & Inteligência", vol: 10, description: "Digital twin, mapa de demanda, IA de localização de CD, simulações, ROI/payback" },
 
+  // ── Fluxo Operacional (ponto de entrada do fluxo mestre) ──────────────────
+  { slug: "pedidos-logisticos", label: "Pedidos Logísticos (LOM)", icon: "🧾", group: "Fluxo Operacional", vol: 1, description: "Domínio 01: demanda logística, validação (ATP), planejamento, reserva, máquina das 17 etapas e barramento de eventos" },
+
   // ── Estoque & Armazém (WMS) ───────────────────────────────────────────────
   { slug: "produtos", label: "Cadastro Mestre (SKU)", icon: "▤", group: "Estoque & Armazém", vol: 11, description: "SKU, dimensões, peso, categorias, fornecedores, embalagens" },
   { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 11, description: "Saldos, curva ABC, ponto de pedido" },
