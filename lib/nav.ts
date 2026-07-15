@@ -55,6 +55,7 @@ export const NAV: NavItem[] = [
   { slug: "commerce", label: "Loja & Comércio Digital", icon: "🛍", group: "Comercial", vol: 20, description: "E-commerce B2B/B2C, catálogo, preços, promoções, assinaturas, marketplace + vitrine pública" },
 
   { slug: "rh", label: "RH / Capital Humano (HCM)", icon: "👥", group: "Pessoas & Governança", vol: 21, description: "Colaboradores, organograma, recrutamento, férias, treinamentos BPF, competências" },
+  { slug: "folha", label: "Folha & Força de Trabalho (PWM)", icon: "💵", group: "Pessoas & Governança", vol: 22, description: "Folha (INSS/IRRF/FGTS → GL), ponto, escalas, banco de horas, rescisões" },
 
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
