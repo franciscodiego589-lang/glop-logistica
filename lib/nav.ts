@@ -25,6 +25,7 @@ export const NAV: NavItem[] = [
   { slug: "admin", label: "Administração da Plataforma", icon: "⚙", group: "Pessoas & Governança", vol: 29, description: "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças" },
   { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Pessoas & Governança", vol: 32, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais" },
   { slug: "studio", label: "Studio (Low-Code)", icon: "🧩", group: "Pessoas & Governança", vol: 33, description: "Construtor de apps/entidades/formulários sem código, templates, publicação — não-invasivo" },
+  { slug: "devops", label: "DevSecOps & Observabilidade", icon: "🛰", group: "Pessoas & Governança", vol: 34, description: "CI/CD, deploys+rollback, incidentes SRE (MTTR), SLO/error budget, saúde dos serviços" },
   { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
 
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
