@@ -88,11 +88,14 @@ export default function CrudPanel({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
-        <div className="font-semibold">{title} <span className="muted font-normal">({rows.length})</span></div>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar…"
-          className="ml-auto border rounded-lg px-3 py-1.5 text-sm bg-transparent outline-none focus:border-brand-500 w-44" style={{ borderColor: "var(--border)" }} />
+        <div className="font-semibold text-base">{title} <span className="badge badge-neutral align-middle ml-1">{rows.length}</span></div>
+        <div className="relative ml-auto">
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 muted text-sm pointer-events-none">⌕</span>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar…"
+            className="input h-9 pl-8 w-52" style={{ background: "var(--surface-2)" }} />
+        </div>
         <button onClick={() => { setOpen((o) => !o); setErr(null); }}
-          className="text-sm px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 font-semibold">{open ? "Cancelar" : "+ Novo"}</button>
+          className={`btn btn-sm ${open ? "" : "btn-primary"}`}>{open ? "Cancelar" : "+ Novo"}</button>
       </div>
 
       {open && (
@@ -100,30 +103,27 @@ export default function CrudPanel({
           <div className="grid md:grid-cols-3 gap-3">
             {fields.map((f) => (
               <div key={f.key}>
-                <label className="text-xs font-semibold muted">{f.label}{f.required ? " *" : ""}</label>
+                <label className="label">{f.label}{f.required ? " *" : ""}</label>
                 {f.type === "select" ? (
-                  <select value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
-                    className="w-full mt-1 border rounded-lg px-3 py-2 text-sm bg-transparent outline-none focus:border-brand-500" style={{ borderColor: "var(--border)" }}>
+                  <select value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))} className="select">
                     <option value="">—</option>
                     {(f.options ?? []).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
                 ) : f.type === "fk" ? (
-                  <select value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
-                    className="w-full mt-1 border rounded-lg px-3 py-2 text-sm bg-transparent outline-none focus:border-brand-500" style={{ borderColor: "var(--border)" }}>
+                  <select value={form[f.key]} onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))} className="select">
                     <option value="">—</option>
                     {(fkMaps[f.key] ?? []).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
                 ) : (
                   <input type={f.type === "number" ? "number" : f.type === "date" ? "date" : "text"}
                     value={form[f.key]} placeholder={f.placeholder}
-                    onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
-                    className="w-full mt-1 border rounded-lg px-3 py-2 text-sm bg-transparent outline-none focus:border-brand-500" style={{ borderColor: "var(--border)" }} />
+                    onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))} className="input" />
                 )}
               </div>
             ))}
           </div>
-          {err && <div className="text-sm text-red-500">{err}</div>}
-          <button onClick={create} disabled={busy} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-60">{busy ? "Salvando…" : "Salvar"}</button>
+          {err && <div className="text-sm rounded-xl px-3 py-2" style={{ background: "var(--danger-soft)", color: "var(--danger)" }}>{err}</div>}
+          <button onClick={create} disabled={busy} className="btn btn-primary btn-sm">{busy ? "Salvando…" : "Salvar"}</button>
         </div>
       )}
 
@@ -131,27 +131,27 @@ export default function CrudPanel({
         <p className="text-sm muted px-1">{emptyHint ?? "Nenhum registro ainda."}</p>
       ) : (
         <div className="card p-0 overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="tbl">
             <thead>
-              <tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}>
-                {columns.map((c) => <th key={c.key} className="py-2 px-3 font-semibold">{c.label}</th>)}
+              <tr>
+                {columns.map((c) => <th key={c.key}>{c.label}</th>)}
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {filtered.slice(0, 300).map((r) => (
-                <tr key={r.id} className="border-b last:border-0" style={{ borderColor: "var(--border)" }}>
+                <tr key={r.id}>
                   {columns.map((c) => {
                     const isFk = fields.find((f) => f.key === c.key && f.type === "fk");
                     const val = isFk ? fkLabel(c.key, r[c.key]) : (c.fmt ? c.fmt(r[c.key], r) : (r[c.key] ?? "—"));
-                    return <td key={c.key} className="py-2 px-3">{String(val ?? "—")}</td>;
+                    return <td key={c.key}>{String(val ?? "—")}</td>;
                   })}
-                  <td className="py-2 px-3 text-right"><button onClick={() => remove(r.id)} className="text-xs text-red-500 hover:underline">excluir</button></td>
+                  <td className="text-right"><button onClick={() => remove(r.id)} className="text-xs font-semibold hover:underline" style={{ color: "var(--danger)" }}>excluir</button></td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {filtered.length > 300 && <div className="text-xs muted p-2">Mostrando 300 de {filtered.length}.</div>}
+          {filtered.length > 300 && <div className="text-xs muted p-3">Mostrando 300 de {filtered.length}.</div>}
         </div>
       )}
     </div>
