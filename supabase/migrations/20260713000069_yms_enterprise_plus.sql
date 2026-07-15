@@ -293,7 +293,7 @@ begin
                 'id', z.id, 'code', z.code, 'name', z.name, 'capacity', z.capacity,
                 'slots', (select coalesce(jsonb_agg(jsonb_build_object('id',s.id,'code',s.code,'status',s.status,'slot_type',s.slot_type,'plate',
                             (select vv.vehicle_plate from public.yard_visits vv where vv.id=s.current_visit_id)) order by s.position), '[]'::jsonb)
-                          from public.yard_slots s where s.yard_zone_id=z.id and s.deleted_at is null)), '[]'::jsonb)
+                          from public.yard_slots s where s.yard_zone_id=z.id and s.deleted_at is null))), '[]'::jsonb)
               from public.yard_zones z where z.company_id=p_company and z.deleted_at is null),
     'docks', (select coalesce(jsonb_agg(jsonb_build_object('id',id,'code',code,'status',status,'dock_type',dock_type) order by code), '[]'::jsonb)
               from public.docks where company_id=p_company and deleted_at is null),
