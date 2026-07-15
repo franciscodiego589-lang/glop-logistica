@@ -1,4 +1,6 @@
-// Registro central de módulos (Vol 02–16). A sidebar e as rotas dinâmicas leem daqui.
+// Registro central de módulos — FASE 1: Operação Logística Global.
+// ERP 100% especializado em Logística, Supply Chain, WMS, TMS, YMS e Torre de Controle.
+// A sidebar e as rotas dinâmicas leem daqui.
 export type NavItem = {
   slug: string;
   label: string;
@@ -9,73 +11,59 @@ export type NavItem = {
 };
 
 export const NAV: NavItem[] = [
-  { slug: "dashboard", label: "Cockpit Executivo", icon: "◎", group: "Visão Geral", vol: 16, description: "KPIs cross-módulo em tempo real" },
-  { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Visão Geral", vol: 31, description: "Mission control: estado vivo de todos os módulos, central de alertas, sala de crise" },
-  { slug: "control-tower", label: "Torre de Controle", icon: "⛭", group: "Visão Geral", vol: 14, description: "Eventos, SLA, alertas e exceções" },
-  { slug: "ia-central", label: "LAIOS — Cérebro do ERP", icon: "✦", group: "Visão Geral", vol: 15, description: "IA central: orquestra agentes 24/7, propõe decisões, memória corporativa, governança" },
-  { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Visão Geral", vol: 15, description: "Insights, previsões e planos de ação" },
-  { slug: "ia-plataforma", label: "IA & Automação (EAAF)", icon: "🤖", group: "Visão Geral", vol: 30, description: "Assistente grounded, provedores multi-IA desacoplados, prompts, ferramentas, custos" },
-  { slug: "analytics", label: "BI & Analytics", icon: "📈", group: "Visão Geral", vol: 25, description: "Cockpit executivo, catálogo de KPIs com tendências, alertas, governança de dados" },
-  { slug: "auditoria", label: "Auditoria & Custos (LAIS)", icon: "🔎", group: "Visão Geral", vol: 18, description: "Auditoria contínua, custos, desperdícios, riscos, IGEL" },
-  { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Pessoas & Governança", vol: 23, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },
-  { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Pessoas & Governança", vol: 24, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
-  { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Pessoas & Governança", vol: 26, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
-  { slug: "integracoes", label: "Integrações (iPaaS)", icon: "🔌", group: "Pessoas & Governança", vol: 27, description: "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API" },
-  { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Pessoas & Governança", vol: 28, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
-  { slug: "admin", label: "Administração da Plataforma", icon: "⚙", group: "Pessoas & Governança", vol: 29, description: "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças" },
-  { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Pessoas & Governança", vol: 32, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais" },
-  { slug: "studio", label: "Studio (Low-Code)", icon: "🧩", group: "Pessoas & Governança", vol: 33, description: "Construtor de apps/entidades/formulários sem código, templates, publicação — não-invasivo" },
-  { slug: "devops", label: "DevSecOps & Observabilidade", icon: "🛰", group: "Pessoas & Governança", vol: 34, description: "CI/CD, deploys+rollback, incidentes SRE (MTTR), SLO/error budget, saúde dos serviços" },
-  { slug: "grc", label: "GRC (Governança/Riscos/Compliance)", icon: "⚖", group: "Pessoas & Governança", vol: 35, description: "Matriz de risco, controles internos, SoD, compliance LGPD/ISO/BPF, auditorias, planos de ação" },
-  { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
+  // ── Visão Geral & Inteligência Logística ──────────────────────────────────
+  { slug: "dashboard", label: "Cockpit Executivo", icon: "◎", group: "Visão Geral & Inteligência", vol: 16, description: "KPIs logísticos cross-módulo em tempo real" },
+  { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Visão Geral & Inteligência", vol: 5, description: "Mission control: estado vivo da operação, central de alertas, sala de crise" },
+  { slug: "control-tower", label: "Logistics Control Tower", icon: "⛭", group: "Visão Geral & Inteligência", vol: 5, description: "Eventos, SLA, alertas e exceções da cadeia logística" },
+  { slug: "ia-central", label: "LAIOS — Logistics AI OS", icon: "✦", group: "Visão Geral & Inteligência", vol: 15, description: "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa" },
+  { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Visão Geral & Inteligência", vol: 15, description: "Insights, previsões e planos de ação logísticos" },
+  { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Visão Geral & Inteligência", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
+  { slug: "auditoria", label: "Auditoria Logística & Custos", icon: "🔎", group: "Visão Geral & Inteligência", vol: 6, description: "Auditoria de fretes/operacional, custos, rentabilidade, riscos, compliance logístico, score" },
+  { slug: "engenharia-logistica", label: "Logistics Planning & Rede", icon: "🗺", group: "Visão Geral & Inteligência", vol: 10, description: "Digital twin, mapa de demanda, IA de localização de CD, simulações, ROI/payback" },
 
-  { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
-  { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 10, description: "Saldos, curva ABC, ponto de pedido" },
-  { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Armazém", vol: 3, description: "Endereçamento, tarefas, ondas, packing" },
-  { slug: "operacao-armazem", label: "WMS Enterprise (IA)", icon: "🏬", group: "Estoque & Armazém", vol: 22, description: "Slotting IA, putaway, reabastecimento, produtividade, ESG, congestão" },
+  // ── Estoque & Armazém (WMS) ───────────────────────────────────────────────
+  { slug: "produtos", label: "Cadastro Mestre (SKU)", icon: "▤", group: "Estoque & Armazém", vol: 11, description: "SKU, dimensões, peso, categorias, fornecedores, embalagens" },
+  { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 11, description: "Saldos, curva ABC, ponto de pedido" },
+  { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Armazém", vol: 11, description: "Endereçamento, tarefas, ondas, packing" },
+  { slug: "operacao-armazem", label: "WMS Enterprise (IA)", icon: "🏬", group: "Estoque & Armazém", vol: 11, description: "Slotting IA, putaway, reabastecimento, RFID, robótica, produtividade, ESG" },
   { slug: "inventario", label: "Inventário & Rastreio", icon: "⎗", group: "Estoque & Armazém", vol: 11, description: "Contagens cíclicas e genealogia de lote" },
-  { slug: "ativos-retornaveis", label: "Ativos Retornáveis (RAMS)", icon: "♻️", group: "Estoque & Armazém", vol: 24, description: "Pallets/containers/gaiolas: empréstimos, retenção, manutenção, ESG" },
+  { slug: "ativos-retornaveis", label: "Ativos Retornáveis (RAMS)", icon: "♻️", group: "Estoque & Armazém", vol: 13, description: "Pallets/containers/gaiolas/IBCs: empréstimos, retenção, manutenção, ESG" },
 
-  { slug: "compras", label: "Compras", icon: "🛒", group: "Suprimentos", vol: 6, description: "Requisição → cotação → pedido → recebimento" },
-  { slug: "demanda", label: "Demand Planning", icon: "📈", group: "Suprimentos", vol: 7, description: "Histórico, previsões e S&OP" },
-  { slug: "mrp", label: "MRP / APS", icon: "⚙", group: "Suprimentos", vol: 8, description: "BOM, necessidades e capacidade" },
-  { slug: "producao", label: "Produção / PCP", icon: "🏭", group: "Suprimentos", vol: 9, description: "Ordens, apontamentos e consumo" },
-  { slug: "mes", label: "MES / Chão de Fábrica", icon: "🕹", group: "Suprimentos", vol: 6, description: "Execução em tempo real, apontamentos, paradas e OEE" },
-  { slug: "manufatura", label: "Manufatura (MFG)", icon: "🏗", group: "Suprimentos", vol: 7, description: "Governança da produção: receitas, linhas, rastreabilidade" },
+  // ── Suprimentos & Abastecimento ───────────────────────────────────────────
+  { slug: "compras", label: "Suprimentos / Compras", icon: "🛒", group: "Suprimentos", vol: 10, description: "Requisição → cotação → pedido → recebimento" },
+  { slug: "demanda", label: "Demand Planning", icon: "📈", group: "Suprimentos", vol: 10, description: "Histórico, previsões e S&OP" },
+  { slug: "manutencao", label: "EAM / Manutenção de Frota & Ativos", icon: "🔧", group: "Suprimentos", vol: 9, description: "Ativos, ordens de serviço, preventiva, MTTR/MTBF" },
 
-  { slug: "qualidade", label: "QMS / Qualidade", icon: "✔", group: "Qualidade & Conformidade", vol: 8, description: "Inspeções, NC, CAPA, auditorias, FMEA, liberação de lote" },
-  { slug: "lims", label: "LIMS / Laboratório", icon: "🧪", group: "Suprimentos", vol: 9, description: "Amostras, ensaios, especificações e liberação de lote" },
-  { slug: "manutencao", label: "EAM / Manutenção", icon: "🔧", group: "Suprimentos", vol: 10, description: "Ativos, ordens de serviço, preventiva, MTTR/MTBF" },
+  // ── Expedição & Distribuição ──────────────────────────────────────────────
+  { slug: "expedicao", label: "Expedição", icon: "📦", group: "Expedição & Distribuição", vol: 7, description: "Pedidos, picking, packing e embarque" },
+  { slug: "central-expedicao", label: "Smart Shipping Center (IA)", icon: "🧠", group: "Expedição & Distribuição", vol: 7, description: "Wave picking, escolha de transportadora, embalagem ótima, docas, cargas, gargalos" },
+  { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Expedição & Distribuição", vol: 7, description: "Transferências, cross-dock, hubs, entregas" },
+  { slug: "devolucoes", label: "RMA & Logística Reversa", icon: "↩", group: "Expedição & Distribuição", vol: 1, description: "Devoluções, conferência, quarentena, retrabalho, reintegração ao estoque" },
+  { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Expedição & Distribuição", vol: 2, description: "Etiqueta→PLP→postagem→1ª movimentação, objetos parados, CEP inválido, SLA, alertas" },
 
-  { slug: "expedicao", label: "Expedição", icon: "📦", group: "Distribuição", vol: 12, description: "Pedidos, picking, packing e embarque" },
-  { slug: "central-expedicao", label: "Central de Expedição (IA)", icon: "🧠", group: "Distribuição", vol: 18, description: "Ondas, escolha de transportadora, embalagem ótima, cargas, gargalos" },
-  { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Distribuição", vol: 4, description: "Transportadoras, fretes, rotas e tracking" },
-  { slug: "frota", label: "TMS Enterprise / Frota", icon: "🚛", group: "Distribuição", vol: 20, description: "Viagens, custos, combustível, manutenção, leilão de fretes, carbono" },
-  { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Distribuição", vol: 5, description: "Docas, agendamento e pátio" },
-  { slug: "patio", label: "YMS Enterprise (Pátio)", icon: "🚧", group: "Distribuição", vol: 23, description: "Portaria/OCR, balanças, carga/descarga, containers, lacres, AI dock scheduler" },
-  { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Distribuição", vol: 13, description: "Transferências, cross-dock, entregas" },
-  { slug: "devolucoes", label: "Devoluções (RMA)", icon: "↩", group: "Distribuição", vol: 14, description: "Logística reversa, conferência, reintegração ao estoque" },
-  { slug: "pos-venda", label: "Pós-Venda & CLX", icon: "💬", group: "Distribuição", vol: 19, description: "Portal do cliente, rastreio público, ocorrências, NPS/CSAT" },
-  { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Distribuição", vol: 15, description: "Correios/transportadoras: etiqueta→postagem→1ª movimentação, SLA, alertas" },
-  { slug: "transporte", label: "Torre de Transporte", icon: "🌐", group: "Distribuição", vol: 16, description: "Monitoramento em trânsito, ETA, score de risco, ocorrências, OTIF" },
-  { slug: "correios", label: "Correios (CMS)", icon: "📮", group: "Distribuição", vol: 17, description: "Contratos, PLP, objetos, SRO, auditoria de fretes, simulador, SLA" },
+  // ── Transporte ────────────────────────────────────────────────────────────
+  { slug: "tms", label: "TMS / Transporte", icon: "🚚", group: "Transporte & Pátio", vol: 9, description: "Transportadoras, fretes, rotas e tracking" },
+  { slug: "frota", label: "TMS Enterprise / Frota", icon: "🚛", group: "Transporte & Pátio", vol: 9, description: "Viagens, custos, combustível, telemetria, manutenção, leilão de fretes, carbono" },
+  { slug: "transporte", label: "Torre de Transporte", icon: "🌐", group: "Transporte & Pátio", vol: 3, description: "Monitoramento em trânsito, ETA, score de risco, ocorrências, heat map, OTIF" },
+  { slug: "correios", label: "Correios (Gestão Enterprise)", icon: "📮", group: "Transporte & Pátio", vol: 4, description: "Contratos, cartões de postagem, PLP, objetos, SRO, auditoria de fretes, SLA" },
+  { slug: "yms", label: "YMS / Pátio & Docas", icon: "🏗", group: "Transporte & Pátio", vol: 12, description: "Docas, agendamento e pátio" },
+  { slug: "patio", label: "YMS Enterprise (Pátio)", icon: "🚧", group: "Transporte & Pátio", vol: 12, description: "Portaria/OCR, balanças, filas, carga/descarga, containers, lacres, AI dock scheduler" },
 
-  { slug: "comex", label: "Comércio Exterior (GTM)", icon: "🌍", group: "Distribuição", vol: 14, description: "Importação/exportação, Incoterms, aduana, NCM, drawback, custo nacionalizado" },
+  // ── Comércio Exterior ─────────────────────────────────────────────────────
+  { slug: "comex", label: "Global Trade Management (GTM)", icon: "🌍", group: "Comércio Exterior", vol: 14, description: "Importação/exportação, Incoterms, portos/aeroportos, aduana, containers, drawback, RECOF" },
 
-  { slug: "comercial", label: "CRM & Vendas", icon: "🤝", group: "Comercial", vol: 17, description: "Contas 360°, leads, pipeline Kanban, oportunidades, propostas, IA comercial" },
-  { slug: "pedidos", label: "Pedidos (OMS)", icon: "🧾", group: "Comercial", vol: 18, description: "Ciclo do pedido: ATP, reserva de estoque, expedição, faturamento (NF-e+GL), timeline" },
-  { slug: "portal-cliente", label: "Portal do Cliente (CXP)", icon: "💬", group: "Comercial", vol: 19, description: "Chamados/SLA, RMA, documentos, base de conhecimento, NPS/CSAT + área pública do cliente" },
-  { slug: "commerce", label: "Loja & Comércio Digital", icon: "🛍", group: "Comercial", vol: 20, description: "E-commerce B2B/B2C, catálogo, preços, promoções, assinaturas, marketplace + vitrine pública" },
+  // ── Cliente & Pós-Venda ───────────────────────────────────────────────────
+  { slug: "portal-cliente", label: "Portal do Cliente Logístico", icon: "💬", group: "Cliente & Pós-Venda", vol: 8, description: "Timeline, tracking, ETA, notificações, comprovantes, self-service, devoluções, NPS" },
+  { slug: "pos-venda", label: "Pós-Venda & Ocorrências (CLX)", icon: "🎧", group: "Cliente & Pós-Venda", vol: 8, description: "Rastreio público, ocorrências, chamados/SLA, NPS/CSAT" },
 
-  { slug: "rh", label: "RH / Capital Humano (HCM)", icon: "👥", group: "Pessoas & Governança", vol: 21, description: "Colaboradores, organograma, recrutamento, férias, treinamentos BPF, competências" },
-  { slug: "folha", label: "Folha & Força de Trabalho (PWM)", icon: "💵", group: "Pessoas & Governança", vol: 22, description: "Folha (INSS/IRRF/FGTS → GL), ponto, escalas, banco de horas, rescisões" },
-
-  { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
-  { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
-  { slug: "contabilidade", label: "Contabilidade Geral (GL)", icon: "📒", group: "Financeiro", vol: 13, description: "Plano de contas, partidas dobradas, motor de contabilização, DRE, Balanço, fechamento" },
-  { slug: "fiscal", label: "Fiscal & Tributário", icon: "🧾", group: "Financeiro", vol: 14, description: "Motor tributário, NF-e/NFS-e/CT-e, apuração, obrigações acessórias, IA fiscal" },
-  { slug: "patrimonio", label: "Patrimônio & Ativos Fixos", icon: "🏛", group: "Financeiro", vol: 15, description: "Ativos fixos, depreciação (posta no GL), reavaliação, seguros, inventário patrimonial" },
-  { slug: "planejamento", label: "Planejamento & Performance (FP&A)", icon: "🎯", group: "Financeiro", vol: 16, description: "Orçamento, forecast, cenários (digital twin), metas/OKRs, investimentos VPL/TIR" },
+  // ── Plataforma & Governança (infra transversal) ───────────────────────────
+  { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Plataforma", vol: 16, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },
+  { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Plataforma", vol: 16, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
+  { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Plataforma", vol: 16, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
+  { slug: "integracoes", label: "Integrações (iPaaS)", icon: "🔌", group: "Plataforma", vol: 16, description: "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API" },
+  { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Plataforma", vol: 16, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
+  { slug: "admin", label: "Administração da Plataforma", icon: "⚙", group: "Plataforma", vol: 16, description: "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças" },
+  { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Plataforma", vol: 16, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais (coletor/motorista)" },
 ];
 
 export const NAV_GROUPS = Array.from(new Set(NAV.map((n) => n.group)));
