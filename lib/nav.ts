@@ -18,6 +18,7 @@ export const NAV: NavItem[] = [
   { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Pessoas & Governança", vol: 23, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },
   { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Pessoas & Governança", vol: 24, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
   { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Pessoas & Governança", vol: 26, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
+  { slug: "integracoes", label: "Integrações (iPaaS)", icon: "🔌", group: "Pessoas & Governança", vol: 27, description: "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API" },
   { slug: "engenharia-logistica", label: "Engenharia & Rede (LPND)", icon: "🗺", group: "Visão Geral", vol: 21, description: "Digital twin, mapa de demanda, IA de localização de CD, ROI/payback" },
 
   { slug: "produtos", label: "Cadastro Mestre", icon: "▤", group: "Estoque & Armazém", vol: 2, description: "SKU, categorias, fornecedores, embalagens" },
