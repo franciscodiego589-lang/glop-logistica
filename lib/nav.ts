@@ -35,6 +35,7 @@ export const NAV: NavItem[] = [
   { slug: "distribuicao", label: "Distribuição & Last Mile", icon: "🗺", group: "Distribuição", vol: 13, description: "Transferências, cross-dock, entregas" },
   { slug: "devolucoes", label: "Devoluções (RMA)", icon: "↩", group: "Distribuição", vol: 14, description: "Logística reversa, conferência, reintegração ao estoque" },
   { slug: "postagens", label: "Torre de Postagens", icon: "🛰", group: "Distribuição", vol: 15, description: "Correios/transportadoras: etiqueta→postagem→1ª movimentação, SLA, alertas" },
+  { slug: "transporte", label: "Torre de Transporte", icon: "🌐", group: "Distribuição", vol: 16, description: "Monitoramento em trânsito, ETA, score de risco, ocorrências, OTIF" },
 
   { slug: "financeiro", label: "Financeiro / Tesouraria", icon: "💰", group: "Financeiro", vol: 11, description: "Contas a pagar/receber, bancos, fluxo de caixa" },
   { slug: "controladoria", label: "Controladoria & Custos", icon: "📊", group: "Financeiro", vol: 12, description: "DRE gerencial, custos, margens, rateios, variações" },
