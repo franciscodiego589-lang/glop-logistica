@@ -20,7 +20,24 @@ export default function StoreHubWorkbench({ dash, connectors, orders, events, ru
   const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
   const [busy, setBusy] = useState("");
   const [sim, setSim] = useState({ connector: "", event: "paid", sale: "", value: "197.90" });
+  const [keyInput, setKeyInput] = useState<Record<string, string>>({});
   const d = dash ?? {};
+
+  async function saveKey(c: any) {
+    if (!supabase || !keyInput[c.id]) return; setBusy(c.id + "k");
+    const { error } = await supabase.from("store_connectors").update({ webhook_token: keyInput[c.id], status: "active", metadata: { ...(c.metadata ?? {}), key_set: true } }).eq("id", c.id);
+    setBusy(""); if (error) alert("Erro: " + error.message); else { setKeyInput({ ...keyInput, [c.id]: "" }); router.refresh(); }
+  }
+  async function pull(c: any) {
+    setBusy(c.id + "p");
+    try {
+      const res = await fetch("/api/lojas/pull", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ connector_id: c.id }) });
+      const j = await res.json();
+      if (!res.ok) alert("🚫 " + (j.error ?? "Falha ao puxar"));
+      else alert(`✅ Puxou ${j.total} venda(s): ${j.imported} novas, ${j.duplicates} já existiam${j.errors ? `, ${j.errors} com erro` : ""}.`);
+    } catch (e: any) { alert("Erro de rede: " + e.message); }
+    setBusy(""); router.refresh();
+  }
 
   async function advance(o: any) {
     if (!supabase) return; const to = NEXT_STATE[o.state]; if (!to) return; setBusy(o.id);
@@ -120,7 +137,24 @@ export default function StoreHubWorkbench({ dash, connectors, orders, events, ru
       )}
 
       {tab === "Conectores" && (
-        <CrudPanel table="store_connectors" title="Lojas / plataformas conectadas" rows={connectors}
+        <div className="space-y-3">
+          <div className="card p-3 text-xs muted">🔑 Cole a chave da API da plataforma e clique <b>Puxar pedidos</b> — o sistema traz todas as vendas (sem duplicar). A chave fica guardada no servidor, não aparece aqui.</div>
+          {connectors.map((c) => (
+            <div key={c.id} className="card p-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-semibold text-sm">{c.name ?? c.code}</span>
+                <span className="badge badge-neutral">{PLAT(c.platform)}{c.producer_ref ? ` · ${c.producer_ref}` : ""}</span>
+                <span className={`badge ${c.metadata?.key_set ? "badge-success" : "badge-neutral"}`}>{c.metadata?.key_set ? "🔑 chave configurada" : "sem chave"}</span>
+                {c.last_event_at && <span className="text-xs muted ml-auto">último evento {String(c.last_event_at).slice(0, 16).replace("T", " ")}</span>}
+              </div>
+              <div className="flex flex-wrap items-end gap-2 mt-3">
+                <input type="password" value={keyInput[c.id] ?? ""} onChange={(e) => setKeyInput({ ...keyInput, [c.id]: e.target.value })} placeholder={c.metadata?.key_set ? "colar nova chave (opcional)" : `chave da API ${PLAT(c.platform)}`} className="input flex-1 min-w-[240px] font-mono text-xs" />
+                <button onClick={() => saveKey(c)} disabled={busy === c.id + "k" || !keyInput[c.id]} className="px-3 py-2 rounded-lg card text-sm">💾 salvar chave</button>
+                <button onClick={() => pull(c)} disabled={busy === c.id + "p" || !c.metadata?.key_set} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy === c.id + "p" ? "Puxando…" : "⬇️ Puxar pedidos"}</button>
+              </div>
+            </div>
+          ))}
+          <CrudPanel table="store_connectors" title="Adicionar loja / plataforma" rows={[]}
           emptyHint="Monetizze, Hotmart, Kiwify, Yampi, Shopify, Mercado Livre... por produtor."
           fields={[
             { key: "code", label: "Código", required: true }, { key: "name", label: "Nome" },
@@ -130,6 +164,7 @@ export default function StoreHubWorkbench({ dash, connectors, orders, events, ru
             { key: "environment", label: "Ambiente", type: "select", options: [["production", "Produção"], ["sandbox", "Sandbox"]], default: "production" },
           ]}
           columns={[{ key: "code", label: "Código" }, { key: "platform", label: "Plataforma" }, { key: "producer_ref", label: "Produtor" }, { key: "status", label: "Status" }]} />
+        </div>
       )}
 
       {tab === "Regras de Plano" && (

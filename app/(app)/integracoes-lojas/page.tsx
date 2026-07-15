@@ -12,7 +12,7 @@ export default async function IntegracoesLojasPage() {
   }
   const [dash, connectors, orders, events, rules] = await Promise.all([
     supabase.rpc("store_hub_dashboard", { p_company: company }),
-    supabase.from("store_connectors").select("*").eq("company_id", company).is("deleted_at", null).order("code").limit(200),
+    supabase.from("store_connectors").select("id,code,name,platform,producer_ref,api_base_url,auth_type,environment,status,last_event_at,metadata").eq("company_id", company).is("deleted_at", null).order("code").limit(200),
     supabase.from("store_orders").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(300),
     supabase.from("store_webhook_events").select("*").eq("company_id", company).is("deleted_at", null).order("received_at", { ascending: false }).limit(200),
     supabase.from("store_plan_rules").select("*").eq("company_id", company).is("deleted_at", null).order("priority").limit(100),
