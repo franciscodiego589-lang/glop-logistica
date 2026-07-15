@@ -26,6 +26,8 @@ export default function FreightCalculator({ rates, carriers }: { rates: Rate[]; 
       if (carrier && r.carrier_id !== carrier) return false;
       if (uf && r.dest_uf && r.dest_uf.toUpperCase() !== uf) return false;
       const from = r.weight_from_kg ?? 0, to = r.weight_to_kg ?? Infinity;
+      // descarta tabelas sem preço (fixo e por-kg nulos) — senão frete R$0 vence o sort
+      if ((r.price_per_kg ?? 0) <= 0 && (r.price_fixed ?? 0) <= 0) return false;
       return w >= from && w <= to;
     });
     if (cands.length === 0) return { ok: false as const };

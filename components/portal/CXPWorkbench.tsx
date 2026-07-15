@@ -20,11 +20,11 @@ export default function CXPWorkbench({ dash, tickets, messages, rma, users, docu
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-xs muted font-semibold uppercase tracking-wider">Core Comercial · Experiência do Cliente</div>
+          <div className="text-xs muted font-semibold uppercase tracking-wider">Fase 1 · Portal do Cliente Logístico</div>
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Portal do Cliente (CXP)</h1>
-          <p className="text-sm muted mt-0.5">Chamados com SLA, RMA, documentos, base de conhecimento e a área pública de autoatendimento.</p>
+          <p className="text-sm muted mt-0.5">Timeline de entrega, tracking, chamados com SLA, RMA, documentos e comprovantes.</p>
         </div>
-        <a href="/area-cliente" target="_blank" className="btn btn-sm">Abrir área do cliente ↗</a>
+        <a href="/rastreio" target="_blank" className="btn btn-sm">Abrir rastreio público ↗</a>
       </div>
       <div className="flex gap-1 flex-wrap border-b" style={{ borderColor: "var(--border)" }}>
         {TABS.map((t) => (

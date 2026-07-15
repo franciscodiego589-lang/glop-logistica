@@ -79,7 +79,7 @@ export default function RastreioPage() {
           </div>
         )}
 
-        <div className="text-center text-xs muted mt-6">Powered by Cargyon</div>
+        <div className="text-center text-xs muted mt-6">Powered by GLOP</div>
       </div>
     </div>
   );

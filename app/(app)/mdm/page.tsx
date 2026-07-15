@@ -11,7 +11,7 @@ export default async function MdmPage() {
     return <div className="space-y-4"><h1 className="text-xl font-bold">Master Data Management (MDM)</h1><VitrineBanner /></div>;
   }
   const [dash, domains, duplicates, changes, lineage, glossary] = await Promise.all([
-    supabase.rpc("mdm_dashboard", { p_company: company }),
+    supabase.rpc("mdm_governance_dashboard", { p_company: company }),
     supabase.from("mdm_domains").select("*").eq("company_id", company).is("deleted_at", null).order("name").limit(100),
     supabase.from("mdm_duplicates").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(300),
     supabase.from("mdm_change_requests").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),

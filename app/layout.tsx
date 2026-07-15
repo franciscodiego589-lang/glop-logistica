@@ -6,11 +6,11 @@ import PWARegister from "@/components/PWARegister";
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Cargyon — Enterprise ERP",
-  description: "Cargyon — plataforma corporativa: Supply Chain, WMS, TMS, Comex, Financeiro, Comercial, RH, BPM, BI e IA.",
+  title: "GLOP — Global Logistics Operating Platform",
+  description: "GLOP — Global Logistics Operating Platform: WMS, TMS, YMS, Supply Chain, Comex, Torre de Controle, Última Milha, IA e analytics logístico.",
   manifest: "/manifest.webmanifest",
-  applicationName: "Cargyon",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Cargyon" },
+  applicationName: "GLOP",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "GLOP" },
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 

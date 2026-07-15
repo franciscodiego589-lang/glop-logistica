@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 
-// Registra o service worker (PWA) — torna o Cargyon instalável e offline-capable.
+// Registra o service worker (PWA) — torna o GLOP instalável e offline-capable.
 export default function PWARegister() {
   useEffect(() => {
     if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {

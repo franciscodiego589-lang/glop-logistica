@@ -1,4 +1,4 @@
-// Cargyon — Service Worker (PWA / offline-first para o app shell)
+// GLOP — Service Worker (PWA / offline-first para o app shell)
 const CACHE = "cargyon-v1";
 const OFFLINE_URL = "/offline.html";
 

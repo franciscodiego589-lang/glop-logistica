@@ -18,11 +18,11 @@ export default function ESAPWorkbench({ dash, devices, syncItems, notifications,
       <div>
         <div className="text-xs muted font-semibold uppercase tracking-wider">Enterprise+ · Super App</div>
         <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Super App & Dispositivos (ESAP)</h1>
-        <p className="text-sm muted mt-0.5">O Cargyon é um <strong>PWA instalável</strong> (celular/desktop, offline). Aqui você administra dispositivos, sincronização de campo e notificações.</p>
+        <p className="text-sm muted mt-0.5">O GLOP é um <strong>PWA instalável</strong> (celular/desktop, offline). Aqui você administra dispositivos, sincronização de campo e notificações.</p>
       </div>
       <div className="card p-4 flex items-center gap-3" style={{ background: "var(--brand-soft)" }}>
         <span className="text-2xl">📲</span>
-        <div className="text-sm"><strong>Instale o Cargyon:</strong> no celular, abra pelo navegador e toque em “Adicionar à tela de início”. No desktop (Chrome/Edge), clique no ícone de instalar na barra de endereço. Funciona offline nas telas já visitadas.</div>
+        <div className="text-sm"><strong>Instale o GLOP:</strong> no celular, abra pelo navegador e toque em “Adicionar à tela de início”. No desktop (Chrome/Edge), clique no ícone de instalar na barra de endereço. Funciona offline nas telas já visitadas.</div>
       </div>
       <div className="flex gap-1 flex-wrap border-b" style={{ borderColor: "var(--border)" }}>
         {TABS.map((t) => (

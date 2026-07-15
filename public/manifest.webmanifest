@@ -1,7 +1,7 @@
 {
-  "name": "Cargyon — Enterprise ERP",
-  "short_name": "Cargyon",
-  "description": "Plataforma corporativa Cargyon: Supply Chain, Financeiro, Comercial, RH, BPM, BI e IA.",
+  "name": "GLOP — Global Logistics Operating Platform",
+  "short_name": "GLOP",
+  "description": "GLOP: plataforma global de operações logísticas — WMS, TMS, YMS, Comex, Torre de Controle, Última Milha e IA logística.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -9,7 +9,7 @@
   "background_color": "#0f1830",
   "theme_color": "#2f56e6",
   "lang": "pt-BR",
-  "categories": ["business", "productivity"],
+  "categories": ["business", "productivity", "logistics"],
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
@@ -17,7 +17,7 @@
   "shortcuts": [
     { "name": "Command Center", "url": "/comando" },
     { "name": "Cockpit", "url": "/" },
-    { "name": "Pedidos", "url": "/pedidos" },
-    { "name": "IA & Assistente", "url": "/ia-plataforma" }
+    { "name": "Rastreio", "url": "/rastreio" },
+    { "name": "LAIOS (IA Logística)", "url": "/ia-central" }
   ]
 }
