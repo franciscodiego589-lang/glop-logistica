@@ -29,6 +29,7 @@ export const NAV: NavItem[] = [
   { slug: "pedidos-logisticos", label: "Pedidos Logísticos (LOM)", icon: "🧾", group: "Fluxo Operacional", vol: 1, description: "Domínio 01: demanda logística, validação (ATP), planejamento, reserva, máquina das 17 etapas e barramento de eventos" },
 
   // ── Estoque & Armazém (WMS) ───────────────────────────────────────────────
+  { slug: "importacao-pedidos", label: "Importação Inteligente (SOIDI)", icon: "📥", group: "Estoque & Armazém", vol: 52, description: "Importar pedidos de qualquer origem, OCR/document intelligence, validação CPF/CNPJ/CEP, normalização, dedup, promoção" },
   { slug: "produtos", label: "Cadastro Mestre (SKU)", icon: "▤", group: "Estoque & Armazém", vol: 11, description: "SKU, dimensões, peso, categorias, fornecedores, embalagens" },
   { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Armazém", vol: 11, description: "Saldos, curva ABC, ponto de pedido" },
   { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Armazém", vol: 11, description: "Endereçamento, tarefas, ondas, packing" },
