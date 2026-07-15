@@ -10,7 +10,8 @@ export default async function PatioPage() {
   if (!supabase || !company) {
     return <div className="space-y-4"><h1 className="text-xl font-bold">YMS / Pátio</h1><VitrineBanner /></div>;
   }
-  const [dash, gates, appts, weigh, load, cont, seals, perf] = await Promise.all([
+  const [dash, gates, appts, weigh, load, cont, seals, perf,
+    map, sla, gateList, slots, queue, movements, credentials, visitors] = await Promise.all([
     supabase.rpc("yard_dashboard", { p_company: company }),
     supabase.from("gate_events").select("*").eq("company_id", company).is("deleted_at", null).order("occurred_at", { ascending: false }).limit(300),
     supabase.from("dock_appointments").select("*").eq("company_id", company).is("deleted_at", null).order("scheduled_start", { ascending: false }).limit(300),
@@ -19,6 +20,15 @@ export default async function PatioPage() {
     supabase.from("containers").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(300),
     supabase.from("seals").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(300),
     supabase.rpc("yard_performance", { p_company: company }),
+    supabase.rpc("yard_map", { p_company: company }),
+    supabase.rpc("yard_sla", { p_company: company }),
+    supabase.from("gates").select("*").eq("company_id", company).is("deleted_at", null).order("gate_type").limit(100),
+    supabase.from("yard_slots").select("*").eq("company_id", company).is("deleted_at", null).order("code").limit(500),
+    supabase.from("yard_queue").select("*").eq("company_id", company).is("deleted_at", null).neq("status", "done").order("priority", { ascending: false }).order("enqueued_at").limit(200),
+    supabase.from("yard_movements").select("*").eq("company_id", company).is("deleted_at", null).order("occurred_at", { ascending: false }).limit(200),
+    supabase.from("access_credentials").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+    supabase.from("yard_visitors").select("*").eq("company_id", company).is("deleted_at", null).order("check_in_at", { ascending: false }).limit(200),
   ]);
-  return <YMSWorkbench dash={dash.data ?? {}} gates={gates.data ?? []} appointments={appts.data ?? []} weighings={weigh.data ?? []} loadings={load.data ?? []} containers={cont.data ?? []} seals={seals.data ?? []} performance={(perf.data as any[]) ?? []} />;
+  return <YMSWorkbench dash={dash.data ?? {}} gates={gates.data ?? []} appointments={appts.data ?? []} weighings={weigh.data ?? []} loadings={load.data ?? []} containers={cont.data ?? []} seals={seals.data ?? []} performance={(perf.data as any[]) ?? []}
+    map={map.data ?? {}} sla={sla.data ?? {}} gateList={gateList.data ?? []} slots={slots.data ?? []} queue={queue.data ?? []} movements={movements.data ?? []} credentials={credentials.data ?? []} visitors={visitors.data ?? []} />;
 }
