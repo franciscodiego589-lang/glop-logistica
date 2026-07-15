@@ -1,0 +1,12 @@
+# Deploy do GLOP — Global Logistics Operating Platform (Next.js 14 SSR)
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# O plugin oficial do Next.js habilita SSR/rotas dinâmicas (force-dynamic) na Netlify.
+# A Netlify instala automaticamente ao detectar Next; declarado aqui por clareza.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
