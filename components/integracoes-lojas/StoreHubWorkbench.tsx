@@ -3,9 +3,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ExportButton from "@/components/ui/ExportButton";
+import { PLATAFORMAS, PLATAFORMA_CATEGORIAS, getPlataforma, platformName, platformEmoji, platformCategoriaDb } from "@/lib/plataformas";
 
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
-const PLAT = (p: string) => ({ monetizze: "Monetizze", hotmart: "Hotmart", kiwify: "Kiwify", yampi: "Yampi", shopify: "Shopify", mercado_livre: "Mercado Livre", woocommerce: "WooCommerce", generic: "Genérico" } as any)[p] ?? p;
+const PLAT = (p: string) => platformName(p);
 const dt = (s: any) => s ? new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
 const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -62,6 +63,16 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   }, [rows, statusFilter, search]);
 
   const conectada = !!conn?.metadata?.key_set;
+  // Modelo de integração da plataforma selecionada (catálogo).
+  const platMeta = getPlataforma(conn?.platform ?? "");
+  const isPostback = platMeta?.conexao === "postback";
+  // Pull só está realmente ligado para Monetizze (adaptador nativo) ou conector
+  // genérico com Base URL. Postback é o caminho dos checkouts (Braip, Hotmart…).
+  const pullCapable = conn?.platform === "monetizze" || !!conn?.api_base_url;
+  const [origin, setOrigin] = useState("");
+  useEffect(() => { setOrigin(window.location.origin); }, []);
+  const postbackUrl = conn && origin ? `${origin}/api/lojas/webhook/${conn.platform}/${conn.id}` : "";
+  const copyPostback = () => { if (postbackUrl) { navigator.clipboard?.writeText(postbackUrl); alert("URL de postback copiada!\n\n" + postbackUrl); } };
 
   async function saveKey() {
     if (!supabase || !conn || !key) return; setBusy("save");
@@ -256,20 +267,28 @@ export default function StoreHubWorkbench({ connectors, orders }: {
         <div className="card p-3">
           <div className="font-bold text-sm mb-2">⬇️ Importar pedidos</div>
           <div className="space-y-1.5">
-            <button disabled={!conectada || busy === "pull"} onClick={() => pull({ mode: "full", label: "Puxando tudo" })} className={primary}>{busy === "pull" ? "Puxando…" : "Puxar todos os pedidos"}</button>
-            <button disabled={!conectada || busy === "pull"} onClick={() => pull({ mode: "incremental", label: "Sincronizando" })} className={soft} style={{ borderColor: "var(--border)" }}>🔁 Sincronizar novas vendas</button>
-            <button disabled={!conectada || busy === "pull"} onClick={() => pull({ since_days: 7, label: "Últimos 7 dias" })} className={soft} style={{ borderColor: "var(--border)" }}>📅 Puxar últimos 7 dias</button>
-            <button disabled={!conectada || busy === "pull"} onClick={() => pull({ since_days: 30, label: "Últimos 30 dias" })} className={soft} style={{ borderColor: "var(--border)" }}>📆 Puxar últimos 30 dias</button>
-            <button disabled={!conectada || busy === "pull"} onClick={() => pull({ statuses: [2, 6], label: "Puxando pagas" })} className={soft} style={{ borderColor: "var(--border)" }}>✅ Puxar só pagas (finalizadas)</button>
+            {pullCapable ? (
+              <>
+                <button disabled={!conectada || busy === "pull"} onClick={() => pull({ mode: "full", label: "Puxando tudo" })} className={primary}>{busy === "pull" ? "Puxando…" : "Puxar todos os pedidos"}</button>
+                <button disabled={!conectada || busy === "pull"} onClick={() => pull({ mode: "incremental", label: "Sincronizando" })} className={soft} style={{ borderColor: "var(--border)" }}>🔁 Sincronizar novas vendas</button>
+                <button disabled={!conectada || busy === "pull"} onClick={() => pull({ since_days: 7, label: "Últimos 7 dias" })} className={soft} style={{ borderColor: "var(--border)" }}>📅 Puxar últimos 7 dias</button>
+                <button disabled={!conectada || busy === "pull"} onClick={() => pull({ since_days: 30, label: "Últimos 30 dias" })} className={soft} style={{ borderColor: "var(--border)" }}>📆 Puxar últimos 30 dias</button>
+                <button disabled={!conectada || busy === "pull"} onClick={() => pull({ statuses: [2, 6], label: "Puxando pagas" })} className={soft} style={{ borderColor: "var(--border)" }}>✅ Puxar só pagas (finalizadas)</button>
+                <button disabled={!conectada} onClick={() => setAutoSync((a) => !a)} className={autoSync ? `${B} bg-emerald-600 text-white` : soft} style={autoSync ? undefined : { borderColor: "var(--border)" }}>
+                  {autoSync ? "🟢 Auto-sync LIGADO (a cada 10 min)" : "⏱️ Ligar sincronização automática"}
+                </button>
+              </>
+            ) : (
+              <div className="text-[11px] rounded-lg p-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+                🔗 <b>{platMeta?.nome ?? PLAT(conn?.platform ?? "")}</b> entrega por <b>postback</b>: as vendas entram sozinhas quando você cola a <b>URL de postback</b> no painel da plataforma (veja o card <b>Conexão</b> abaixo). Não há "puxar".
+              </div>
+            )}
             <button onClick={() => router.refresh()} className={soft} style={{ borderColor: "var(--border)" }}>🔄 Atualizar lista</button>
-            <button disabled={!conectada} onClick={() => setAutoSync((a) => !a)} className={autoSync ? `${B} bg-emerald-600 text-white` : soft} style={autoSync ? undefined : { borderColor: "var(--border)" }}>
-              {autoSync ? "🟢 Auto-sync LIGADO (a cada 10 min)" : "⏱️ Ligar sincronização automática"}
-            </button>
             <button disabled={busy === "prepostar"} onClick={() => prepostarTodos(false)} className={`${B} text-white`} style={{ background: "#0b7a3b" }}>{busy === "prepostar" ? "Prepostando…" : "📮 Prepostar todos os pendentes"}</button>
             <button disabled={busy === "prepostar"} onClick={() => prepostarTodos(true)} className={soft} style={{ borderColor: "var(--border)" }} title="Testa o fluxo sem gerar objeto real nos Correios">🧪 Simular prepostagem (teste)</button>
           </div>
           {autoSync && <p className="text-[11px] mt-1.5" style={{ color: "var(--success)" }}>Puxando novas vendas sozinho enquanto esta aba estiver aberta.</p>}
-          {!conectada && <p className="text-[11px] muted mt-2">Conecte a chave (abaixo) para liberar.</p>}
+          {!conectada && pullCapable && <p className="text-[11px] muted mt-2">Conecte a chave (abaixo) para liberar.</p>}
           {conn?.metadata?.last_pull_at && <div className="text-[11px] muted mt-2">Última sinc.: {dt(conn.metadata.last_pull_at)}</div>}
           {prog && <div className="text-[11px] mt-1.5 font-medium" style={{ color: "var(--brand)" }}>⏳ {prog}</div>}
         </div>
@@ -307,20 +326,41 @@ export default function StoreHubWorkbench({ connectors, orders }: {
         </div>
       </div>
 
-      {/* conectar chave (quando não conectada) */}
-      {conn && !conectada && (
-        <div className="card p-4 flex flex-wrap items-end gap-2" style={{ borderLeft: "3px solid var(--brand)" }}>
-          <div className="flex-1 min-w-[260px]">
-            <label className="text-xs muted">Chave da API — {conn.name ?? PLAT(conn.platform)}</label>
-            <input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder={"cole aqui a chave da API da " + PLAT(conn.platform)} className="input w-full font-mono text-xs mt-0.5" />
+      {/* Conexão — adapta ao modelo da plataforma (API/puxar × postback) */}
+      {conn && (
+        <div className="card p-4 space-y-3" style={{ borderLeft: "3px solid var(--brand)" }}>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="font-semibold text-sm">{platMeta?.emoji ?? "🏪"} Conexão — {conn.name ?? PLAT(conn.platform)}
+              {conectada ? <span className="badge badge-success ml-2">conectado</span> : <span className="badge badge-warning ml-2">falta conectar</span>}
+              {platMeta?.nativo && <span className="badge ml-1" style={{ background: "color-mix(in srgb, var(--success) 18%, transparent)", color: "var(--success)" }}>nativo ✓</span>}
+            </div>
+            <span className="text-[11px] muted">{isPostback ? "🔗 Postback — a plataforma envia as vendas" : "🔑 API — você puxa as vendas"}</span>
           </div>
-          <button onClick={saveKey} disabled={busy === "save" || !key} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy === "save" ? "Salvando…" : "✓ conectar chave"}</button>
-        </div>
-      )}
-      {conn && conectada && (
-        <div className="flex flex-wrap items-end gap-2">
-          <input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder="atualizar chave (opcional)" className="input flex-1 min-w-[240px] font-mono text-xs" />
-          <button onClick={saveKey} disabled={busy === "save" || !key} className="px-3 py-2 rounded-lg card text-sm font-semibold disabled:opacity-50">atualizar chave</button>
+
+          {/* chave (validação do postback OU chave da API) */}
+          <div className="flex flex-wrap items-end gap-2">
+            <div className="flex-1 min-w-[260px]">
+              <label className="text-xs muted">{platMeta?.keyLabel ?? "Chave da API"}{conectada && <span style={{ color: "var(--success)" }}> · salva ✓</span>}</label>
+              <input type="password" value={key} onChange={(e) => setKey(e.target.value)} placeholder={conectada ? "atualizar (opcional)" : "cole aqui"} className="input w-full font-mono text-xs mt-0.5" />
+              {platMeta?.keyHint && <p className="text-[11px] muted mt-0.5">{platMeta.keyHint}</p>}
+            </div>
+            <button onClick={saveKey} disabled={busy === "save" || !key} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy === "save" ? "Salvando…" : conectada ? "atualizar" : "✓ salvar"}</button>
+          </div>
+
+          {/* URL de postback (só p/ plataformas que empurram a venda) */}
+          {isPostback && (
+            <div className="rounded-lg p-2.5" style={{ background: "var(--surface-2)", border: "1px dashed var(--border)" }}>
+              <label className="text-xs muted">URL de postback — cole no painel da {platMeta?.nome} (Método <b>POST</b>)</label>
+              <div className="flex gap-2 items-center mt-1">
+                <input readOnly value={postbackUrl} onFocus={(e) => e.currentTarget.select()} className="input flex-1 font-mono text-[11px]" />
+                <button onClick={copyPostback} className="px-3 py-2 rounded-lg card text-sm font-semibold whitespace-nowrap">📋 copiar</button>
+              </div>
+              <p className="text-[11px] muted mt-1.5">
+                <b>1.</b> Copie a chave de validação no painel da {platMeta?.nome} e cole no campo acima. <b>2.</b> Cole esta URL no postback/webhook da {platMeta?.nome}. Pronto: cada venda cai aqui sozinha, sem duplicar.
+                {platMeta && !platMeta.nativo && <span> Mapeamento genérico (melhor esforço) — a venda entra e o payload bruto fica guardado.</span>}
+              </p>
+            </div>
+          )}
         </div>
       )}
       {showConn && <div className="card p-4"><NewConnector supabase={supabase} onDone={() => router.refresh()} /></div>}
@@ -399,23 +439,49 @@ export default function StoreHubWorkbench({ connectors, orders }: {
 }
 
 function NewConnector({ supabase, onDone }: { supabase: any; onDone: () => void }) {
-  const [f, setF] = useState({ code: "", name: "", platform: "monetizze", producer_ref: "" });
+  const [f, setF] = useState({ code: "", name: "", platform: "braip", producer_ref: "" });
   const [busy, setBusy] = useState(false);
+  const plat = getPlataforma(f.platform);
   async function create() {
     if (!supabase || !f.code) return; setBusy(true);
     // insert direto (RLS: integration.create)
     const { data: comp } = await supabase.from("companies").select("tenant_id").eq("id", COMPANY).single();
-    const { error: e2 } = await supabase.from("store_connectors").insert({ tenant_id: comp?.tenant_id, company_id: COMPANY, code: f.code, name: f.name || f.code, platform: f.platform, producer_ref: f.producer_ref || null, auth_type: "webhook_token", status: "inactive" });
-    setBusy(false); if (e2) alert("Erro: " + e2.message); else { setF({ code: "", name: "", platform: "monetizze", producer_ref: "" }); onDone(); }
+    const { error: e2 } = await supabase.from("store_connectors").insert({
+      tenant_id: comp?.tenant_id, company_id: COMPANY, code: f.code, name: f.name || f.code,
+      platform: f.platform, categoria: platformCategoriaDb(f.platform),
+      producer_ref: f.producer_ref || null, auth_type: "webhook_token", status: "inactive",
+    });
+    setBusy(false); if (e2) alert("Erro: " + e2.message); else { setF({ code: "", name: "", platform: "braip", producer_ref: "" }); onDone(); }
   }
   return (
-    <div className="flex flex-wrap items-end gap-2">
-      <div className="font-semibold text-sm w-full">Adicionar loja / produtor</div>
-      <input value={f.code} onChange={(e) => setF({ ...f, code: e.target.value })} placeholder="código" className="input w-32 text-sm" />
-      <input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="nome" className="input w-40 text-sm" />
-      <select value={f.platform} onChange={(e) => setF({ ...f, platform: e.target.value })} className="input w-auto text-sm">{["monetizze", "hotmart", "kiwify", "yampi", "shopify", "mercado_livre", "woocommerce", "generic"].map((p) => <option key={p} value={p}>{PLAT(p)}</option>)}</select>
-      <input value={f.producer_ref} onChange={(e) => setF({ ...f, producer_ref: e.target.value })} placeholder="produtor (ex.: OZEMPHARMA)" className="input w-48 text-sm" />
-      <button onClick={create} disabled={busy || !f.code} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold">criar</button>
+    <div className="space-y-2">
+      <div className="font-semibold text-sm">Adicionar loja / plataforma</div>
+      <div className="flex flex-wrap items-end gap-2">
+        <div>
+          <label className="text-[11px] muted block">Plataforma</label>
+          <select value={f.platform} onChange={(e) => setF({ ...f, platform: e.target.value })} className="input w-56 text-sm">
+            {PLATAFORMA_CATEGORIAS.map((cat) => (
+              <optgroup key={cat.key} label={cat.label}>
+                {PLATAFORMAS.filter((p) => p.categoria === cat.key).map((p) => (
+                  <option key={p.id} value={p.id}>{p.emoji} {p.nome}{p.nativo ? " ✓" : ""}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+        <input value={f.code} onChange={(e) => setF({ ...f, code: e.target.value })} placeholder="código (ex.: BRAIP1)" className="input w-40 text-sm" />
+        <input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="nome (opcional)" className="input w-44 text-sm" />
+        <input value={f.producer_ref} onChange={(e) => setF({ ...f, producer_ref: e.target.value })} placeholder="produtor (ex.: OZEMPHARMA)" className="input w-48 text-sm" />
+        <button onClick={create} disabled={busy || !f.code} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">criar</button>
+      </div>
+      {plat && (
+        <p className="text-[11px] muted">
+          {plat.conexao === "pull"
+            ? <>🔑 <b>{plat.nome}</b> integra por <b>API (puxar)</b>: crie o conector, cole a chave e clique em Puxar.</>
+            : <>🔗 <b>{plat.nome}</b> integra por <b>postback</b>: crie o conector, defina a chave de validação e copie a URL de postback pra colar no painel da {plat.nome}.</>}
+          {plat.nativo && <span style={{ color: "var(--success)" }}> · adaptador nativo ✓</span>}
+        </p>
+      )}
     </div>
   );
 }
