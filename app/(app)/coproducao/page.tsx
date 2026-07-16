@@ -16,7 +16,8 @@ export default async function CoproducaoPage() {
     supabase.from("coproducao_vendas").select("*").eq("company_id", company).is("deleted_at", null).order("data_venda", { ascending: false }).limit(200),
     supabase.from("coproducao_repasses").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
     supabase.from("coproducao_configuracoes").select("*").eq("company_id", company).is("deleted_at", null).limit(1),
-    supabase.from("appmax_split_config").select("*").eq("company_id", company).is("deleted_at", null).limit(1),
+    // SEGURANÇA: nunca enviar segredos ao client. Exclui client_secret, oauth_access_token, oauth_refresh_token, oauth_state.
+    supabase.from("appmax_split_config").select("id,tenant_id,company_id,environment,client_id,app_id,redirect_uri,logistics_recipient_id,logistics_recipient_name,logistics_recipient_document,recipient_status,active,oauth_token_expires_at,oauth_connected_at,created_at,updated_at").eq("company_id", company).is("deleted_at", null).limit(1),
   ]);
   return <CoproducaoWorkbench
     coprodutores={coprodutores.data ?? []}

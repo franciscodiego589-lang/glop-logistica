@@ -60,15 +60,37 @@ export async function POST(req: Request) {
   //      senão o clique de uma linha notificaria todos os pendentes de uma vez.
   //    - Sem itens (botão em lote): envia todos os pendentes (com rastreio, ainda não enviados).
   const byNumber = new Map<string, string>();
+  let claimedBatch = false;
   if (explicit.length > 0) {
-    for (const it of explicit) byNumber.set(it.sale_number, it.tracking_code);
+    // IDEMPOTÊNCIA: pula pedidos já enviados com o MESMO código — não re-notifica o cliente.
+    const { data: cur } = await supabase.from("store_orders")
+      .select("sale_number,tracking_code,tracking_pushed_at")
+      .eq("company_id", company).eq("connector_id", connectorId)
+      .in("sale_number", explicit.map((e) => e.sale_number)).is("deleted_at", null);
+    const state = new Map((cur ?? []).map((o: any) => [String(o.sale_number), o]));
+    for (const it of explicit) {
+      const o = state.get(it.sale_number);
+      if (o && o.tracking_pushed_at && o.tracking_code === it.tracking_code) continue; // já notificado
+      byNumber.set(it.sale_number, it.tracking_code);
+    }
   } else {
-    const { data: pending } = await supabase.from("store_orders")
-      .select("sale_number,tracking_code")
+    // CLAIM ATÔMICO contra corrida: seleciona pendentes e reivindica só os que ainda
+    // estão null num UPDATE ... WHERE tracking_pushed_at IS NULL. Requisições simultâneas
+    // reivindicam conjuntos disjuntos (sem duplo-envio). Reset em caso de falha (abaixo).
+    const { data: pending } = await supabase.from("store_orders").select("sale_number")
       .eq("company_id", company).eq("connector_id", connectorId)
       .not("tracking_code", "is", null).is("tracking_pushed_at", null).is("deleted_at", null)
       .limit(MAX_BATCH);
-    for (const p of (pending ?? [])) if (p.sale_number && p.tracking_code) byNumber.set(String(p.sale_number), p.tracking_code);
+    const nums = (pending ?? []).map((p: any) => String(p.sale_number)).filter(Boolean);
+    if (nums.length) {
+      const { data: claimed } = await supabase.from("store_orders")
+        .update({ tracking_pushed_at: new Date().toISOString(), tracking_push_msg: "enviando à plataforma…" })
+        .eq("company_id", company).eq("connector_id", connectorId)
+        .in("sale_number", nums).is("tracking_pushed_at", null).is("deleted_at", null)
+        .select("sale_number,tracking_code");
+      claimedBatch = true;
+      for (const p of (claimed ?? [])) if (p.sale_number && p.tracking_code) byNumber.set(String(p.sale_number), p.tracking_code);
+    }
   }
   // Monetizze exige transaction NUMÉRICO (cód. da venda). Vendas cujo número não é
   // numérico (ex.: fallback para chave_unica) não têm como receber rastreio lá.
@@ -88,6 +110,11 @@ export async function POST(req: Request) {
     const token = await monetizzeToken(conn.webhook_token);
     results = await monetizzePushTracking(token, queue);
   } catch (e: any) {
+    // Falha total: libera o claim (batch) para retentar depois; não deixa marcado como enviado.
+    if (claimedBatch && queue.length) {
+      await supabase.from("store_orders").update({ tracking_pushed_at: null, tracking_push_msg: "falha no envio — retentar" })
+        .eq("company_id", company).eq("connector_id", connectorId).in("sale_number", queue.map((q) => q.sale_number)).is("deleted_at", null);
+    }
     return Response.json({ error: e.message || "Falha ao enviar rastreio" }, { status: 502 });
   }
 
@@ -102,8 +129,9 @@ export async function POST(req: Request) {
     const msg = r?.message ?? (r ? "" : "Sem retorno da plataforma para esta venda.");
     if (ok) success++; else errors++;
     details.push({ sale_number: it.sale_number, status: ok ? "success" : "error", message: msg });
+    // sucesso → confirma pushed_at; erro → LIBERA (pushed_at=null) para retentar (desfaz o claim do batch).
     await supabase.from("store_orders")
-      .update(ok ? { tracking_pushed_at: new Date().toISOString(), tracking_push_msg: msg } : { tracking_push_msg: msg })
+      .update(ok ? { tracking_pushed_at: new Date().toISOString(), tracking_push_msg: msg } : { tracking_pushed_at: null, tracking_push_msg: msg })
       .eq("company_id", company).eq("connector_id", connectorId).eq("sale_number", it.sale_number).is("deleted_at", null);
   }
 

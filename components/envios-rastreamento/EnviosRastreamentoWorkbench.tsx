@@ -99,7 +99,7 @@ export default function EnviosRastreamentoWorkbench({ envios, trackingEvents, cl
                   <td className="py-2 px-4 font-mono text-xs">{t.codigo_rastreio ?? "—"}</td>
                   <td className="px-3"><span className={`badge ${stBadge(t.status)}`}>{t.status ?? "—"}</span></td>
                   <td className="px-3 text-xs">{String(t.descricao_evento ?? "—").slice(0, 48)}</td>
-                  <td className="px-3 text-xs">{t.local_evento ?? [t.cidade_evento, t.uf_evento].filter(Boolean).join("/") ?? "—"}</td>
+                  <td className="px-3 text-xs">{t.local_evento || [t.cidade_evento, t.uf_evento].filter(Boolean).join("/") || "—"}</td>
                   <td className="px-3 text-xs">{produtorNome(t.produtor_id)}</td>
                   <td className="px-3 text-xs muted">{t.origem ?? "—"}</td>
                   <td className="px-3 text-xs muted">{dt(t.data_evento ?? t.created_at)}</td>

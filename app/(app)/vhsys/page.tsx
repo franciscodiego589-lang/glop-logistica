@@ -11,9 +11,9 @@ export default async function VhsysPage() {
     return <div className="space-y-4"><h1 className="text-xl font-bold">Integração VHSYS</h1><VitrineBanner /></div>;
   }
   const [saldos, movimentos, locais] = await Promise.all([
-    supabase.from("vhsys_estoque_saldos").select("*").order("updated_at", { ascending: false }).limit(300),
-    supabase.from("vhsys_estoque_movimentos").select("*").order("created_at", { ascending: false }).limit(300),
-    supabase.from("vhsys_locais_estoque").select("*").order("nome").limit(300),
+    supabase.from("vhsys_estoque_saldos").select("*").eq("company_id", company).is("deleted_at", null).order("updated_at", { ascending: false }).limit(300),
+    supabase.from("vhsys_estoque_movimentos").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(300),
+    supabase.from("vhsys_locais_estoque").select("*").eq("company_id", company).is("deleted_at", null).order("nome").limit(300),
   ]);
   return <VhsysWorkbench
     saldos={saldos.data ?? []}

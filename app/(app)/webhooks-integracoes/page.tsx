@@ -16,7 +16,8 @@ export default async function WebhooksIntegracoesPage() {
     log("produtor_webhook_entregas"),
     log("sislogica_envios_log"),
     log("sislogica_webhook_recebidos"),
-    supabase.from("sislogica_webhook_tokens").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+    // SEGURANÇA: nunca enviar o token bruto ao client. Só metadados.
+    supabase.from("sislogica_webhook_tokens").select("id,company_id,descricao,criado_por,revogado,ultimo_uso_em,created_at").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
     log("api_logs"),
     log("webhook_logs"),
   ]);

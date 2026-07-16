@@ -64,7 +64,7 @@ export default function CrudPanel({
     const body: Record<string, any> = { tenant_id, company_id: COMPANY };
     for (const f of fields) {
       const raw = String(form[f.key] ?? "").trim();
-      if (raw === "") { body[f.key] = f.type === "fk" ? null : null; continue; }
+      if (raw === "") continue; // omite o campo → deixa o DEFAULT do banco valer (não força null)
       body[f.key] = f.type === "number" ? Number(raw) : raw;
     }
     const { error } = await supabase.from(table).insert(body);

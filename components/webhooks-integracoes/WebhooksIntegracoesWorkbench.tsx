@@ -162,12 +162,12 @@ export default function WebhooksIntegracoesWorkbench({ webhooks, entregas, envio
           <CrudPanel table="sislogica_webhook_tokens" title="Tokens de webhook" rows={tokens}
             emptyHint="Gere um token para autenticar os webhooks recebidos da SisLógica."
             fields={[
-              { key: "token", label: "Token", required: true },
+              { key: "token", label: "Token (definido só na criação, nunca exibido)", required: true },
               { key: "descricao", label: "Descrição" },
             ]}
             columns={[
-              { key: "token", label: "Token", fmt: (v) => v ? `${String(v).slice(0, 10)}…` : "—" },
               { key: "descricao", label: "Descrição" },
+              { key: "id", label: "Token", fmt: () => "•••••• (oculto)" },
               { key: "revogado", label: "Revogado", fmt: (v) => (v ? "sim" : "não") },
               { key: "ultimo_uso_em", label: "Último uso", fmt: (v) => dt(v) },
               { key: "created_at", label: "Criado", fmt: (v) => dt(v) },

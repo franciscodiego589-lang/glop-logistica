@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { MZ_BASE, monetizzeToken, mzSignal } from "@/lib/monetizze";
+import { assertPublicHttpsUrl } from "@/lib/url-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -95,8 +96,10 @@ async function monetizzePage(token: string, page: number, filterQS: string): Pro
 // ── API genérica (Bearer) ───────────────────────────────────────────────────
 async function pullGeneric(baseUrl: string, key: string): Promise<Pulled[]> {
   if (!baseUrl) throw new Error("Defina a Base URL do conector para a API genérica.");
+  // Anti-SSRF: valida https + host público (bloqueia loopback/rede interna/metadata).
+  await assertPublicHttpsUrl(baseUrl);
   const url = baseUrl.replace(/\/$/, "") + "/orders";
-  const res = await fetch(url, { headers: { Authorization: "Bearer " + key, Accept: "application/json" }, cache: "no-store", signal: mzSignal() });
+  const res = await fetch(url, { headers: { Authorization: "Bearer " + key, Accept: "application/json" }, cache: "no-store", signal: mzSignal(), redirect: "error" });
   if (!res.ok) throw new Error("API HTTP " + res.status);
   const json: any = await res.json();
   const arr = json?.orders ?? json?.data ?? (Array.isArray(json) ? json : []);
@@ -182,7 +185,8 @@ export async function POST(req: Request) {
     if (m.includes("does not exist") || m.includes("could not find") || m.includes("schema cache")) {
       return Response.json({ error: "Falta aplicar a migration 088 (ingest_store_orders_bulk) no Supabase. Rode supabase/migrations/20260713000088_store_pull_bulk.sql." }, { status: 500 });
     }
-    return Response.json({ error: "Erro ao gravar pedidos: " + error.message }, { status: 500 });
+    console.error("[lojas/pull] ingest error:", error.message);
+    return Response.json({ error: "Erro ao gravar os pedidos. Tente novamente." }, { status: 500 });
   }
 
   // Ao concluir a sincronização (último bloco), marca a data para o próximo incremental.
