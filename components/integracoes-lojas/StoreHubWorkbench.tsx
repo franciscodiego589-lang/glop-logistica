@@ -149,6 +149,25 @@ export default function StoreHubWorkbench({ connectors, orders }: {
     router.refresh();
   }
 
+  // Gera a prepostagem oficial dos Correios para os pedidos selecionados.
+  async function bulkPrepostar() {
+    const ids = Array.from(sels).filter((id) => rows.some((r) => r.id === id));
+    if (ids.length === 0) { alert("Selecione pedidos com endereço para prepostar."); return; }
+    if (!confirm(`Gerar prepostagem nos Correios para ${ids.length} pedido(s)?`)) return;
+    setBusy("prepostar");
+    let ok = 0, fail = 0; const errs: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch("/api/correios/prepostagem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: id }) });
+        const j = await res.json();
+        if (res.ok && j.ok) ok++; else { fail++; if (errs.length < 5) errs.push((rows.find((r) => r.id === id)?.sale_number ?? "") + ": " + (j.error ?? "falha")); }
+      } catch (e: any) { fail++; if (errs.length < 5) errs.push(e.message); }
+    }
+    setBusy(""); setSels(new Set());
+    alert(`📮 Prepostagem: ${ok} criada(s)${fail ? `, ${fail} com erro${errs.length ? ":\n" + errs.join("\n") : ""}` : ""}.`);
+    router.refresh();
+  }
+
   const B = "w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed no-underline block";
   const primary = `${B} bg-brand-600 text-white hover:opacity-90`;
   const soft = `${B} border hover:bg-black/5 dark:hover:bg-white/5`;
@@ -275,6 +294,8 @@ export default function StoreHubWorkbench({ connectors, orders }: {
               <button key={a.to} disabled={busy === "bulk"} onClick={() => bulkTransition(a.to, a.label)} className="px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold disabled:opacity-50">{a.label}</button>
             ))}
             <button disabled={busy === "bulk"} onClick={() => bulkTransition("cancelado", "Cancelado")} className="px-2.5 py-1 rounded-md text-xs font-semibold text-white disabled:opacity-50" style={{ background: "var(--danger)" }}>Cancelar</button>
+            <span className="w-px h-4 self-center" style={{ background: "var(--border)" }} />
+            <button disabled={busy === "prepostar"} onClick={bulkPrepostar} className="px-2.5 py-1 rounded-md text-xs font-semibold text-white disabled:opacity-50" style={{ background: "#0b7a3b" }} title="Gera a prepostagem oficial nos Correios e traz o código de rastreio">{busy === "prepostar" ? "Prepostando…" : "📮 Gerar prepostagem"}</button>
             <button onClick={() => setSels(new Set())} className="px-2 py-1 rounded-md text-xs muted">limpar seleção ✕</button>
             {busy === "bulk" && <span className="text-xs" style={{ color: "var(--brand)" }}>aplicando…</span>}
           </div>
