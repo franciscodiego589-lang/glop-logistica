@@ -14,7 +14,7 @@ export default async function IntegracoesTransportadorasPage() {
     supabase.rpc("connector_dashboard", { p_company: company }),
     supabase.from("carrier_connectors").select("*").eq("company_id", company).is("deleted_at", null).order("code").limit(200),
     supabase.from("connector_operations").select("*").eq("company_id", company).is("deleted_at", null).order("operation").limit(400),
-    supabase.from("connector_credentials").select("id,connector_id,key_name,is_secret,valid_to,key_value").eq("company_id", company).is("deleted_at", null).limit(400),
+    supabase.from("connector_credentials").select("id,connector_id,key_name,is_secret,valid_to").eq("company_id", company).is("deleted_at", null).limit(400),
     supabase.from("connector_logs").select("*").eq("company_id", company).is("deleted_at", null).order("requested_at", { ascending: false }).limit(200),
   ]);
   return <CarrierHubWorkbench dash={dash.data ?? {}} connectors={connectors.data ?? []} operations={operations.data ?? []}

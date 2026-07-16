@@ -12,7 +12,7 @@ export default async function IntegracoesNfePage() {
   }
   const [prodRes, nfe, baixa, apiKeys, apiLogs, webhookLogs, connRes] = await Promise.all([
     supabase.from("produtores_integracao")
-      .select("id,nome,plataforma,ativo,monetizze_ativa,monetizze_api_key,braip_ativa,braip_api_token,sislog_ativa,sislog_cnpj_embarcador,vhsys_cliente_id,vhsys_id_almoxarifado,emissao_nfe_ativa,cnpj,razao_social,inscricao_estadual,nfe_cfop,nfe_natureza_operacao")
+      .select("id,nome,plataforma,ativo,monetizze_ativa,braip_ativa,sislog_ativa,sislog_cnpj_embarcador,vhsys_cliente_id,vhsys_id_almoxarifado,emissao_nfe_ativa,cnpj,razao_social,inscricao_estadual,nfe_cfop,nfe_natureza_operacao")
       .eq("company_id", company).is("deleted_at", null).order("nome").limit(50),
     supabase.from("nfe_emissoes").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
     supabase.from("nfe_baixa_estoque_config").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),

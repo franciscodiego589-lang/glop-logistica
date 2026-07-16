@@ -145,10 +145,12 @@ export async function POST(req: Request) {
   if (!connectorId) return Response.json({ error: "connector_id ausente" }, { status: 400 });
 
   const { data: conn, error: ce } = await supabase
-    .from("store_connectors").select("id,platform,webhook_token,api_base_url,producer_ref,name,metadata")
+    .from("store_connectors").select("id,platform,api_base_url,producer_ref,name,metadata")
     .eq("id", connectorId).eq("company_id", company).is("deleted_at", null).single();
   if (ce || !conn) return Response.json({ error: "Conector não encontrado" }, { status: 404 });
-  if (!conn.webhook_token) return Response.json({ error: "Cole a chave da API neste conector antes de puxar." }, { status: 400 });
+  // segredo lido via RPC guardada por permissão (nunca vem do select da tabela)
+  const { data: apiKey } = await supabase.rpc("connector_secret", { p_connector: connectorId });
+  if (!apiKey) return Response.json({ error: "Cole a chave da API neste conector antes de puxar (ou você não tem permissão)." }, { status: 400 });
 
   // since_days (opção "últimos N dias") tem prioridade; senão incremental usa a
   // última sincronização; full sem filtro de data.
@@ -164,7 +166,7 @@ export async function POST(req: Request) {
 
   try {
     if (conn.platform === "monetizze") {
-      const token = await monetizzeToken(conn.webhook_token);
+      const token = await monetizzeToken(apiKey);
       const filterQS = monetizzeFilterQS(sinceISO, statuses);
       const started = Date.now();
       let page = fromPage;
@@ -179,7 +181,7 @@ export async function POST(req: Request) {
       } while (page <= pagesTotal);
       if (page <= pagesTotal) { hasMore = true; nextPage = page; }
     } else {
-      sales = await pullGeneric(conn.api_base_url, conn.webhook_token);
+      sales = await pullGeneric(conn.api_base_url, apiKey);
       recordCount = sales.length;
     }
   } catch (e: any) {

@@ -73,11 +73,13 @@ export async function POST(req: Request) {
     // Monetizze: valida a chave REAL configurada (se houver), senão testa reachability.
     if (provider === "monetizze") {
       const { data: conn } = await supabase.from("store_connectors")
-        .select("webhook_token").eq("company_id", company).eq("platform", "monetizze")
-        .not("webhook_token", "is", null).is("deleted_at", null).limit(1).maybeSingle();
-      if (conn?.webhook_token) {
+        .select("id").eq("company_id", company).eq("platform", "monetizze")
+        .is("deleted_at", null).order("created_at", { ascending: false }).limit(1).maybeSingle();
+      // segredo via RPC guardada (nunca via select da coluna)
+      const apiKey = conn?.id ? ((await supabase.rpc("connector_secret", { p_connector: conn.id })).data as any) : null;
+      if (apiKey) {
         const t0 = Date.now();
-        try { await monetizzeToken(conn.webhook_token); return Response.json({ provider, ok: true, code: 200, ms: Date.now() - t0, message: "Chave válida — autenticou na Monetizze." }); }
+        try { await monetizzeToken(apiKey); return Response.json({ provider, ok: true, code: 200, ms: Date.now() - t0, message: "Chave válida — autenticou na Monetizze." }); }
         catch (e: any) { return Response.json({ provider, ok: false, code: 403, ms: Date.now() - t0, message: e.message || "Chave inválida." }); }
       }
       const r = await ping("https://api.monetizze.com.br/2.1/token", { headers: { X_CONSUMER_KEY: "teste" } });

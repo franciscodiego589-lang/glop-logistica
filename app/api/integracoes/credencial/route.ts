@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       const { data: novo, error: e0 } = await supabase.from("store_connectors")
         .insert({ tenant_id: tenant, company_id: company, code, name: nome, platform, categoria, auth_type: "apikey", status: "inactive" })
         .select("id").single();
-      if (e0) return Response.json({ error: "Não foi possível criar o conector: " + e0.message }, { status: 500 });
+      if (e0) { console.error("credencial: criar conector", e0); return Response.json({ error: "Não foi possível criar o conector. Tente novamente." }, { status: 500 }); }
       connectorId = (novo as any).id;
     }
   }
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   const { error } = await supabase.from("store_connectors")
     .update({ webhook_token: key, status: "active", metadata: { ...meta, key_set: true } })
     .eq("id", connectorId).eq("company_id", company).is("deleted_at", null);
-  if (error) return Response.json({ error: "Erro ao salvar a chave: " + error.message }, { status: 500 });
+  if (error) { console.error("credencial: salvar chave", error); return Response.json({ error: "Não foi possível salvar a chave. Tente novamente." }, { status: 500 }); }
 
   return Response.json({ ok: true, connector_id: connectorId, message: "Chave salva. Agora você pode puxar os pedidos." });
 }

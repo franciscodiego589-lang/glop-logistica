@@ -114,7 +114,7 @@ export default function CarrierHubWorkbench({ dash, connectors, operations, cred
                 <span className="badge badge-neutral">{PROV_LABEL(c.provider)}</span>
                 <span className="badge" style={{ background: stColor(c.status), color: "#fff" }}>{c.status}</span>
                 <span className="text-xs muted">{c.environment} · auth: {c.auth_type}</span>
-                <span className="text-xs muted ml-auto">{opsByConn[c.id] ?? 0} operações · {(credByConn[c.id] ?? []).filter((x: any) => x.key_value).length}/{(credByConn[c.id] ?? []).length} credenciais</span>
+                <span className="text-xs muted ml-auto">{opsByConn[c.id] ?? 0} operações · {(credByConn[c.id] ?? []).length} credenciais</span>
               </div>
               <div className="text-xs muted mt-1 font-mono">{c.base_url}</div>
               {c.last_error && <div className="text-xs mt-1" style={{ color: "var(--danger)" }}>último erro: {c.last_error}</div>}
@@ -147,7 +147,7 @@ export default function CarrierHubWorkbench({ dash, connectors, operations, cred
       )}
 
       {tab === "Credenciais" && (
-        <CrudPanel table="connector_credentials" title="Credenciais (cofre)" rows={credentials.map((c) => ({ ...c, key_value: c.key_value ? "••••••" : "" }))}
+        <CrudPanel table="connector_credentials" title="Credenciais (cofre)" rows={credentials.map((c) => ({ ...c, key_value: "••••••" }))}
           emptyHint="Chaves/tokens/usuário-senha/contrato por conector. Marque como secreto."
           fields={[
             { key: "connector_id", label: "Conector", type: "fk", fkTable: "carrier_connectors", fkLabel: "code", required: true },

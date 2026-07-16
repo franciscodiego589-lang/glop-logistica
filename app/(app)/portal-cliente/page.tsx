@@ -15,7 +15,7 @@ export default async function PortalClientePage() {
     supabase.from("support_tickets").select("*").eq("company_id", company).is("deleted_at", null).order("ticket_number", { ascending: false }).limit(300),
     supabase.from("ticket_messages").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: true }).limit(1000),
     supabase.from("cxp_rma_requests").select("*").eq("company_id", company).is("deleted_at", null).order("rma_number", { ascending: false }).limit(200),
-    supabase.from("portal_users").select("*").eq("company_id", company).is("deleted_at", null).order("name").limit(300),
+    supabase.from("portal_users").select("id,account_id,name,email,portal_role,last_login_at,metadata,created_at").eq("company_id", company).is("deleted_at", null).order("name").limit(300),
     supabase.from("customer_documents").select("*").eq("company_id", company).is("deleted_at", null).order("issued_at", { ascending: false }).limit(300),
     supabase.from("knowledge_articles").select("*").eq("company_id", company).is("deleted_at", null).order("title").limit(300),
     supabase.from("crm_accounts").select("id, name").eq("company_id", company).is("deleted_at", null).order("name").limit(500),

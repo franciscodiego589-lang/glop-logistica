@@ -37,11 +37,13 @@ export async function POST(req: Request) {
   if (!connectorId) return Response.json({ error: "connector_id ausente" }, { status: 400 });
 
   const { data: conn, error: ce } = await supabase
-    .from("store_connectors").select("id,platform,webhook_token")
+    .from("store_connectors").select("id,platform")
     .eq("id", connectorId).eq("company_id", company).is("deleted_at", null).single();
   if (ce || !conn) return Response.json({ error: "Conector não encontrado" }, { status: 404 });
   if (conn.platform !== "monetizze") return Response.json({ error: "Devolução de rastreio disponível só para Monetizze por enquanto." }, { status: 400 });
-  if (!conn.webhook_token) return Response.json({ error: "Cole a chave da API neste conector antes de enviar rastreio." }, { status: 400 });
+  // segredo via RPC guardada por permissão (integration.update) — sem isto, não notifica
+  const { data: apiKey } = await supabase.rpc("connector_secret", { p_connector: connectorId });
+  if (!apiKey) return Response.json({ error: "Sem acesso à chave da API deste conector (chave ausente ou sem permissão)." }, { status: 400 });
 
   // 1) Se vierem itens explícitos, grava o tracking_code nos pedidos correspondentes.
   const explicit: PushItem[] = Array.isArray(body.items)
@@ -70,7 +72,8 @@ export async function POST(req: Request) {
     const state = new Map((cur ?? []).map((o: any) => [String(o.sale_number), o]));
     for (const it of explicit) {
       const o = state.get(it.sale_number);
-      if (o && o.tracking_pushed_at && o.tracking_code === it.tracking_code) continue; // já notificado
+      if (!o) continue; // SEGURANÇA: só notifica pedidos que existem nesta empresa/conector
+      if (o.tracking_pushed_at && o.tracking_code === it.tracking_code) continue; // já notificado
       byNumber.set(it.sale_number, it.tracking_code);
     }
   } else {
@@ -107,7 +110,7 @@ export async function POST(req: Request) {
 
   let results: any[];
   try {
-    const token = await monetizzeToken(conn.webhook_token);
+    const token = await monetizzeToken(apiKey);
     results = await monetizzePushTracking(token, queue);
   } catch (e: any) {
     // Falha total: libera o claim (batch) para retentar depois; não deixa marcado como enviado.
