@@ -1,0 +1,1136 @@
+### public.api_logs  (12 colunas)
+   id bigint NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   tipo text NOT NULL
+   acao text NOT NULL
+   status text NOT NULL
+   http_status integer
+   referencia text
+   codigo_rastreio text
+   mensagem text
+   request_payload jsonb
+   response_payload jsonb
+   duracao_ms integer
+
+### public.appmax_split_config  (18 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   environment text DEFAULT 'production'::text NOT NULL
+   client_id text
+   client_secret text
+   logistics_recipient_id text
+   logistics_recipient_name text
+   logistics_recipient_document text
+   recipient_status text
+   active boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   app_id text
+   redirect_uri text
+   oauth_access_token text
+   oauth_refresh_token text
+   oauth_token_expires_at timestamp with time zone
+   oauth_state text
+   oauth_connected_at timestamp with time zone
+
+### public.appmax_split_logs  (16 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   environment text
+   event_type text
+   appmax_order_id text
+   codigo_venda text
+   valor_total numeric(12,2)
+   valor_produto numeric(12,2)
+   valor_frete numeric(12,2)
+   logistics_recipient_id text
+   split_status text DEFAULT 'pendente'::text NOT NULL
+   divergence_reason text
+   payment_status text
+   payload_raw jsonb
+   error_message text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.braip_vendas_xls  (39 colunas)
+   id bigint NOT NULL
+   chave text
+   produtor text
+   produto text
+   plano text
+   comprador text
+   email text
+   telefone text
+   cep text
+   endereco text
+   numero text
+   complemento text
+   bairro text
+   cidade text
+   estado text
+   documento text
+   parcelamento integer
+   pagamento text
+   status text
+   valor numeric
+   valor_pago numeric
+   comissao numeric
+   data_venda timestamp with time zone
+   data_pagamento timestamp with time zone
+   afiliado text
+   afiliado_email text
+   tipo_frete text
+   valor_frete numeric
+   pagamento_na_entrega text
+   codigo_rastreio text
+   arquivo_origem text
+   ultimo_status text
+   ultimo_status_local text
+   ultimo_status_data timestamp with time zone
+   ultima_consulta timestamp with time zone
+   eventos_rastreio jsonb
+   erro_consulta text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.cep_correcao_logs  (13 colunas)
+   id bigint NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   produtor_id uuid
+   venda_id bigint
+   pedido_id uuid
+   destino text
+   cep_original text
+   cep_corrigido text NOT NULL
+   fonte text
+   endereco_original jsonb
+   endereco_corrigido jsonb
+   enviado_sislog boolean DEFAULT false NOT NULL
+   observacao text
+
+### public.clientes_envio  (10 colunas)
+   id bigint NOT NULL
+   nome text NOT NULL
+   cpf text
+   codigo_rastreio text
+   cep text
+   endereco_completo text
+   nome_plano text
+   telefone text
+   csv_nome text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.conferencias_postagem  (12 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   user_id uuid NOT NULL
+   produtor_id uuid
+   planilha_nome text
+   pdf_nome text
+   total_planilha integer DEFAULT 0 NOT NULL
+   total_postados integer DEFAULT 0 NOT NULL
+   total_nao_encontrados integer DEFAULT 0 NOT NULL
+   total_possiveis integer DEFAULT 0 NOT NULL
+   resultado jsonb DEFAULT '[]'::jsonb NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   paginas_resumo jsonb DEFAULT '[]'::jsonb NOT NULL
+
+### public.contratos_logisticos  (17 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   nome text NOT NULL
+   transportadora text DEFAULT 'correios'::text NOT NULL
+   agf_nome text
+   cidade text
+   uf text
+   codigo_contrato text
+   cartao_postagem text
+   codigo_administrativo text
+   codigo_diretoria integer
+   numero_dr integer
+   correios_api_token text
+   observacao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_auditoria  (8 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   usuario_id uuid
+   acao text NOT NULL
+   entidade text
+   entidade_id text
+   dados_anteriores jsonb
+   dados_novos jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_configuracoes  (14 colunas)
+   id integer DEFAULT 1 NOT NULL
+   ativar_modulo boolean DEFAULT true NOT NULL
+   modo_operacao public.coproducao_modo_operacao DEFAULT 'controle_interno'::public.coproducao_modo_operacao NOT NULL
+   base_calculo_padrao public.coproducao_tipo_base DEFAULT 'produtos_sem_frete'::public.coproducao_tipo_base NOT NULL
+   frete_padrao public.coproducao_frete_destino DEFAULT 'empresa_principal'::public.coproducao_frete_destino NOT NULL
+   permitir_comissao_sobre_frete boolean DEFAULT false NOT NULL
+   bloquear_comissao_sobre_total_com_frete boolean DEFAULT true NOT NULL
+   gerar_conta_pagar_automaticamente boolean DEFAULT false NOT NULL
+   sistema_conta_pagar text DEFAULT 'manual'::text NOT NULL
+   status_minimo_para_gerar_comissao text DEFAULT 'pago'::text NOT NULL
+   prazo_liberacao_repasse_dias integer DEFAULT 7 NOT NULL
+   considerar_chargeback boolean DEFAULT true NOT NULL
+   considerar_estorno boolean DEFAULT true NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_regras  (19 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   coprodutor_id uuid NOT NULL
+   nome_regra text NOT NULL
+   produto_id text
+   produto_nome text
+   sku text
+   codigo_produto_yampi text
+   codigo_produto_appmax text
+   cupom text
+   utm_source text
+   utm_campaign text
+   metadata_coprodutor text
+   percentual_comissao numeric(5,2) NOT NULL
+   tipo_base_calculo public.coproducao_tipo_base DEFAULT 'produtos_sem_frete'::public.coproducao_tipo_base NOT NULL
+   frete_para public.coproducao_frete_destino DEFAULT 'empresa_principal'::public.coproducao_frete_destino NOT NULL
+   status public.coproducao_status_coprodutor DEFAULT 'ativo'::public.coproducao_status_coprodutor NOT NULL
+   prioridade integer DEFAULT 100 NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_repasse_itens  (5 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   repasse_id uuid NOT NULL
+   venda_id uuid NOT NULL
+   valor_comissao numeric(12,2) NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_repasses  (20 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   coprodutor_id uuid NOT NULL
+   periodo_inicio date NOT NULL
+   periodo_fim date NOT NULL
+   total_vendas integer DEFAULT 0 NOT NULL
+   total_produtos numeric(12,2) DEFAULT 0 NOT NULL
+   total_frete numeric(12,2) DEFAULT 0 NOT NULL
+   total_comissao numeric(12,2) DEFAULT 0 NOT NULL
+   total_estornos numeric(12,2) DEFAULT 0 NOT NULL
+   total_chargebacks numeric(12,2) DEFAULT 0 NOT NULL
+   total_liquido_repassar numeric(12,2) DEFAULT 0 NOT NULL
+   status public.coproducao_status_repasse_lote DEFAULT 'aberto'::public.coproducao_status_repasse_lote NOT NULL
+   data_aprovacao timestamp with time zone
+   data_pagamento timestamp with time zone
+   forma_pagamento text
+   comprovante_url text
+   observacoes text
+   created_by uuid
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_vendas  (34 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   origem public.coproducao_origem NOT NULL
+   pedido_yampi_id text
+   pedido_appmax_id text
+   transacao_appmax_id text
+   codigo_venda text
+   cliente_nome text
+   cliente_email text
+   cliente_documento text
+   produto_nome text
+   sku text
+   quantidade integer DEFAULT 1 NOT NULL
+   valor_produtos numeric(12,2) DEFAULT 0 NOT NULL
+   valor_frete numeric(12,2) DEFAULT 0 NOT NULL
+   valor_desconto numeric(12,2) DEFAULT 0 NOT NULL
+   valor_total numeric(12,2) DEFAULT 0 NOT NULL
+   valor_pago numeric(12,2) DEFAULT 0 NOT NULL
+   forma_pagamento text
+   status_pagamento text
+   coprodutor_id uuid
+   regra_comissao_id uuid
+   percentual_comissao numeric(5,2)
+   base_comissao numeric(12,2)
+   valor_comissao numeric(12,2)
+   valor_empresa numeric(12,2)
+   frete_destinado_empresa numeric(12,2)
+   status_repasse public.coproducao_status_repasse DEFAULT 'pendente'::public.coproducao_status_repasse NOT NULL
+   data_venda timestamp with time zone
+   data_pagamento timestamp with time zone
+   data_repasse timestamp with time zone
+   payload_original jsonb
+   observacoes text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coproducao_webhook_logs  (13 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   origem public.coproducao_origem NOT NULL
+   evento text
+   pedido_id text
+   transacao_id text
+   status text DEFAULT 'recebido'::text NOT NULL
+   payload jsonb
+   processado boolean DEFAULT false NOT NULL
+   erro text
+   tentativas integer DEFAULT 0 NOT NULL
+   venda_id uuid
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.coprodutores  (16 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   nome text NOT NULL
+   tipo_pessoa public.coproducao_tipo_pessoa DEFAULT 'pessoa_fisica'::public.coproducao_tipo_pessoa NOT NULL
+   cpf_cnpj text
+   email text
+   telefone text
+   chave_pix text
+   banco text
+   agencia text
+   conta text
+   tipo_conta text
+   percentual_padrao numeric(5,2) DEFAULT 0 NOT NULL
+   status public.coproducao_status_coprodutor DEFAULT 'ativo'::public.coproducao_status_coprodutor NOT NULL
+   observacoes text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.correios_api_logs  (11 colunas)
+   id bigint NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   prefixo text NOT NULL
+   acao text NOT NULL
+   status text NOT NULL
+   http_status integer
+   codigo_rastreio text
+   mensagem text
+   request_payload jsonb
+   response_payload jsonb
+   duracao_ms integer
+
+### public.correios_token_cache  (8 colunas)
+   id integer NOT NULL
+   tipo text NOT NULL
+   numero_cartao text
+   token text NOT NULL
+   expires_at timestamp with time zone NOT NULL
+   refreshed_at timestamp with time zone DEFAULT now() NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.email_envios_log  (12 colunas)
+   id bigint NOT NULL
+   pedido_id uuid
+   codigo_rastreio text
+   email text NOT NULL
+   nome text
+   status text DEFAULT 'queued'::text NOT NULL
+   erro text
+   sendgrid_message_id text
+   assunto text
+   template_hash text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   venda_id bigint
+
+### public.email_template_rastreio  (4 colunas)
+   id integer DEFAULT 1 NOT NULL
+   assunto text DEFAULT 'Seu código de rastreio - Pedido {{codigo}}'::text NOT NULL
+   html text DEFAULT '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:20px;color:#222"><h2 style="margin:0 0 16px">Olá, {{nome}}!</h2><p>Seu pedido foi postado nos Correios. Veja abaixo o código de rastreio:</p><p style="font-size:18px;font-weight:bold;background:#f4f4f4;padding:12px;border-radius:6px;text-align:center;letter-spacing:1px">{{codigo}}</p><p>Você pode acompanhar a entrega clicando no link abaixo:</p><p style="text-align:center;margin:24px 0"><a href="{{link_rastreio}}" style="background:#0066cc;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Rastrear pedido</a></p></div>'::text NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.envios  (19 colunas)
+   id bigint NOT NULL
+   data_envio text
+   nome text NOT NULL
+   cep text
+   uf text
+   peso text
+   formato text
+   codigo_interno text
+   codigo_rastreio text
+   valor_declarado numeric(12,2)
+   valor_pago numeric(12,2)
+   pdf_nome text
+   linha_bruta text
+   ultimo_status text
+   ultimo_status_detalhe text
+   ultimo_status_local text
+   ultimo_status_data timestamp with time zone
+   ultima_consulta timestamp with time zone
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.estoque_baixa_config  (6 colunas)
+   produtor_id uuid NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   local_id uuid
+   observacao text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.estoque_locais  (7 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   nome text NOT NULL
+   descricao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.estoque_movimentos  (12 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   produto_id uuid NOT NULL
+   local_id uuid
+   local_destino_id uuid
+   tipo text NOT NULL
+   quantidade numeric(14,3) NOT NULL
+   valor_unitario numeric(14,2)
+   observacao text
+   identificacao text
+   user_id uuid
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.estoque_produtos  (12 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   nome text NOT NULL
+   codigo text
+   unidade text DEFAULT 'UN'::text NOT NULL
+   categoria text
+   estoque_minimo numeric(14,3) DEFAULT 0 NOT NULL
+   valor_custo numeric(14,2)
+   observacao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.ml_tokens  (4 colunas)
+   id integer DEFAULT 1 NOT NULL
+   access_token text
+   refresh_token text
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.monetizze_vendas  (38 colunas)
+   id bigint NOT NULL
+   codigo_venda text
+   codigo_transacao text
+   status text
+   tipo_evento text
+   produto_codigo text
+   produto_nome text
+   plano_codigo text
+   plano_nome text
+   comprador_nome text
+   comprador_email text
+   comprador_telefone text
+   comprador_cpf text
+   comprador_cep text
+   comprador_endereco text
+   comprador_numero text
+   comprador_complemento text
+   comprador_bairro text
+   comprador_cidade text
+   comprador_estado text
+   valor numeric
+   valor_comissao numeric
+   forma_pagamento text
+   parcelas integer
+   data_inicio timestamp with time zone
+   data_finalizada timestamp with time zone
+   assinatura_codigo text
+   assinatura_status text
+   codigo_rastreio text
+   payload_completo jsonb NOT NULL
+   ip_origem text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   produtor_id uuid
+   transacao_invalida boolean DEFAULT false NOT NULL
+   notazz_document_id text
+   plataforma text DEFAULT 'monetizze'::text NOT NULL
+   origem_webhook boolean DEFAULT false NOT NULL
+
+### public.nfe_baixa_estoque_config  (12 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   produto_codigo text DEFAULT ''::text NOT NULL
+   id_produto_vhsys text NOT NULL
+   id_local_estoque text
+   produto_descricao text
+   local_descricao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   match_nome text
+   vincular_produto boolean DEFAULT true NOT NULL
+
+### public.nfe_emissoes  (22 colunas)
+   id bigint NOT NULL
+   venda_id bigint
+   produtor_id uuid
+   status text DEFAULT 'pendente'::text NOT NULL
+   vhsys_nfe_id text
+   chave text
+   protocolo text
+   ambiente text
+   danfe_url text
+   xml_url text
+   valor numeric
+   produto_codigo text
+   produto_nome text
+   plano_codigo text
+   plano_nome text
+   erro text
+   tentativas integer DEFAULT 0 NOT NULL
+   payload_request jsonb
+   payload_response jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   emitida_at timestamp with time zone
+
+### public.notificacoes_carteiro_ausente  (10 colunas)
+   id bigint NOT NULL
+   codigo_objeto text NOT NULL
+   evento_descricao text
+   evento_data timestamp with time zone
+   evento_local text
+   telefone text
+   nome text
+   status text DEFAULT 'enviado'::text NOT NULL
+   erro text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.pedido_regra_logs  (8 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid
+   pedido_id uuid
+   regra_logistica_id uuid
+   contrato_logistico_id uuid
+   origem text NOT NULL
+   payload_avaliacao jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.pedidos  (41 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid
+   cliente_nome text
+   cliente_documento text
+   produto_nome text
+   codigo_rastreio text
+   id_prepostagem text
+   status_logistico public.status_logistico_enum DEFAULT 'pre_postado'::public.status_logistico_enum NOT NULL
+   data_prepostagem timestamp with time zone
+   data_postagem timestamp with time zone
+   data_em_transito timestamp with time zone
+   data_saiu_para_entrega timestamp with time zone
+   data_entrega timestamp with time zone
+   data_ultima_atualizacao timestamp with time zone
+   previsao_entrega timestamp with time zone
+   cidade_destino text
+   uf_destino text
+   servico_correios text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   venda_id bigint
+   plataforma text
+   cliente_email text
+   cliente_telefone text
+   valor_venda numeric
+   codigo_venda text
+   plano_nome text
+   data_venda timestamp with time zone
+   contrato_logistico_id uuid
+   regra_logistica_id uuid
+   origem_regra_logistica text
+   nome_contrato_logistico text
+   agf_origem text
+   transportadora_aplicada text
+   transportadora_externa text
+   transportadora_externa_id text
+   transportadora_externa_status text
+   transportadora_externa_erro text
+   transportadora_externa_enviado_em timestamp with time zone
+   transportadora_externa_payload jsonb
+   transportadora_externa_resposta jsonb
+
+### public.pedidos_importados  (13 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   data_envio date
+   nome text NOT NULL
+   cep text
+   uf text
+   peso numeric
+   codigo_rastreio text
+   valor numeric
+   servico text
+   arquivo_origem text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   email text
+
+### public.pedidos_xls  (27 colunas)
+   id bigint NOT NULL
+   id_nf_e text
+   id_logistica text
+   id_redespacho text
+   integracao text
+   data_criacao text
+   cliente text
+   valor_frete numeric
+   valor_nota numeric
+   rastreio text
+   novo_rastreio text
+   etiqueta text
+   protocolo text
+   status text
+   logistica text
+   venda text
+   motivo_status text
+   arquivo_origem text
+   ultimo_status text
+   ultimo_status_detalhe text
+   ultimo_status_local text
+   ultimo_status_data timestamp with time zone
+   ultima_consulta timestamp with time zone
+   eventos_rastreio jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   regra_id bigint
+
+### public.prep_massa_logs  (19 colunas)
+   id bigint NOT NULL
+   run_id uuid NOT NULL
+   produtor_id uuid
+   user_id uuid
+   venda_id bigint
+   codigo_venda text
+   comprador_nome text
+   servico_codigo text
+   servico_nome text
+   quantidade integer
+   valor_declarado numeric
+   peso_g numeric
+   altura_cm numeric
+   largura_cm numeric
+   comprimento_cm numeric
+   status text NOT NULL
+   mensagem text
+   detalhes jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.prepostagem_auto_logs  (13 colunas)
+   id bigint NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   produtor_id uuid
+   venda_id bigint
+   plataforma text
+   plano_codigo text
+   plano_id uuid
+   etapa text NOT NULL
+   status text NOT NULL
+   mensagem text
+   prepostagem_id bigint
+   codigo_objeto text
+   payload jsonb
+
+### public.prepostagens  (30 colunas)
+   id bigint NOT NULL
+   venda_id bigint
+   regra_id bigint
+   quantidade integer DEFAULT 1 NOT NULL
+   servico_codigo text NOT NULL
+   servico_nome text
+   peso_g numeric NOT NULL
+   altura_cm numeric NOT NULL
+   largura_cm numeric NOT NULL
+   comprimento_cm numeric NOT NULL
+   valor_declarado numeric
+   destinatario_nome text
+   destinatario_cep text
+   destinatario_endereco text
+   destinatario_cidade text
+   destinatario_estado text
+   codigo_objeto text
+   id_prepostagem text
+   etiqueta_pdf_base64 text
+   status text DEFAULT 'pendente'::text NOT NULL
+   erro text
+   payload_request jsonb
+   payload_response jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   ultimo_status text
+   ultimo_status_data timestamp with time zone
+   ultimo_status_local text
+   ultima_consulta timestamp with time zone
+   eventos_rastreio jsonb
+
+### public.prepostagens_ppn  (23 colunas)
+   id bigint NOT NULL
+   id_prepostagem text NOT NULL
+   codigo_objeto text
+   destinatario_nome text
+   data_postagem timestamp with time zone
+   data_criacao timestamp with time zone
+   data_expiracao timestamp with time zone
+   status text NOT NULL
+   servico_codigo text
+   servico_nome text
+   destinatario_cidade text
+   destinatario_estado text
+   destinatario_cep text
+   valor_total numeric
+   payload_completo jsonb
+   ultima_sincronizacao timestamp with time zone DEFAULT now() NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   ultimo_status text
+   ultimo_status_data timestamp with time zone
+   ultimo_status_local text
+   ultima_consulta_sro timestamp with time zone
+   eventos_rastreio jsonb
+
+### public.produto_precos  (10 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   produto_nome text NOT NULL
+   quantidade_min integer DEFAULT 1 NOT NULL
+   quantidade_max integer DEFAULT 1 NOT NULL
+   preco_unitario numeric NOT NULL
+   link_asaas text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produto_regras  (15 colunas)
+   id bigint NOT NULL
+   nome text NOT NULL
+   palavras_chave text[] DEFAULT '{}'::text[] NOT NULL
+   peso_unitario_g numeric DEFAULT 0 NOT NULL
+   altura_cm numeric DEFAULT 2 NOT NULL
+   largura_cm numeric DEFAULT 11 NOT NULL
+   comprimento_cm numeric DEFAULT 16 NOT NULL
+   valor_declarado_padrao numeric
+   faixas jsonb DEFAULT '[]'::jsonb NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   is_fallback boolean DEFAULT false NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   itens_planos jsonb DEFAULT '[]'::jsonb NOT NULL
+   enviar_sislogica boolean DEFAULT true NOT NULL
+
+### public.produtor_api_keys  (12 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   user_id uuid NOT NULL
+   nome text NOT NULL
+   key_prefix text NOT NULL
+   key_hash text NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   last_used_at timestamp with time zone
+   revoked_at timestamp with time zone
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   escopos text[] DEFAULT ARRAY['vendas:read'::text, 'pedidos:read'::text] NOT NULL
+
+### public.produtor_frete_faixas  (9 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   qtd_min integer NOT NULL
+   qtd_max integer NOT NULL
+   valor numeric(10,2) NOT NULL
+   observacao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtor_peso_faixas  (9 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   qtd_min integer NOT NULL
+   qtd_max integer NOT NULL
+   peso_total numeric(10,3) NOT NULL
+   observacao text
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtor_planos  (13 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   plano_codigo text NOT NULL
+   plano_nome_amigavel text
+   regra_id bigint
+   gerar_prepostagem_auto boolean DEFAULT false NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   plataforma text DEFAULT 'monetizze'::text NOT NULL
+   atualizar_rastreio_auto boolean DEFAULT false NOT NULL
+   contrato_logistico_padrao_id uuid
+   unidades integer DEFAULT 1 NOT NULL
+
+### public.produtor_produto_precos  (8 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   produto_codigo text NOT NULL
+   produto_nome text
+   valor_unitario numeric NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtor_usuarios  (4 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   user_id uuid NOT NULL
+   produtor_id uuid NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtor_webhook_entregas  (9 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   webhook_id uuid NOT NULL
+   evento text NOT NULL
+   payload jsonb NOT NULL
+   status_http integer
+   resposta text
+   erro text
+   duracao_ms integer
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtor_webhooks  (9 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   user_id uuid NOT NULL
+   produtor_id uuid
+   nome text NOT NULL
+   url text NOT NULL
+   eventos text[] DEFAULT ARRAY['venda.criada'::text] NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.produtores_integracao  (53 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   nome text NOT NULL
+   plataforma text DEFAULT 'monetizze'::text NOT NULL
+   webhook_token text NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   consumer_key text DEFAULT (gen_random_uuid())::text NOT NULL
+   monetizze_api_key text
+   monetizze_logistica_key text
+   vhsys_cliente_id text
+   cnpj text
+   razao_social text
+   inscricao_estadual text
+   endereco text
+   endereco_numero text
+   endereco_complemento text
+   endereco_bairro text
+   endereco_cidade text
+   endereco_estado text
+   endereco_cep text
+   email_fiscal text
+   telefone_fiscal text
+   emissao_nfe_ativa boolean DEFAULT false NOT NULL
+   armazem_nome text
+   armazem_cnpj text
+   armazem_inscricao_est text
+   armazem_endereco text
+   armazem_endereco_numero text
+   armazem_endereco_complemento text
+   armazem_endereco_bairro text
+   armazem_endereco_cidade text
+   armazem_endereco_estado text
+   armazem_endereco_cep text
+   valor_frete numeric DEFAULT 0 NOT NULL
+   vhsys_id_almoxarifado integer
+   vhsys_produtos jsonb DEFAULT '[]'::jsonb NOT NULL
+   vhsys_id_local_estoque integer
+   peso_produto numeric DEFAULT 0 NOT NULL
+   correios_webhook_secret text DEFAULT (gen_random_uuid())::text
+   braip_api_token text
+   braip_webhook_secret text DEFAULT (gen_random_uuid())::text
+   braip_ativa boolean DEFAULT false NOT NULL
+   monetizze_ativa boolean DEFAULT true NOT NULL
+   aceitar_vendas_sem_plano boolean DEFAULT false NOT NULL
+   sislog_ativa boolean DEFAULT false NOT NULL
+   sislog_cnpj_embarcador text
+   sislog_ufs text[] DEFAULT '{}'::text[] NOT NULL
+   nfe_obs_complementar text
+   nfe_natureza_operacao text
+   nfe_cfop text
+   nfe_frete_por_conta smallint
+   nfe_chave_referenciada text
+
+### public.profiles  (5 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   user_id uuid NOT NULL
+   nome text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.reenvio_pagamentos  (13 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   reenvio_id bigint
+   venda_id bigint
+   comprador_nome text
+   comprador_email text
+   quantidade integer NOT NULL
+   preco_total numeric NOT NULL
+   link_asaas text
+   status text DEFAULT 'pendente'::text NOT NULL
+   email_enviado boolean DEFAULT false NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.reenvios  (16 colunas)
+   id bigint NOT NULL
+   produtor_id uuid NOT NULL
+   venda_id bigint
+   prepostagem_id bigint
+   codigo_objeto_original text
+   codigo_objeto_novo text
+   motivo text
+   status text DEFAULT 'pendente'::text NOT NULL
+   observacao text
+   comprador_nome text
+   produto_nome text
+   destino_cidade text
+   destino_uf text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   quantidade integer
+
+### public.registro_estoque  (14 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   codigo_rastreio text
+   cliente_nome text
+   produto_nome text
+   quantidade integer
+   foto_etiqueta_url text
+   foto_declaracao_url text
+   pedido_id uuid
+   payload_ia jsonb
+   observacao text
+   created_by uuid
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.regras_logisticas  (16 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   nome text NOT NULL
+   plano_id uuid
+   produto_nome text
+   transportadora text
+   contrato_logistico_id uuid NOT NULL
+   uf text
+   cidade text
+   cep_inicial text
+   cep_final text
+   prioridade integer DEFAULT 100 NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   enviar_sislogica boolean DEFAULT true NOT NULL
+
+### public.remetente_config  (17 colunas)
+   id integer DEFAULT 1 NOT NULL
+   nome text
+   documento text
+   email text
+   telefone text
+   cep text
+   endereco text
+   numero text
+   complemento text
+   bairro text
+   cidade text
+   estado text
+   numero_contrato text
+   numero_cartao_postagem text
+   numero_dr integer
+   codigo_diretoria integer
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.sislog_remetentes  (20 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   produtor_id uuid NOT NULL
+   nome text NOT NULL
+   cnpj text
+   inscricao_estadual text
+   razao_social text
+   cep text
+   logradouro text
+   numero text
+   complemento text
+   bairro text
+   cidade text
+   estado text
+   telefone text
+   email text
+   ufs_atendidas text[] DEFAULT '{}'::text[] NOT NULL
+   is_default boolean DEFAULT false NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.sislogica_envios_log  (14 colunas)
+   id bigint NOT NULL
+   pedido_id uuid
+   produtor_id uuid
+   id_solicitacao_interno text
+   id_solicitacao_gerada text
+   codigo_rastreio text
+   status text NOT NULL
+   http_status integer
+   erro text
+   request_payload jsonb
+   response_payload jsonb
+   duracao_ms integer
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   venda_id bigint
+
+### public.sislogica_webhook_recebidos  (8 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   payload jsonb DEFAULT '{}'::jsonb NOT NULL
+   id_solicitacao text
+   id_solicitacao_interno text
+   codigo_rastreio text
+   status_recebido text
+   processado boolean DEFAULT false NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.sislogica_webhook_tokens  (7 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   token text NOT NULL
+   descricao text
+   criado_por uuid
+   revogado boolean DEFAULT false NOT NULL
+   ultimo_uso_em timestamp with time zone
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.tracking_events  (13 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   pedido_id uuid
+   produtor_id uuid
+   codigo_rastreio text
+   status text
+   descricao_evento text
+   data_evento timestamp with time zone
+   local_evento text
+   cidade_evento text
+   uf_evento text
+   payload_original jsonb
+   origem text DEFAULT 'webhook'::text NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.user_roles  (4 colunas)
+   id uuid DEFAULT gen_random_uuid() NOT NULL
+   user_id uuid NOT NULL
+   role public.app_role NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.vendas_ml  (17 colunas)
+   id bigint NOT NULL
+   ml_order_id bigint NOT NULL
+   status text
+   total numeric
+   comprador text
+   itens jsonb
+   pago_em timestamp with time zone
+   raw jsonb
+   criado_em timestamp with time zone DEFAULT now() NOT NULL
+   nome_completo text
+   email text
+   telefone text
+   cpf_cnpj text
+   endereco jsonb
+   shipping_id bigint
+   shipping_raw jsonb
+   billing_raw jsonb
+
+### public.vhsys_estoque_movimentos  (16 colunas)
+   id bigint NOT NULL
+   produto_vhsys_id bigint NOT NULL
+   produto_nome text
+   tipo text NOT NULL
+   quantidade numeric NOT NULL
+   valor_unitario numeric
+   observacao text
+   identificacao text
+   produtor_id uuid
+   user_id uuid
+   vhsys_id_estoque bigint
+   status text DEFAULT 'pendente'::text NOT NULL
+   erro text
+   payload_request jsonb
+   payload_response jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.vhsys_estoque_saldos  (10 colunas)
+   produto_vhsys_id bigint NOT NULL
+   produto_nome text
+   produto_codigo text
+   saldo_atual numeric DEFAULT 0 NOT NULL
+   estoque_minimo numeric DEFAULT 0 NOT NULL
+   ultima_consulta timestamp with time zone
+   payload jsonb
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+   tipo_item text DEFAULT 'produto'::text NOT NULL
+
+### public.vhsys_locais_estoque  (6 colunas)
+   id_local_estoque bigint NOT NULL
+   nome text NOT NULL
+   ativo boolean DEFAULT true NOT NULL
+   observacao text
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.webhook_logs  (14 colunas)
+   id bigint NOT NULL
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+   produtor_id uuid
+   token_prefix text
+   status text NOT NULL
+   motivo text
+   plano_codigo text
+   produto_codigo text
+   comprador_nome text
+   valor numeric
+   venda_id bigint
+   ip_origem text
+   payload jsonb
+   codigo_venda text
+
+### public.whatsapp_envios_log  (9 colunas)
+   id bigint NOT NULL
+   cliente_id bigint
+   telefone text NOT NULL
+   nome text
+   mensagem text NOT NULL
+   status text DEFAULT 'pendente'::text NOT NULL
+   erro text
+   enviado_at timestamp with time zone
+   created_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.whatsapp_template  (8 colunas)
+   id integer DEFAULT 1 NOT NULL
+   mensagem text DEFAULT 'Olá {nome}! 📦
+   Seu pedido do plano *{plano}* foi enviado pelos Correios.
+   🔎 Código de rastreio: *{codigo_rastreio}*
+   Acompanhe em:
+   https://rastreamento.correios.com.br/app/index.php
+   Qualquer dúvida estamos à disposição!'::text NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
+### public.whatsapp_template_carteiro  (3 colunas)
+   id integer DEFAULT 1 NOT NULL
+   mensagem text NOT NULL
+   updated_at timestamp with time zone DEFAULT now() NOT NULL
+
