@@ -12,6 +12,7 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   // ── Visão Geral & Inteligência Logística ──────────────────────────────────
+  { slug: "manual", label: "Manual / Ajuda", icon: "📖", group: "Visão Geral & Inteligência", vol: 0, description: "Manual completo do sistema: todas as telas explicadas, o que cada uma faz e o passo a passo" },
   { slug: "dashboard", label: "Cockpit Executivo", icon: "◎", group: "Visão Geral & Inteligência", vol: 16, description: "KPIs logísticos cross-módulo em tempo real" },
   { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Visão Geral & Inteligência", vol: 5, description: "Mission control: estado vivo da operação, central de alertas, sala de crise" },
   { slug: "control-tower", label: "Logistics Control Tower", icon: "⛭", group: "Visão Geral & Inteligência", vol: 5, description: "Eventos, SLA, alertas e exceções da cadeia logística" },
