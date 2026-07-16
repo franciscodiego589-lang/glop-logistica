@@ -15,13 +15,14 @@ const ESTADO_LABEL: Record<string, string> = {
 export default async function FinanceiroDrePage({ searchParams }: { searchParams?: { dias?: string } }) {
   const supabase = createClient();
   const company = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID;
-  const dias = Math.max(Number(searchParams?.dias ?? 30) || 30, 1);
+  const dias = Math.max(Math.trunc(Number(searchParams?.dias ?? 30)) || 30, 1); // inteiro (param int)
 
   if (!supabase || !company) {
     return <div className="space-y-4"><h1 className="text-2xl font-extrabold">Financeiro — DRE</h1><VitrineBanner /></div>;
   }
 
-  const { data } = await supabase.rpc("financeiro_dre", { p_company: company, p_days: dias });
+  const { data, error } = await supabase.rpc("financeiro_dre", { p_company: company, p_days: dias });
+  const erro = !!error && data == null;
   const d = (data ?? {}) as any;
   const receita = Number(d.receita_bruta ?? 0);
   const comissao = Number(d.comissao_coproducao ?? 0);
@@ -49,7 +50,14 @@ export default async function FinanceiroDrePage({ searchParams }: { searchParams
         </div>
       </div>
 
-      {semDados ? (
+      {erro ? (
+        <div className="card p-6 text-center" style={{ borderLeft: "3px solid var(--danger)" }}>
+          <div className="text-3xl mb-2">⚠️</div>
+          <div className="font-bold">Não foi possível carregar o DRE</div>
+          <p className="text-sm muted mt-1">Houve uma falha ao consultar os números. Recarregue a página ou tente outro período.</p>
+          <Link href="/financeiro-dre?dias=30" className="inline-block mt-3 px-4 py-2 rounded-lg border text-sm font-semibold no-underline" style={{ borderColor: "var(--border)" }}>Recarregar →</Link>
+        </div>
+      ) : semDados ? (
         <div className="card p-6 text-center">
           <div className="text-3xl mb-2">📊</div>
           <div className="font-bold">Sem vendas no período</div>

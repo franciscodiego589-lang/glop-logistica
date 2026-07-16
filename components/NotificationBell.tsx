@@ -17,19 +17,29 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [itens, setItens] = useState<Item[]>([]);
   const [total, setTotal] = useState(0);
+  const [erro, setErro] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const seq = useRef(0);        // #5 descarta respostas fora de ordem
+  const mounted = useRef(true);
 
   async function load() {
     if (!supabase || !COMPANY) return;
-    const { data } = await supabase.rpc("alertas_resumo", { p_company: COMPANY });
-    const d = data as any;
-    if (d) { setItens((d.itens ?? []).filter((i: Item) => i.n > 0)); setTotal(d.total ?? 0); }
+    const my = ++seq.current;
+    const { data, error } = await supabase.rpc("alertas_resumo", { p_company: COMPANY });
+    if (!mounted.current || my !== seq.current) return; // resposta velha/desmontado: ignora
+    if (error) { setErro(true); return; }               // #4 não finge "tudo em ordem" no erro
+    setErro(false);
+    const its = (((data as any)?.itens ?? []) as Item[]).filter((i) => i.n > 0);
+    setItens(its);
+    // #3 badge = soma dos itens acionáveis exibidos (erro/alerta) → sempre bate com a lista
+    setTotal(its.filter((i) => i.nivel === "erro" || i.nivel === "alerta").reduce((s, i) => s + i.n, 0));
   }
 
   useEffect(() => {
+    mounted.current = true;
     load();
     const id = setInterval(load, 90_000); // atualiza a cada 1,5 min
-    return () => clearInterval(id);
+    return () => { mounted.current = false; clearInterval(id); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
@@ -56,7 +66,12 @@ export default function NotificationBell() {
             <button onClick={load} className="text-xs muted hover:opacity-70">atualizar ↻</button>
           </div>
           <div className="h-px my-1" style={{ background: "var(--border)" }} />
-          {itens.length === 0 ? (
+          {erro ? (
+            <div className="px-3 py-6 text-center text-sm">
+              <div style={{ color: "var(--danger)" }}>⚠️ Não foi possível carregar os alertas.</div>
+              <button onClick={load} className="mt-2 text-xs font-semibold" style={{ color: "var(--brand)" }}>tentar de novo ↻</button>
+            </div>
+          ) : itens.length === 0 ? (
             <div className="px-3 py-6 text-center text-sm muted">✅ Tudo em ordem. Nada fora do padrão.</div>
           ) : (
             itens.map((i) => {

@@ -5,10 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 const STATUS_LABEL: Record<string, string> = {
   draft: "Criado", planned: "Planejado", dispatched: "Despachado", in_transit: "Em trânsito", out_for_delivery: "Saiu para entrega",
   delivered: "Entregue", returned: "Devolvido", canceled: "Cancelado", posted: "Postado", accepted: "Aceito", awaiting_pickup: "Aguardando retirada",
-  // store_orders (pedidos de loja rastreados pelos Correios)
-  recebido: "Recebido", importado: "Importado", pronto_despacho: "Pronto p/ despacho", pre_postado: "Pré-postado",
-  etiquetado: "Etiquetado", postado: "Postado", em_transito: "Em trânsito", saiu_entrega: "Saiu para entrega",
-  entregue: "Entregue", devolvido: "Devolvido", extraviado: "Extraviado",
+  // status público de pedidos de loja (rastreio_publico já normaliza os estados internos)
+  processando: "Em preparação", postado: "Postado", em_transito: "Em trânsito", saiu_entrega: "Saiu para entrega",
+  entregue: "Entregue", cancelado: "Cancelado", devolvido: "Devolvido",
 };
 const EVENT_LABEL: Record<string, string> = {
   created: "Objeto criado", picked_up: "Coletado", in_transit: "Em trânsito", out_for_delivery: "Saiu para entrega",
@@ -22,17 +21,21 @@ export default function RastreioPage() {
   const [res2, setRes2] = useState<any>(null);
   const [busy, setBusy] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [err, setErr] = useState(false);
 
   async function track() {
     if (!supabase || !code.trim()) return;
-    setBusy(true); setSearched(true); setRes2(null);
-    const { data } = await supabase.rpc("public_track", { p_code: code.trim() });
+    setBusy(true); setSearched(true); setRes2(null); setErr(false);
+    const { data, error } = await supabase.rpc("public_track", { p_code: code.trim() });
     setRes(data);
     // Fallback: pedidos de loja (store_orders) rastreados pelo código dos Correios
+    let d2: any = null, err2: any = null;
     if (!data || !(data as any).found) {
-      const { data: d2 } = await supabase.rpc("rastreio_publico", { p_codigo: code.trim() });
+      const r2 = await supabase.rpc("rastreio_publico", { p_codigo: code.trim() });
+      d2 = r2.data; err2 = r2.error;
       setRes2(d2);
     }
+    setErr((!!error && data == null) && (!!err2 && d2 == null)); // só é erro se as duas falharam
     setBusy(false);
   }
   const events = (res?.events ?? []) as any[];
@@ -53,7 +56,10 @@ export default function RastreioPage() {
           <button onClick={track} disabled={busy} className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold disabled:opacity-60">{busy ? "Buscando…" : "Rastrear"}</button>
         </div>
 
-        {searched && !busy && res && !res.found && (!res2 || !res2.found) && (
+        {searched && !busy && err && (
+          <div className="card p-6 mt-4 text-center" style={{ color: "var(--danger)" }}>Falha ao consultar o rastreio. Tente novamente em instantes.</div>
+        )}
+        {searched && !busy && !err && (!res || !res.found) && (!res2 || !res2.found) && (
           <div className="card p-6 mt-4 text-center muted">Nenhum objeto encontrado com esse código. Confira e tente novamente.</div>
         )}
 

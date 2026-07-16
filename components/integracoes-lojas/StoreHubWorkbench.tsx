@@ -36,6 +36,8 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   const [sels, setSels] = useState<Set<string>>(new Set());   // #4 ações em massa
   const [autoSync, setAutoSync] = useState(false);            // #2 sincronização automática
   const autoRef = useRef<any>(null);
+  const inflight = useRef(false);                              // trava anti-sobreposição de pull
+  const pullRef = useRef<(o?: any) => void>(() => {});         // sempre a versão mais nova de pull
 
   const conn = connectors.find((c) => c.id === sel) ?? connectors[0];
   const rows = useMemo(() => orders.filter((o) => o.connector_id === sel), [orders, sel]);
@@ -64,7 +66,8 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   // Puxa os pedidos com opções (modo, período, status). A rota devolve blocos de
   // páginas (has_more/next_page); aqui seguimos até acabar, com progresso.
   async function pull(opts: { mode?: "full" | "incremental"; since_days?: number; statuses?: number[]; label?: string } = {}) {
-    if (!conn) return; setBusy("pull"); setProg("");
+    if (!conn || inflight.current) return;   // não sobrepõe outro pull em andamento
+    inflight.current = true; setBusy("pull"); setProg("");
     const verbo = opts.label ?? (opts.mode === "incremental" ? "Sincronizando" : "Puxando");
     let fromPage = 1, tot = 0, imp = 0, dup = 0, err = 0, guard = 0;
     try {
@@ -82,8 +85,9 @@ export default function StoreHubWorkbench({ connectors, orders }: {
         break;
       }
     } catch (e: any) { alert("Erro de rede: " + e.message); }
-    setBusy(""); setProg(""); router.refresh();
+    inflight.current = false; setBusy(""); setProg(""); router.refresh();
   }
+  pullRef.current = pull; // mantém a referência sempre atual (o timer chama a versão nova)
 
   // Devolve os códigos de rastreio à plataforma (Monetizze notifica o comprador).
   // Sem itens = envia todos os pendentes (com rastreio, ainda não enviados).
@@ -106,26 +110,32 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   }
 
   // #2 SINCRONIZAÇÃO AUTOMÁTICA: enquanto ligada e a aba aberta, puxa novas vendas
-  // a cada 10 min (modo incremental). Desliga sozinha ao sair da tela.
+  // a cada 10 min. Usa refs (versão nova de pull) + trava inflight → nunca sobrepõe.
   useEffect(() => {
     if (autoRef.current) { clearInterval(autoRef.current); autoRef.current = null; }
     if (autoSync && conectada) {
-      autoRef.current = setInterval(() => { if (!busy) pull({ mode: "incremental", label: "Auto-sync" }); }, 10 * 60_000);
+      autoRef.current = setInterval(() => { if (!inflight.current) pullRef.current({ mode: "incremental", label: "Auto-sync" }); }, 10 * 60_000);
     }
     return () => { if (autoRef.current) clearInterval(autoRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoSync, conectada, sel]);
+
+  // #6 ao trocar de loja, zera a seleção (senão a ação em massa cairia em pedidos de outra loja)
+  useEffect(() => { setSels(new Set()); }, [sel]);
 
   // #4 AÇÕES EM MASSA: aplica um novo status aos pedidos selecionados (RPC transition_store_order).
   const toggleSel = (id: string) => setSels((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const allShownSelected = filteredRows.length > 0 && filteredRows.every((o) => sels.has(o.id));
   const toggleAll = () => setSels(() => allShownSelected ? new Set() : new Set(filteredRows.map((o) => o.id)));
   async function bulkTransition(to: string, label: string) {
-    if (!supabase || sels.size === 0) return;
-    if (!confirm(`Marcar ${sels.size} pedido(s) como “${label}”?`)) return;
+    if (!supabase) return;
+    // só age em pedidos que existem na loja atual (defesa contra ids soltos/escondidos)
+    const ids = Array.from(sels).filter((id) => rows.some((r) => r.id === id));
+    if (ids.length === 0) { alert("Nenhum pedido válido selecionado nesta loja."); return; }
+    if (!confirm(`Marcar ${ids.length} pedido(s) como “${label}”?`)) return;
     setBusy("bulk");
     let ok = 0, fail = 0; const errs: string[] = [];
-    for (const id of Array.from(sels)) {
+    for (const id of ids) {
       const { error } = await supabase.rpc("transition_store_order", { p_company: COMPANY, p_order: id, p_to_state: to, p_reason: "ação em massa" });
       if (error) { fail++; if (errs.length < 4) errs.push(error.message); } else ok++;
     }
