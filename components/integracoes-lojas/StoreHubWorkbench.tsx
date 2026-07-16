@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ExportButton from "@/components/ui/ExportButton";
 
@@ -13,6 +13,7 @@ const STATUS_FILTERS: { key: string; label: string; match: (o: any) => boolean }
   { key: "all", label: "Todos", match: () => true },
   { key: "recebido", label: "Recebidos", match: (o) => o.state === "recebido" },
   { key: "sem_plano", label: "Sem plano", match: (o) => o.state === "sem_plano" },
+  { key: "endereco_invalido", label: "Endereço inválido", match: (o) => o.state === "endereco_invalido" },
   { key: "postado", label: "Postados", match: (o) => o.state === "postado" },
   { key: "em_transito", label: "Em trânsito", match: (o) => o.state === "em_transito" || o.state === "saiu_entrega" },
   { key: "entregue", label: "Entregues", match: (o) => o.state === "entregue" },
@@ -25,13 +26,17 @@ export default function StoreHubWorkbench({ connectors, orders }: {
 }) {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // deep-link do sino: /integracoes-lojas?status=sem_plano abre já filtrado
+  const paramStatus = searchParams.get("status");
+  const initialStatus = STATUS_FILTERS.some((f) => f.key === paramStatus) ? (paramStatus as string) : "all";
   const [sel, setSel] = useState<string>(connectors[0]?.id ?? "");
   const [key, setKey] = useState("");
   const [busy, setBusy] = useState("");
   const [prog, setProg] = useState("");
   const [showConn, setShowConn] = useState(connectors.length === 0);
   const [trk, setTrk] = useState<Record<string, string>>({});
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [search, setSearch] = useState("");
   const [sels, setSels] = useState<Set<string>>(new Set());   // #4 ações em massa
   const [autoSync, setAutoSync] = useState(false);            // #2 sincronização automática

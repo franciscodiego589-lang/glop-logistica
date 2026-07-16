@@ -1,14 +1,10 @@
 import Link from "next/link";
-import { NAV } from "@/lib/nav";
+import { NAV, NAV_GROUPS } from "@/lib/nav";
 import { getHelp } from "@/lib/help";
 
 export const dynamic = "force-static";
 
-const GROUP_ORDER = [
-  "Visão Geral & Inteligência", "Fluxo Operacional", "Estoque & Armazém",
-  "Suprimentos", "Transporte & Pátio", "Expedição & Distribuição",
-  "Comércio Exterior", "Cliente & Pós-Venda", "Plataforma",
-];
+const GROUP_ORDER = NAV_GROUPS;
 
 export default function ManualPage() {
   const groups = GROUP_ORDER.filter((g) => NAV.some((n) => n.group === g));
