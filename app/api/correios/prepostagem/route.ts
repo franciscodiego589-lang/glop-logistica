@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { correiosBearerCartao, correiosPrepostagem, correiosConfigurado } from "@/lib/correios";
+import { correiosBearerCartao, correiosPrepostagem, correiosConfigurado, correiosCep } from "@/lib/correios";
 
 export const dynamic = "force-dynamic";
 
@@ -37,26 +37,36 @@ export async function POST(req: Request) {
   const servico = String(body.servico_codigo ?? "03298"); // PAC contrato AG (default)
   const peso_g = Number(body.peso_g) || (o.weight_kg ? Math.round(Number(o.weight_kg) * 1000) : 300);
   const dims = body.dimensoes ?? { altura: 5, largura: 12, comprimento: 18 };
+  const foneOk = (f: any) => { const d = dig(f); return d.length === 10 || d.length === 11; };
 
-  const payload = {
+  // Os pedidos geralmente vêm sem logradouro/bairro — enriquece pelo CEP (Correios exige).
+  let logradouro = o.dest_street, bairro = o.dest_district;
+  if (!logradouro || !bairro) {
+    try { const c: any = await correiosCep(o.dest_zip); logradouro = logradouro || c.logradouro; bairro = bairro || c.bairro; } catch {}
+  }
+  const valorDecl = (Number(o.value) > 0 ? Number(o.value) : 1).toFixed(2).replace(".", ",");
+  const enderecoDest = { cep: dig(o.dest_zip), logradouro: logradouro || "Centro", numero: String(o.dest_number ?? "SN"), bairro: bairro || "Centro", cidade: o.dest_city, uf: o.dest_uf };
+
+  const payload: any = {
     codigoServico: servico,
     numeroCartaoPostagem: String(rem.numero_cartao_postagem),
-    cienteObjetoNaoProibido: 1,
+    cienteObjetoNaoProibido: "1",
     modalidadePagamento: "2",
+    codigoFormatoObjetoInformado: String(body.formato ?? "2"), // 1=envelope, 2=pacote/caixa, 3=rolo
+    pesoInformado: String(peso_g),
+    alturaInformada: String(dims.altura), larguraInformada: String(dims.largura), comprimentoInformado: String(dims.comprimento),
     remetente: {
-      nome: rem.nome, cpfCnpj: dig(rem.documento),
-      dddTelefone: ddd(rem.telefone), telefone: num(rem.telefone), email: rem.email,
-      endereco: { cep: dig(rem.cep), logradouro: rem.endereco, numero: String(rem.numero ?? "S/N"), complemento: rem.complemento ?? "", bairro: rem.bairro, cidade: rem.cidade, uf: rem.estado },
+      nome: rem.nome, cpfCnpj: dig(rem.documento), email: rem.email ?? "",
+      ...(foneOk(rem.telefone) ? { dddTelefone: ddd(rem.telefone), telefone: num(rem.telefone) } : {}),
+      endereco: { cep: dig(rem.cep), logradouro: rem.endereco, numero: String(rem.numero ?? "SN"), bairro: rem.bairro, cidade: rem.cidade, uf: rem.estado },
     },
     destinatario: {
       nome: o.buyer_name, cpfCnpj: dig(o.buyer_doc), email: o.buyer_email ?? "",
-      dddTelefone: ddd(o.buyer_phone), telefone: num(o.buyer_phone),
-      endereco: { cep: dig(o.dest_zip), logradouro: o.dest_street, numero: String(o.dest_number ?? "S/N"), bairro: o.dest_district, cidade: o.dest_city, uf: o.dest_uf },
+      ...(foneOk(o.buyer_phone) ? { dddTelefone: ddd(o.buyer_phone), telefone: num(o.buyer_phone) } : {}),
+      endereco: enderecoDest,
     },
-    servicosAdicionais: [],
-    pesoInformado: peso_g,
-    dimensoes: dims,
-    observacao: "Pedido " + o.sale_number,
+    itensDeclaracaoConteudo: [{ conteudo: String(o.product_name ?? "Produto").slice(0, 60), quantidade: "1", valor: valorDecl }],
+    observacao: ("Pedido " + o.sale_number).slice(0, 50),
   };
 
   // 1) grava prepostagem 'pendente' com o request
@@ -65,7 +75,7 @@ export async function POST(req: Request) {
     peso_g, altura_cm: dims.altura, largura_cm: dims.largura, comprimento_cm: dims.comprimento,
     valor_declarado: Number(o.value) || null,
     destinatario_nome: o.buyer_name, destinatario_cep: dig(o.dest_zip),
-    destinatario_endereco: [o.dest_street, o.dest_number, o.dest_district].filter(Boolean).join(", "),
+    destinatario_endereco: [logradouro, o.dest_number, bairro].filter(Boolean).join(", "),
     destinatario_cidade: o.dest_city, destinatario_estado: o.dest_uf,
     status: "pendente", payload_request: payload, metadata: { store_order_id: o.id, sale_number: o.sale_number },
   }).select("id").single();
