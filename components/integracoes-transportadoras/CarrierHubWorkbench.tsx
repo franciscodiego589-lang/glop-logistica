@@ -96,7 +96,7 @@ export default function CarrierHubWorkbench({ dash, connectors, operations, cred
                 <tr key={q.code} className="border-b last:border-0" style={{ borderColor: "var(--border)", background: i === 0 ? "rgba(22,163,74,.06)" : undefined }}>
                   <td className="py-2 px-3 font-bold">{i + 1}º</td>
                   <td className="px-3 font-medium">{q.name ?? q.code} {i === 0 && <span className="badge badge-success ml-1">mais barato</span>}</td>
-                  <td className="px-3 text-right tabular-nums font-semibold">R$ {Number(q.freight).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+                  <td className="px-3 text-right tabular-nums font-semibold">R$ {Number(q.freight).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   <td className="px-3 text-right">{q.eta_days}d</td>
                   <td className="px-3 text-xs muted">{q.simulated ? "estimado" : "API"}</td>
                 </tr>))}</tbody>

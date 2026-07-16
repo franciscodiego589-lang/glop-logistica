@@ -4,7 +4,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const ESTADO_LABEL: Record<string, string> = {
   recebido: "Recebido", importado: "Importado", pronto_despacho: "Pronto p/ despacho", pre_postado: "Pré-postado",
   etiquetado: "Etiquetado", postado: "Postado", em_transito: "Em trânsito", saiu_entrega: "Saiu p/ entrega",

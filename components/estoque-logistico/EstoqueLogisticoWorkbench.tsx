@@ -4,7 +4,7 @@ import CrudPanel from "@/components/ui/CrudPanel";
 import { KpiCard } from "@/components/ui/KpiCard";
 
 const TABS = ["Painel", "Produtos", "Locais", "Movimentos", "Baixa Automática", "Registros de Estoque"] as const;
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const num = (v: any) => Number(v ?? 0).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
 const dt = (s: any) => s ? new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
 const TIPO_BADGE: Record<string, string> = { entrada: "badge-success", saida: "badge-danger", ajuste: "badge-warning", transferencia: "badge-neutral" };

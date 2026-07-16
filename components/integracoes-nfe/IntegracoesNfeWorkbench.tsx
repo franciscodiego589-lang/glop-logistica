@@ -8,7 +8,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 const TABS = ["Painel", "Pagamentos & Teste", "E-commerce & Marketplaces", "Chaves de API", "Nota Fiscal (NFe)", "Logs"] as const;
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const dt = (s: any) => s ? new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
 const nfeBadge = (s: string) => {
   const x = String(s ?? "").toLowerCase();

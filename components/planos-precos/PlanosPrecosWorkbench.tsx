@@ -93,7 +93,7 @@ export default function PlanosPrecosWorkbench({ planos, produtoPrecos, precos, r
             { key: "produto_codigo", label: "Código" },
             { key: "produto_nome", label: "Produto" },
             { key: "produtor_id", label: "Produtor" },
-            { key: "valor_unitario", label: "Valor", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) },
+            { key: "valor_unitario", label: "Valor", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
             { key: "ativo", label: "Ativo", fmt: (v) => boolTxt(v) },
           ]} />
       )}
@@ -115,7 +115,7 @@ export default function PlanosPrecosWorkbench({ planos, produtoPrecos, precos, r
             { key: "produtor_id", label: "Produtor" },
             { key: "quantidade_min", label: "Qtd. mín." },
             { key: "quantidade_max", label: "Qtd. máx." },
-            { key: "preco_unitario", label: "Preço", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) },
+            { key: "preco_unitario", label: "Preço", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
             { key: "ativo", label: "Ativo", fmt: (v) => boolTxt(v) },
           ]} />
       )}
@@ -164,7 +164,7 @@ export default function PlanosPrecosWorkbench({ planos, produtoPrecos, precos, r
             { key: "produtor_id", label: "Produtor" },
             { key: "qtd_min", label: "Qtd. mín." },
             { key: "qtd_max", label: "Qtd. máx." },
-            { key: "valor", label: "Frete", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) },
+            { key: "valor", label: "Frete", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
             { key: "observacao", label: "Observação" },
             { key: "ativo", label: "Ativo", fmt: (v) => boolTxt(v) },
           ]} />

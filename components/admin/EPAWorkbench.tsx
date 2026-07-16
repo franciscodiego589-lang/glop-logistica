@@ -171,7 +171,7 @@ function Moedas({ currencies }: { currencies: any[] }) {
           <div><label className="label">Para</label><select value={f.to} onChange={(e) => setF((p) => ({ ...p, to: e.target.value }))} className="select">{currencies.map((c) => <option key={c.id} value={c.code}>{c.code}</option>)}</select></div>
         </div>
         <button onClick={convert} className="btn btn-primary btn-sm">Converter</button>
-        {res?.result != null && <div className="text-2xl font-bold tabular-nums">{Number(res.result).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} <span className="text-sm muted">{f.to}</span></div>}
+        {res?.result != null && <div className="text-2xl font-bold tabular-nums">{Number(res.result).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm muted">{f.to}</span></div>}
       </div>
     </div>
   );

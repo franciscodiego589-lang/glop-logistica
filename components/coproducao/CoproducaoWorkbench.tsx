@@ -8,7 +8,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 
 const TABS = ["Painel", "Coprodutores", "Regras de Comissão", "Vendas & Comissões", "Repasses", "Split AppMax", "Configuração"] as const;
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const dt = (s: any) => s ? new Date(s).toLocaleDateString("pt-BR") : "—";
 const REPASSE_TONE: Record<string, string> = { pendente: "badge-warning", aprovado: "badge-neutral", pago: "badge-success", cancelado: "badge-neutral", estornado: "badge-danger", chargeback: "badge-danger", sem_coprodutor: "badge-neutral" };
 

@@ -7,7 +7,7 @@ import ExportButton from "@/components/ui/ExportButton";
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 const PLAT = (p: string) => ({ monetizze: "Monetizze", hotmart: "Hotmart", kiwify: "Kiwify", yampi: "Yampi", shopify: "Shopify", mercado_livre: "Mercado Livre", woocommerce: "WooCommerce", generic: "Genérico" } as any)[p] ?? p;
 const dt = (s: any) => s ? new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const STATUS_FILTERS: { key: string; label: string; match: (o: any) => boolean }[] = [
   { key: "all", label: "Todos", match: () => true },

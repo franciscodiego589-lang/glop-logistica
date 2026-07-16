@@ -4,7 +4,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default async function LogiaPage() {
   const supabase = createClient();
