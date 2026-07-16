@@ -70,12 +70,16 @@ type PageResult = { sales: Pulled[]; pages: number; recordCount: number };
 // Aplica uma sobreposição para capturar mudanças de status recentes (pago/reembolso)
 // em vendas que já existiam — a idempotência evita duplicar.
 const INCREMENTAL_OVERLAP_MS = 2 * 24 * 60 * 60 * 1000;
-function monetizzeIncrementalQS(sinceISO: string | null): string {
-  if (!sinceISO) return "";
-  const since = new Date(new Date(sinceISO).getTime() - INCREMENTAL_OVERLAP_MS);
-  if (isNaN(since.getTime())) return "";
-  const s = since.toISOString().slice(0, 19).replace("T", " ");
-  return "&date_min=" + encodeURIComponent(s);
+// Filtro da /transactions: data de cadastro (date_min) + status[] (1=aguardando,
+// 2=finalizada, 3=cancelada, 4=devolvida, 5=bloqueada, 6=completa).
+function monetizzeFilterQS(sinceISO: string | null, statuses?: number[]): string {
+  let qs = "";
+  if (sinceISO) {
+    const since = new Date(new Date(sinceISO).getTime() - INCREMENTAL_OVERLAP_MS);
+    if (!isNaN(since.getTime())) qs += "&date_min=" + encodeURIComponent(since.toISOString().slice(0, 19).replace("T", " "));
+  }
+  for (const s of (statuses ?? [])) if (Number.isInteger(s)) qs += "&status%5B%5D=" + s;
+  return qs;
 }
 
 async function monetizzePage(token: string, page: number, filterQS: string): Promise<PageResult> {
@@ -135,6 +139,9 @@ export async function POST(req: Request) {
   const fromPage = Math.max(1, Number(body.from_page) || 1);
   // "full" = puxa tudo; "incremental" = só vendas novas desde a última sincronização.
   const mode = body.mode === "incremental" ? "incremental" : "full";
+  // Opções extras: puxar últimos N dias (since_days) e filtrar por status (statuses[]).
+  const sinceDays = Number(body.since_days) > 0 ? Number(body.since_days) : 0;
+  const statuses: number[] = Array.isArray(body.statuses) ? body.statuses.map(Number).filter((n: number) => Number.isInteger(n)) : [];
   if (!connectorId) return Response.json({ error: "connector_id ausente" }, { status: 400 });
 
   const { data: conn, error: ce } = await supabase
@@ -143,11 +150,14 @@ export async function POST(req: Request) {
   if (ce || !conn) return Response.json({ error: "Conector não encontrado" }, { status: 404 });
   if (!conn.webhook_token) return Response.json({ error: "Cole a chave da API neste conector antes de puxar." }, { status: 400 });
 
-  // No incremental, filtra pela última sincronização; se nunca sincronizou, últimos 30 dias.
+  // since_days (opção "últimos N dias") tem prioridade; senão incremental usa a
+  // última sincronização; full sem filtro de data.
   const meta = (conn.metadata ?? {}) as Record<string, any>;
-  const sinceISO = mode === "incremental"
-    ? (meta.last_pull_at ?? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-    : null;
+  const sinceISO = sinceDays
+    ? new Date(Date.now() - sinceDays * 24 * 60 * 60 * 1000).toISOString()
+    : mode === "incremental"
+      ? (meta.last_pull_at ?? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      : null;
 
   let sales: Pulled[] = [];
   let hasMore = false, nextPage: number | null = null, pagesTotal = fromPage, recordCount = 0, pageTo = fromPage;
@@ -155,7 +165,7 @@ export async function POST(req: Request) {
   try {
     if (conn.platform === "monetizze") {
       const token = await monetizzeToken(conn.webhook_token);
-      const filterQS = monetizzeIncrementalQS(sinceISO);
+      const filterQS = monetizzeFilterQS(sinceISO, statuses);
       const started = Date.now();
       let page = fromPage;
       do {
