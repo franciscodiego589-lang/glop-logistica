@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     count(supabase, "store_connectors", byCo),
     supabase.from("coproducao_repasses").select("total_liquido_repassar", { count: "exact" }).eq("company_id", company).is("deleted_at", null).in("status", ["aberto", "conferido", "aprovado"]).limit(500),
     count(supabase, "prepostagens", (q: any) => byCo(q).not("erro", "is", null)),
-    count(supabase, "nfe_emissoes", (q: any) => byCo(q).ilike("status", "%autoriz%")),
+    count(supabase, "nfe_emissoes", (q: any) => byCo(q).or("status.ilike.%autoriz%,status.ilike.%emit%")),
     count(supabase, "nfe_emissoes", (q: any) => byCo(q).ilike("status", "%erro%")),
     supabase.from("store_orders").select("sale_number,buyer_name,product_name,value,state,created_at").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(8),
   ]);

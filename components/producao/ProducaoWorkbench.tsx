@@ -81,7 +81,7 @@ export default function ProducaoWorkbench({ ordens, lotes, insumos = [] }: { ord
             { key: "quantidade", label: "Qtde" }, { key: "status", label: "Status" },
             { key: "data_prevista", label: "Prevista", fmt: (v) => dt(v) },
           ]} />
-      ) : (
+      ) : tab === "lotes" ? (
         <CrudPanel table="producao_lotes" title="Lotes & Validade" rows={lotes}
           emptyHint="Registre cada lote fabricado com data de fabricação e validade — rastreabilidade e alerta de vencimento."
           fields={[
@@ -98,7 +98,7 @@ export default function ProducaoWorkbench({ ordens, lotes, insumos = [] }: { ord
             { key: "quantidade", label: "Qtde" }, { key: "validade", label: "Validade", fmt: (v) => dt(v) },
             { key: "status", label: "Status" },
           ]} />
-      )}
+      ) : null}
     </div>
   );
 }

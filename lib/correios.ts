@@ -28,20 +28,21 @@ export async function correiosRastreio(codigo: string): Promise<any> {
 }
 
 // Mapeia o evento SRO dos Correios para o estado do pedido (store_orders.state).
-export function sroEventoParaEstado(tipo: string, descricao: string): string | null {
-  const t = (tipo ?? "").toUpperCase();
+// IMPORTANTE: BDE/BDI/BDR (família "Baixa de Distribuição") cobrem MUITOS desfechos
+// (entregue, ausente, endereço errado, devolvido ao remetente) — decide-se pela
+// DESCRIÇÃO do evento, e devolução tem prioridade sobre "entregue".
+export function sroEventoParaEstado(_tipo: string, descricao: string): string | null {
   const d = (descricao ?? "").toLowerCase();
-  if (t === "BDE" || t === "BDI" || t === "BDR" || d.includes("entregue")) return "entregue";
+  if (d.includes("devolv") || d.includes("ao remetente")) return "devolvido";
+  if (d.includes("entregue") && !d.includes("remetente")) return "entregue";
   if (d.includes("saiu para entrega") || d.includes("saiu para entregar")) return "saiu_entrega";
-  if (t === "OEC") return "saiu_entrega";
-  if (d.includes("devolv")) return "devolvido";
-  if (d.includes("postado") || t === "PO" || t === "PMT") return "postado";
-  if (d.includes("encaminhado") || d.includes("trânsito") || d.includes("transito") || d.includes("recebido")) return "em_transito";
+  if (d.includes("postado")) return "postado";
+  if (d.includes("encaminhado") || d.includes("trânsito") || d.includes("transito") || d.includes("recebido") || d.includes("em transferência")) return "em_transito";
   return null;
 }
 
 // cache em memória do token Basic (só usado no fallback; a chave CWS é usada direto)
-let _cartaoMem: { token: string; exp: number } | null = null;
+let _cartaoMem: { cartao: string; token: string; exp: number } | null = null;
 
 // Resolve o Bearer para o cartão de postagem (prepostagem + rótulo).
 export async function correiosBearerCartao(cartao: string): Promise<string> {
@@ -50,7 +51,7 @@ export async function correiosBearerCartao(cartao: string): Promise<string> {
   // Chave CWS / JWT → usa direto (não passa por /token/v1/*).
   if (t.startsWith("cws-") || t.startsWith("eyJ")) return t;
   // Basic (usuario:codigoAcesso ou base64) → autentica no cartão de postagem.
-  if (_cartaoMem && _cartaoMem.exp - Date.now() > TOKEN_SAFETY_MS) return _cartaoMem.token;
+  if (_cartaoMem && _cartaoMem.cartao === cartao && _cartaoMem.exp - Date.now() > TOKEN_SAFETY_MS) return _cartaoMem.token;
   const basic = t.includes(":") ? Buffer.from(t).toString("base64") : t;
   const res = await fetch(`${BASE}/token/v1/autentica/cartaopostagem`, {
     method: "POST",
@@ -59,7 +60,7 @@ export async function correiosBearerCartao(cartao: string): Promise<string> {
   });
   const j: any = await res.json().catch(() => ({}));
   if (!res.ok || !j.token) throw new Error("Falha ao autenticar cartão de postagem: " + (j.mensagem ?? ("HTTP " + res.status)));
-  _cartaoMem = { token: j.token, exp: j.expiraEm ? new Date(j.expiraEm).getTime() : Date.now() + 3600e3 };
+  _cartaoMem = { cartao, token: j.token, exp: j.expiraEm ? new Date(j.expiraEm).getTime() : Date.now() + 3600e3 };
   return j.token;
 }
 

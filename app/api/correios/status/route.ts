@@ -1,10 +1,15 @@
+import { createClient } from "@/lib/supabase/server";
 import { correiosConfigurado, cepToken, correiosCep } from "@/lib/correios";
 
 export const dynamic = "force-dynamic";
 
 // Diagnóstico: informa (sem vazar segredo) se as chaves Correios chegaram à função
-// e faz um teste ao vivo de CEP. Retorna só booleanos + resultado público.
+// e faz um teste ao vivo de CEP. Retorna só booleanos + resultado público. Exige login.
 export async function GET() {
+  const supabase = createClient();
+  if (!supabase) return Response.json({ error: "Supabase não configurado" }, { status: 500 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return Response.json({ error: "Não autenticado" }, { status: 401 });
   const out: any = {
     pedidos_token_presente: correiosConfigurado(),
     cep_token_presente: !!cepToken(),

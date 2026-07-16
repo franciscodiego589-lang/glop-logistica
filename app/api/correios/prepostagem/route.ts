@@ -99,12 +99,14 @@ export async function POST(req: Request) {
       codigo_objeto: codigoObjeto, id_prepostagem: idPre ? String(idPre) : null, servico_nome: servNome,
       status: "criada", payload_response: r.body,
     }).eq("id", (pre as any).id);
-    // propaga o rastreio pro pedido
+    // propaga o rastreio pro pedido (checa erros — não deixa falhar em silêncio)
+    let propagacao = "ok";
     if (codigoObjeto) {
-      await supabase.rpc("transition_store_order", { p_company: company, p_order: o.id, p_to_state: "pre_postado", p_reason: "prepostagem Correios" }).then(() => {});
-      await supabase.from("store_orders").update({ tracking_code: codigoObjeto }).eq("id", o.id).eq("company_id", company);
+      const { error: ue } = await supabase.from("store_orders").update({ tracking_code: codigoObjeto }).eq("id", o.id).eq("company_id", company);
+      const { error: te } = await supabase.rpc("transition_store_order", { p_company: company, p_order: o.id, p_to_state: "pre_postado", p_reason: "prepostagem Correios" });
+      if (ue || te) { propagacao = "parcial"; console.error("prepostagem propagação", { ue, te }); }
     }
-    return Response.json({ ok: true, codigo_objeto: codigoObjeto, id_prepostagem: idPre, prepostagem_id: (pre as any).id });
+    return Response.json({ ok: true, codigo_objeto: codigoObjeto, id_prepostagem: idPre, prepostagem_id: (pre as any).id, propagacao });
   }
 
   const msg = String(r.body?.mensagem ?? r.body?.msgs?.[0] ?? r.body?.erro ?? ("HTTP " + r.status)).slice(0, 800);

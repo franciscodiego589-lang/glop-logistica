@@ -33,7 +33,7 @@ export default function InventarioWorkbench({ itens }: { itens: any[] }) {
         columns={[
           { key: "produto_nome", label: "Produto" }, { key: "local", label: "Local" },
           { key: "qtd_sistema", label: "Sistema" }, { key: "qtd_contada", label: "Contado" },
-          { key: "qtd_sistema", label: "Diferença", fmt: (_v, r) => String(Number(r.qtd_contada ?? 0) - Number(r.qtd_sistema ?? 0)) },
+          { key: "diferenca", label: "Diferença", fmt: (_v, r) => String(Number(r.qtd_contada ?? 0) - Number(r.qtd_sistema ?? 0)) },
         ]} />
     </div>
   );

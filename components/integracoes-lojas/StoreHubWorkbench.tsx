@@ -128,6 +128,18 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   // #6 ao trocar de loja, zera a seleção (senão a ação em massa cairia em pedidos de outra loja)
   useEffect(() => { setSels(new Set()); }, [sel]);
 
+  // deep-link do sino (?status=): seleciona a loja que tem MAIS pedidos naquele status
+  useEffect(() => {
+    if (initialStatus === "all") return;
+    const f = STATUS_FILTERS.find((x) => x.key === initialStatus);
+    if (!f) return;
+    const cnt: Record<string, number> = {};
+    for (const o of orders) if (f.match(o)) cnt[o.connector_id] = (cnt[o.connector_id] ?? 0) + 1;
+    const best = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
+    if (best && best[0] !== sel) setSel(best[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // #4 AÇÕES EM MASSA: aplica um novo status aos pedidos selecionados (RPC transition_store_order).
   const toggleSel = (id: string) => setSels((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const allShownSelected = filteredRows.length > 0 && filteredRows.every((o) => sels.has(o.id));

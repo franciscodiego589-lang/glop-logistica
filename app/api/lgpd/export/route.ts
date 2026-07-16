@@ -17,22 +17,12 @@ export async function POST(req: Request) {
   const email = String(body.email ?? "").trim().toLowerCase();
   if (!doc && !email) return Response.json({ error: "Informe o CPF/CNPJ ou o e-mail do titular." }, { status: 400 });
 
-  let q = supabase.from("store_orders")
-    .select("sale_number,platform,buyer_name,buyer_doc,buyer_email,buyer_phone,dest_zip,dest_street,dest_number,dest_district,dest_city,dest_uf,product_name,value,state,tracking_code,created_at")
-    .eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(2000);
-  if (doc) q = q.eq("buyer_doc", doc);
-  else q = q.ilike("buyer_email", email);
-  const { data: pedidos } = await q;
-
-  const lista = pedidos ?? [];
-  const titular = lista[0] ? { nome: lista[0].buyer_name, documento: lista[0].buyer_doc, email: lista[0].buyer_email, telefone: lista[0].buyer_phone } : { documento: doc || null, email: email || null };
-
-  return Response.json({
-    lgpd: "Relatório de dados pessoais do titular (art. 18, LGPD) — gerado pelo GLOP",
-    gerado_em: new Date().toISOString(),
-    titular,
-    total_pedidos: lista.length,
-    pedidos: lista,
-    observacao: "Dados tratados na qualidade de operador/controlador conforme a Política de Privacidade. Para exclusão/anonimização, acionar o Encarregado.",
-  });
+  // RPC guardada por permissão (admin.read); casa o documento por dígitos (grava formatado ou cru)
+  const { data, error } = await supabase.rpc("lgpd_export_titular", { p_company: company, p_doc: doc || null, p_email: email || null });
+  if (error) {
+    if (/forbidden/i.test(error.message)) return Response.json({ error: "Sem permissão para exportar dados de titular." }, { status: 403 });
+    console.error("lgpd export", error);
+    return Response.json({ error: "Não foi possível gerar o relatório." }, { status: 500 });
+  }
+  return Response.json({ ...(data as any), observacao: "Dados tratados conforme a Política de Privacidade. Para exclusão/anonimização, acionar o Encarregado." });
 }

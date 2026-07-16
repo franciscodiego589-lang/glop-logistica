@@ -25,8 +25,8 @@ export default async function IntegracoesNfePage() {
   // Deriva o status das integrações SEM enviar nenhum segredo ao client.
   const produtores = (prodRes.data ?? []).map((p: any) => ({
     id: p.id, nome: p.nome, plataforma: p.plataforma, ativo: p.ativo,
-    monetizze_ativa: p.monetizze_ativa, has_monetizze: !!p.monetizze_api_key,
-    braip_ativa: p.braip_ativa, has_braip: !!p.braip_api_token,
+    monetizze_ativa: p.monetizze_ativa, has_monetizze: !!p.monetizze_ativa,
+    braip_ativa: p.braip_ativa, has_braip: !!p.braip_ativa,
     sislog_ativa: p.sislog_ativa, sislog_cnpj: p.sislog_cnpj_embarcador,
     has_vhsys: !!p.vhsys_cliente_id, vhsys_almox: p.vhsys_id_almoxarifado,
     emissao_nfe_ativa: p.emissao_nfe_ativa, cnpj: p.cnpj, razao_social: p.razao_social,

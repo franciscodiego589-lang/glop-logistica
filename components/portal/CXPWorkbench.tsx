@@ -236,8 +236,7 @@ function PortalUsers({ users, accounts }: { users: any[]; accounts: any[] }) {
             {users.map((u) => (
               <div key={u.id} className="flex items-center gap-2 text-sm">
                 <span className="flex-1">{u.name} · <span className="muted">{acctName(u.account_id)}</span></span>
-                <code className="text-xs px-2 py-1 rounded surface-2" style={{ border: "1px solid var(--border)" }}>{u.access_token}</code>
-                <button onClick={() => { navigator.clipboard?.writeText(u.access_token); setCopied(u.id); setTimeout(() => setCopied(null), 1500); }} className="btn btn-sm">{copied === u.id ? "copiado!" : "copiar"}</button>
+                <span className="text-xs muted">🔒 token protegido (não exposto por segurança)</span>
               </div>
             ))}
           </div>
