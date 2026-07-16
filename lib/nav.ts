@@ -83,6 +83,7 @@ export const NAV: NavItem[] = [
 
   // ── 💰 Financeiro ──────────────────────────────────────────────────────────
   { slug: "financeiro-dre", label: "Financeiro — DRE", icon: "💵", group: "Financeiro", vol: 68, description: "Demonstrativo de resultado com dados reais: receita bruta, comissões de coprodução, líquido da empresa, margem, ticket médio, receita por estado e canal" },
+  { slug: "financeiro-custos", label: "Custos & Despesas", icon: "🧮", group: "Financeiro", vol: 72, description: "Lance despesas (fixas/variáveis) e o custo de cada produto (CMV, frete médio, taxa de gateway) — a base para o lucro real por pedido" },
   { slug: "compras", label: "Suprimentos / Compras", icon: "🛒", group: "Financeiro", vol: 10, description: "Requisição → cotação → pedido → recebimento" },
 
   // ── 📋 Fiscal & Tributos ───────────────────────────────────────────────────

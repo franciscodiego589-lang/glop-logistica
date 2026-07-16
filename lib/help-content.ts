@@ -960,6 +960,18 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
     ],
   },
+  "financeiro-custos": {
+    resumo: "Onde você lança as despesas do negócio e o custo de cada produto. Com isso, o sistema calcula o LUCRO REAL de cada pedido (receita menos comissões, CMV, frete, taxas e despesas).",
+    itens: [
+      "Despesas: cadastre gastos fixos (aluguel, software, salários) e variáveis (marketing, frete, taxas) por competência.",
+      "Custos por Produto: informe o custo unitário (CMV), o frete médio e a taxa do gateway — o sistema casa pelo nome do produto que aparece nos pedidos.",
+      "Depois, o relatório 'Lucro Real por Pedido' mostra o resultado por produto, por canal e os pedidos mais lucrativos.",
+    ],
+    passos: [
+      "Cadastre o custo dos seus produtos na aba Custos por Produto.",
+      "Lance as despesas do mês e abra o relatório de Lucro Real por Pedido.",
+    ],
+  },
   "relatorios": {
     resumo: "Central de relatórios gerenciais com dados reais do sistema. Cada relatório traz indicadores (KPIs), quebras por dimensão (canal, estado, produto, status…), séries por dia e tabelas exportáveis. Os números são somados no banco, não no navegador.",
     itens: [
