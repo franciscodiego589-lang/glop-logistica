@@ -8,7 +8,7 @@ const TONE: Record<string, string> = {
 
 function fmt(v: any, f?: string): string {
   if (v == null || v === "") return "—";
-  if (f === "money") return "R$ " + Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+  if (f === "money") return "R$ " + Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   if (f === "int") return Number(v).toLocaleString("pt-BR");
   if (f === "pct") return Number(v).toLocaleString("pt-BR") + "%";
   if (f === "date") return new Date(v).toLocaleDateString("pt-BR");
