@@ -960,6 +960,19 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
     ],
   },
+  "relatorios": {
+    resumo: "Central de relatórios gerenciais com dados reais do sistema. Cada relatório traz indicadores (KPIs), quebras por dimensão (canal, estado, produto, status…), séries por dia e tabelas exportáveis. Os números são somados no banco, não no navegador.",
+    itens: [
+      "Comercial & Financeiro: Vendas, Coprodução & Comissões, Fiscal & NF-e.",
+      "Operação & Logística: Operacional (Pedidos), Logística & Envios, Integrações & Webhooks.",
+      "Inteligência & Governança: IA/LOGIA e Auditoria & Governança.",
+      "Em cada relatório dá pra trocar o período (7/30/90/365 dias) e exportar as tabelas em CSV.",
+    ],
+    passos: [
+      "Abra a Central de Relatórios e escolha o relatório.",
+      "Ajuste o período no topo e exporte o que precisar em CSV.",
+    ],
+  },
   "juridico": {
     resumo: "Reúne os documentos jurídicos da plataforma (minutas geradas por IA, para revisão de um advogado): privacidade, termos, cookies, segurança e conformidade com a LGPD. Os documentos públicos têm link sem login para você usar no site e no checkout.",
     itens: [

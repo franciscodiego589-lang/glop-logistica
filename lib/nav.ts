@@ -94,6 +94,7 @@ export const NAV: NavItem[] = [
   { slug: "auditoria-fretes", label: "Auditoria de Fretes & Custos (FACMS)", icon: "🧮", group: "Controladoria", vol: 36, description: "Auditoria automática cobrado×esperado, faturas/CT-e, glosas, custos logísticos, simulador de transportadora" },
 
   // ── 📊 Relatórios & IA ─────────────────────────────────────────────────────
+  { slug: "relatorios", label: "Central de Relatórios", icon: "📊", group: "Relatórios & IA", vol: 71, description: "Relatórios gerenciais com dados reais: vendas, operação, coprodução, integrações, logística, fiscal, IA e auditoria — KPIs, quebras, séries e exportação CSV" },
   { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Relatórios & IA", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Relatórios & IA", vol: 15, description: "Insights, previsões e planos de ação logísticos" },
   { slug: "ia-central", label: "LAIOS — Logistics AI OS", icon: "✦", group: "Relatórios & IA", vol: 15, description: "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa" },
