@@ -1,10 +1,13 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import CrudPanel from "@/components/ui/CrudPanel";
 import { KpiCard } from "@/components/ui/KpiCard";
 
-const TABS = ["Painel", "Integrações & Teste", "Chaves de API", "Nota Fiscal (NFe)", "Logs"] as const;
+const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
+const TABS = ["Painel", "Pagamentos & Teste", "E-commerce & Marketplaces", "Chaves de API", "Nota Fiscal (NFe)", "Logs"] as const;
 const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 const dt = (s: any) => s ? new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
 const nfeBadge = (s: string) => {
@@ -15,32 +18,84 @@ const nfeBadge = (s: string) => {
   return "badge-warning";
 };
 
-const PAGAMENTO = [
+const CHECKOUTS = [
   { key: "monetizze", nome: "Monetizze", icon: "🛒", desc: "Checkout e vendas de infoproduto" },
   { key: "appmax", nome: "AppMax", icon: "🔀", desc: "Checkout + split de pagamento" },
   { key: "braip", nome: "Braip", icon: "🧾", desc: "Checkout e afiliados" },
   { key: "hotmart", nome: "Hotmart", icon: "🔥", desc: "Infoprodutos e assinaturas" },
   { key: "kiwify", nome: "Kiwify", icon: "🥝", desc: "Checkout de infoproduto" },
-  { key: "mercadopago", nome: "Mercado Pago", icon: "💳", desc: "Gateway de pagamento (Pix/cartão)" },
-  { key: "pagseguro", nome: "PagSeguro", icon: "🏦", desc: "Gateway de pagamento (Pix/cartão)" },
+  { key: "eduzz", nome: "Eduzz", icon: "🟣", desc: "Infoprodutos" },
+  { key: "perfectpay", nome: "PerfectPay", icon: "🟢", desc: "Checkout de infoproduto" },
+  { key: "cakto", nome: "Cakto", icon: "🍫", desc: "Checkout de infoproduto" },
+];
+const GATEWAYS = [
+  { key: "mercadopago", nome: "Mercado Pago", icon: "💳", desc: "Pix / cartão / boleto" },
+  { key: "pagseguro", nome: "PagSeguro", icon: "🏦", desc: "Pix / cartão / boleto" },
   { key: "stripe", nome: "Stripe", icon: "💠", desc: "Pagamentos internacionais" },
+  { key: "paypal", nome: "PayPal", icon: "🅿️", desc: "Pagamentos internacionais" },
+  { key: "pagarme", nome: "Pagar.me", icon: "🟩", desc: "Gateway (Stone)" },
+  { key: "cielo", nome: "Cielo", icon: "🔵", desc: "Adquirente" },
+  { key: "rede", nome: "Rede", icon: "🔴", desc: "Adquirente (Itaú)" },
+  { key: "getnet", nome: "Getnet", icon: "🟠", desc: "Adquirente (Santander)" },
+  { key: "iugu", nome: "Iugu", icon: "🟦", desc: "Gateway / assinaturas" },
+  { key: "asaas", nome: "Asaas", icon: "💠", desc: "Gateway / cobranças" },
+  { key: "vindi", nome: "Vindi", icon: "🟪", desc: "Assinaturas / recorrência" },
+  { key: "picpay", nome: "PicPay", icon: "💚", desc: "Carteira / Pix" },
+  { key: "efi", nome: "Efí (Gerencianet)", icon: "🟨", desc: "Pix / boleto" },
+  { key: "ebanx", nome: "EBANX", icon: "🌎", desc: "Pagamentos LatAm" },
+  { key: "adyen", nome: "Adyen", icon: "🟩", desc: "Gateway internacional" },
+];
+const ECOMMERCE = [
+  { key: "shopify", nome: "Shopify", icon: "🛍", desc: "Loja / e-commerce" },
+  { key: "woocommerce", nome: "WooCommerce", icon: "🟣", desc: "WordPress / e-commerce" },
+  { key: "nuvemshop", nome: "Nuvemshop", icon: "☁️", desc: "Loja / e-commerce" },
+  { key: "tray", nome: "Tray", icon: "🟦", desc: "Loja / e-commerce" },
+  { key: "vtex", nome: "VTEX", icon: "⬛", desc: "E-commerce enterprise" },
+  { key: "loja_integrada", nome: "Loja Integrada", icon: "🟧", desc: "Loja / e-commerce" },
+  { key: "wix", nome: "Wix", icon: "⚫", desc: "Sites / e-commerce" },
+  { key: "magento", nome: "Magento", icon: "🟥", desc: "E-commerce" },
+  { key: "yampi", nome: "Yampi", icon: "🟨", desc: "Checkout / loja" },
+  { key: "cartpanda", nome: "CartPanda", icon: "🐼", desc: "Checkout / loja" },
+];
+const MARKETPLACES = [
+  { key: "mercadolivre", nome: "Mercado Livre", icon: "💛", desc: "Marketplace" },
+  { key: "amazon", nome: "Amazon", icon: "📦", desc: "Marketplace" },
+  { key: "shopee", nome: "Shopee", icon: "🧡", desc: "Marketplace" },
+  { key: "magalu", nome: "Magalu", icon: "🔵", desc: "Marketplace" },
 ];
 const LOGISTICA = [
   { key: "correios", nome: "Correios", icon: "📮", desc: "Prepostagem, etiqueta e rastreio (SRO)" },
   { key: "vhsys", nome: "VHSYS", icon: "🏬", desc: "Estoque e emissão de NF-e" },
   { key: "supabase", nome: "Banco de Dados", icon: "🗄", desc: "Backend do sistema" },
 ];
-const PROVIDERS = [...PAGAMENTO, ...LOGISTICA];
 
-export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKeys, apiLogs, webhookLogs }: {
-  produtores: any[]; nfe: any[]; baixa: any[]; apiKeys: any[]; apiLogs: any[]; webhookLogs: any[];
+export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKeys, apiLogs, webhookLogs, connectors = [] }: {
+  produtores: any[]; nfe: any[]; baixa: any[]; apiKeys: any[]; apiLogs: any[]; webhookLogs: any[]; connectors?: any[];
 }) {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
   const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
   const [tests, setTests] = useState<Record<string, any>>({});
   const [busy, setBusy] = useState("");
   const [novaChave, setNovaChave] = useState({ nome: "", escopos: "vendas:read,pedidos:read" });
   const [chaveGerada, setChaveGerada] = useState<string>("");
+
+  const connByPlatform = useMemo(() => new Set(connectors.map((c) => c.platform)), [connectors]);
+
+  // Adiciona uma conexão (registra a plataforma em store_connectors → aparece em Puxar Pedidos).
+  async function adicionar(platform: string, nome: string, categoria: string) {
+    if (!supabase) return; setBusy("add:" + platform);
+    try {
+      const { data: comp } = await supabase.from("companies").select("tenant_id").eq("id", COMPANY).single();
+      const code = (platform + "-" + Math.random().toString(36).slice(2, 7)).toUpperCase();
+      const { error } = await supabase.from("store_connectors").insert({
+        tenant_id: (comp as any)?.tenant_id, company_id: COMPANY, code, name: nome,
+        platform, categoria, auth_type: "apikey", status: "inactive",
+      });
+      if (error) alert("Erro ao adicionar: " + error.message); else router.refresh();
+    } catch (e: any) { alert("Erro: " + e.message); }
+    setBusy("");
+  }
 
   const p = produtores[0] ?? {};
   const nfeAutorizadas = nfe.filter((n) => nfeBadge(n.status) === "badge-success").length;
@@ -63,7 +118,36 @@ export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKey
     } catch (e: any) { setTests((t) => ({ ...t, [provider]: { ok: false, message: "Erro de rede: " + e.message } })); }
     setBusy("");
   }
-  async function testarTudo() { for (const pr of PROVIDERS) await testar(pr.key); }
+  async function testarLista(list: { key: string }[]) { for (const pr of list) await testar(pr.key); }
+
+  // Card de catálogo: mostra a plataforma, status (conectada?), e ações Testar/Adicionar.
+  function Catalogo({ list, addable, categoria }: { list: { key: string; nome: string; icon: string; desc: string }[]; addable?: boolean; categoria?: string }) {
+    return (
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+        {list.map((pr) => {
+          const st = tests[pr.key];
+          const conectada = connByPlatform.has(pr.key);
+          return (
+            <div key={pr.key} className="card p-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{pr.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm truncate">{pr.nome}</div>
+                  <div className="text-xs muted truncate">{pr.desc}</div>
+                </div>
+                {conectada && <span className="badge badge-success">conectada</span>}
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 flex-wrap">
+                <button onClick={() => testar(pr.key)} disabled={busy === "test:" + pr.key} className="px-2.5 py-1.5 rounded-lg card text-xs font-semibold disabled:opacity-50">{busy === "test:" + pr.key ? "Testando…" : "🔎 Testar"}</button>
+                {addable && !conectada && <button onClick={() => adicionar(pr.key, pr.nome, categoria ?? "outro")} disabled={busy === "add:" + pr.key} className="px-2.5 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold disabled:opacity-50">{busy === "add:" + pr.key ? "…" : "＋ Adicionar"}</button>}
+                {st && <span className={`text-xs font-medium ${st.ok ? "text-emerald-600" : "text-red-500"}`}>{st.ok ? "✅" : "🚨"} {st.message}{st.ms ? ` (${st.ms}ms)` : ""}</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   async function gerarChave() {
     if (!novaChave.nome.trim()) { alert("Dê um nome para a chave."); return; }
@@ -109,45 +193,45 @@ export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKey
         </div>
       )}
 
-      {tab === "Integrações & Teste" && (
-        <div className="space-y-3">
+      {tab === "Pagamentos & Teste" && (
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <div className="text-sm muted flex-1">Clique em <b>Testar</b> para checar cada integração ao vivo (roda no servidor — sua chave não sai do backend).</div>
-            <button onClick={testarTudo} disabled={busy.startsWith("test")} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">🔎 Testar todas</button>
+            <div className="text-sm muted flex-1">Catálogo de plataformas de pagamento. <b>Testar</b> checa se a API está no ar (roda no servidor — sua chave não sai do backend). <b>Adicionar</b> registra a plataforma para você configurar e puxar pedidos.</div>
+            <button onClick={() => testarLista([...CHECKOUTS, ...GATEWAYS, ...LOGISTICA])} disabled={busy.startsWith("test")} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50 whitespace-nowrap">🔎 Testar tudo</button>
           </div>
-          {[{ t: "💳 Plataformas de Pagamento", list: PAGAMENTO }, { t: "🚚 Logística & Fiscal", list: LOGISTICA }].map((sec) => (
-            <div key={sec.t}>
-              <div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">{sec.t}</div>
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {sec.list.map((pr) => {
-                  const st = tests[pr.key];
-                  const configurada = pr.key === "monetizze" ? p.has_monetizze : pr.key === "braip" ? p.has_braip : pr.key === "vhsys" ? p.has_vhsys : pr.key === "supabase" ? true : undefined;
-                  return (
-                    <div key={pr.key} className="card p-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{pr.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-bold text-sm">{pr.nome}</div>
-                          <div className="text-xs muted">{pr.desc}</div>
-                        </div>
-                        {configurada === true && <span className="badge badge-success">🔑</span>}
-                        {configurada === false && <span className="badge badge-neutral">sem chave</span>}
-                      </div>
-                      <div className="flex items-center gap-2 mt-3 flex-wrap">
-                        <button onClick={() => testar(pr.key)} disabled={busy === "test:" + pr.key} className="px-3 py-1.5 rounded-lg card text-sm font-semibold disabled:opacity-50">{busy === "test:" + pr.key ? "Testando…" : "🔎 Testar"}</button>
-                        {st && (
-                          <span className={`text-xs font-medium ${st.ok ? "text-emerald-600" : "text-red-500"}`}>
-                            {st.ok ? "✅" : "🚨"} {st.message}{st.ms ? ` (${st.ms}ms)` : ""}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-          <div className="card p-3 text-xs muted">O teste confirma se a API da plataforma está <b>no ar</b> (e valida a chave da Monetizze quando configurada). Para <b>cadastrar</b> a chave da Monetizze use <b>Puxar Pedidos de Lojas</b>; o split da AppMax fica em <b>Coprodução &amp; Split</b>.</div>
+          <div><div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">🛒 Checkouts de infoproduto</div><Catalogo list={CHECKOUTS} addable categoria="pagamento" /></div>
+          <div><div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">💳 Gateways de pagamento</div><Catalogo list={GATEWAYS} addable categoria="pagamento" /></div>
+          <div><div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">🚚 Logística & fiscal</div><Catalogo list={LOGISTICA} /></div>
+          <div className="card p-3 text-xs muted">Para <b>colar a chave</b> e <b>puxar pedidos</b> de uma plataforma adicionada, vá em <b>Puxar Pedidos de Lojas</b>. O split da AppMax fica em <b>Coprodução & Split</b>.</div>
+        </div>
+      )}
+
+      {tab === "E-commerce & Marketplaces" && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="text-sm muted flex-1">Conecte lojas e marketplaces para <b>puxar pedidos</b>. Clique <b>Adicionar</b> na plataforma; depois cole a chave e puxe em <b>Puxar Pedidos de Lojas</b>.</div>
+            <Link href="/integracoes-lojas" className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold no-underline whitespace-nowrap">⬇️ Puxar Pedidos</Link>
+          </div>
+          <div><div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">🛍 E-commerce</div><Catalogo list={ECOMMERCE} addable categoria="ecommerce" /></div>
+          <div><div className="text-xs font-semibold uppercase tracking-wide muted mb-1.5">🏬 Marketplaces</div><Catalogo list={MARKETPLACES} addable categoria="marketplace" /></div>
+
+          <div className="card p-0 overflow-x-auto">
+            <div className="px-4 pt-3 font-semibold text-sm">Minhas conexões <span className="badge badge-neutral ml-1">{connectors.length}</span></div>
+            {connectors.length === 0 ? <p className="text-sm muted p-4">Nenhuma conexão ainda. Adicione uma plataforma acima.</p> : (
+              <table className="w-full text-sm mt-2">
+                <thead><tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}><th className="py-2 px-4">Nome</th><th className="px-3">Plataforma</th><th className="px-3">Categoria</th><th className="px-3">Chave</th><th className="px-3">Status</th><th className="px-3"></th></tr></thead>
+                <tbody>{connectors.map((c) => (
+                  <tr key={c.id} className="border-b last:border-0" style={{ borderColor: "var(--border)" }}>
+                    <td className="py-2 px-4 font-medium">{c.producer_ref ?? c.name ?? c.code}</td>
+                    <td className="px-3 text-xs">{c.platform}</td>
+                    <td className="px-3 text-xs muted">{c.categoria ?? "—"}</td>
+                    <td className="px-3">{c.metadata?.key_set ? <span className="badge badge-success">🔑 configurada</span> : <span className="badge badge-neutral">sem chave</span>}</td>
+                    <td className="px-3">{c.status === "active" ? <span className="badge badge-success">ativa</span> : <span className="badge badge-neutral">{c.status}</span>}</td>
+                    <td className="px-3"><Link href="/integracoes-lojas" className="text-xs font-semibold" style={{ color: "var(--brand)" }}>configurar →</Link></td>
+                  </tr>))}</tbody>
+              </table>
+            )}
+          </div>
         </div>
       )}
 

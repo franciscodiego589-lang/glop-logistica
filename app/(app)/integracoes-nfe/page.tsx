@@ -10,7 +10,7 @@ export default async function IntegracoesNfePage() {
   if (!supabase || !company) {
     return <div className="space-y-4"><h1 className="text-xl font-bold">Integrações &amp; Nota Fiscal</h1><VitrineBanner /></div>;
   }
-  const [prodRes, nfe, baixa, apiKeys, apiLogs, webhookLogs] = await Promise.all([
+  const [prodRes, nfe, baixa, apiKeys, apiLogs, webhookLogs, connRes] = await Promise.all([
     supabase.from("produtores_integracao")
       .select("id,nome,plataforma,ativo,monetizze_ativa,monetizze_api_key,braip_ativa,braip_api_token,sislog_ativa,sislog_cnpj_embarcador,vhsys_cliente_id,vhsys_id_almoxarifado,emissao_nfe_ativa,cnpj,razao_social,inscricao_estadual,nfe_cfop,nfe_natureza_operacao")
       .eq("company_id", company).is("deleted_at", null).order("nome").limit(50),
@@ -19,6 +19,8 @@ export default async function IntegracoesNfePage() {
     supabase.from("produtor_api_keys").select("id,nome,key_prefix,escopos,ativo,last_used_at,revoked_at,created_at").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(100),
     supabase.from("api_logs").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
     supabase.from("webhook_logs").select("*").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(200),
+    // conexões (SEM webhook_token) — para "Minhas conexões" e adicionar plataformas
+    supabase.from("store_connectors").select("id,code,name,platform,producer_ref,status,categoria,metadata,last_event_at").eq("company_id", company).is("deleted_at", null).order("name").limit(300),
   ]);
   // Deriva o status das integrações SEM enviar nenhum segredo ao client.
   const produtores = (prodRes.data ?? []).map((p: any) => ({
@@ -37,5 +39,6 @@ export default async function IntegracoesNfePage() {
     apiKeys={apiKeys.data ?? []}
     apiLogs={apiLogs.data ?? []}
     webhookLogs={webhookLogs.data ?? []}
+    connectors={connRes.data ?? []}
   />;
 }
