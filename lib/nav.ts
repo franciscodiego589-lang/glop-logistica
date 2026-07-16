@@ -106,6 +106,7 @@ export const NAV: NavItem[] = [
   { slug: "demanda", label: "Demand Planning", icon: "📈", group: "Relatórios & IA", vol: 10, description: "Histórico, previsões e S&OP" },
 
   // ── 🛡️ Governança & Compliance ─────────────────────────────────────────────
+  { slug: "juridico", label: "Jurídico & Compliance", icon: "⚖️", group: "Governança & Compliance", vol: 70, description: "Documentos jurídicos do GLOP: Política de Privacidade (LGPD), Termos de Uso, Cookies, Política de Segurança, DPA e ROPA/RIPD — com links públicos para o comprador" },
   { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Governança & Compliance", vol: 16, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
   { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Governança & Compliance", vol: 16, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
   { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Governança & Compliance", vol: 16, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },

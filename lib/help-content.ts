@@ -960,6 +960,19 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
     ],
   },
+  "juridico": {
+    resumo: "Reúne os documentos jurídicos da plataforma (minutas geradas por IA, para revisão de um advogado): privacidade, termos, cookies, segurança e conformidade com a LGPD. Os documentos públicos têm link sem login para você usar no site e no checkout.",
+    itens: [
+      "Documentos públicos: Política de Privacidade, Termos de Uso e Política de Cookies — cada um com um link aberto (ex.: /privacidade) para o comprador.",
+      "Documentos internos: Política de Segurança da Informação, DPA (acordo de tratamento de dados) e ROPA/RIPD (registro + relatório de impacto).",
+      "Cada documento abre para leitura e pode ser impresso/salvo em PDF para enviar ao advogado.",
+      "São minutas: preencha os campos entre [colchetes] (razão social, CNPJ, Encarregado/DPO) e valide juridicamente antes de publicar.",
+    ],
+    passos: [
+      "Abra o documento, revise com seu advogado e preencha os dados da empresa.",
+      "Publique os links públicos (/privacidade, /termos, /cookies) no rodapé do site e no checkout.",
+    ],
+  },
   "rastreio": {
     resumo: "Página pública que o comprador usa para acompanhar o pedido pelo código de rastreio. Cobre tanto os pedidos logísticos quanto os pedidos de loja postados pelos Correios.",
     itens: [
