@@ -81,6 +81,15 @@ export async function POST(req: Request) {
   }).select("id").single();
   if (insErr) { console.error("prepostagem insert", insErr); return Response.json({ error: "Não foi possível registrar a prepostagem." }, { status: 500 }); }
 
+  // Modo SIMULAÇÃO (teste): não chama os Correios — gera código fictício e propaga.
+  if (body.simular === true) {
+    const codigoObjeto = "SM" + dig(o.sale_number).padStart(9, "0").slice(-9) + "BR";
+    await supabase.from("prepostagens").update({ codigo_objeto: codigoObjeto, status: "simulada", servico_nome: "SIMULAÇÃO" }).eq("id", (pre as any).id);
+    await supabase.from("store_orders").update({ tracking_code: codigoObjeto }).eq("id", o.id).eq("company_id", company);
+    await supabase.rpc("transition_store_order", { p_company: company, p_order: o.id, p_to_state: "pre_postado", p_reason: "prepostagem simulada" });
+    return Response.json({ ok: true, simulado: true, codigo_objeto: codigoObjeto, prepostagem_id: (pre as any).id });
+  }
+
   // 2) chama os Correios
   let r: { ok: boolean; status: number; body: any };
   try {

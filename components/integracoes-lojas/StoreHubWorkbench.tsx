@@ -196,6 +196,23 @@ export default function StoreHubWorkbench({ connectors, orders }: {
     setBusy("");
   }
 
+  // Gera prepostagem para TODOS os pedidos pendentes da loja (real ou simulado).
+  async function prepostarTodos(simular: boolean) {
+    const elig = rows.filter((o) => !o.tracking_code && o.dest_zip && !["postado", "em_transito", "saiu_entrega", "entregue", "cancelado", "devolvido", "sem_plano"].includes(o.state));
+    if (elig.length === 0) { alert("Nenhum pedido pendente elegível (precisa ter endereço/CEP e ainda não ter rastreio)."); return; }
+    if (!confirm(`${simular ? "SIMULAR (sem tocar nos Correios)" : "Gerar nos Correios"} prepostagem para ${elig.length} pedido(s) pendente(s)?`)) return;
+    setBusy("prepostar");
+    let ok = 0, fail = 0; const errs: string[] = [];
+    for (const o of elig.slice(0, simular ? 500 : 100)) {
+      try {
+        const res = await fetch("/api/correios/prepostagem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: o.id, simular }) });
+        const j = await res.json();
+        if (res.ok && j.ok) ok++; else { fail++; if (errs.length < 5) errs.push(o.sale_number + ": " + (j.error ?? "falha")); }
+      } catch (e: any) { fail++; }
+    }
+    setBusy(""); alert(`📮 ${simular ? "Simulação" : "Prepostagem"}: ${ok} gerada(s)${fail ? `, ${fail} com erro${errs.length ? ":\n" + errs.join("\n") : ""}` : ""}.`); router.refresh();
+  }
+
   // Atualiza o rastreio (SRO) de todos os objetos postados e propaga o estado.
   async function atualizarRastreio() {
     setBusy("sro");
@@ -248,6 +265,8 @@ export default function StoreHubWorkbench({ connectors, orders }: {
             <button disabled={!conectada} onClick={() => setAutoSync((a) => !a)} className={autoSync ? `${B} bg-emerald-600 text-white` : soft} style={autoSync ? undefined : { borderColor: "var(--border)" }}>
               {autoSync ? "🟢 Auto-sync LIGADO (a cada 10 min)" : "⏱️ Ligar sincronização automática"}
             </button>
+            <button disabled={busy === "prepostar"} onClick={() => prepostarTodos(false)} className={`${B} text-white`} style={{ background: "#0b7a3b" }}>{busy === "prepostar" ? "Prepostando…" : "📮 Prepostar todos os pendentes"}</button>
+            <button disabled={busy === "prepostar"} onClick={() => prepostarTodos(true)} className={soft} style={{ borderColor: "var(--border)" }} title="Testa o fluxo sem gerar objeto real nos Correios">🧪 Simular prepostagem (teste)</button>
           </div>
           {autoSync && <p className="text-[11px] mt-1.5" style={{ color: "var(--success)" }}>Puxando novas vendas sozinho enquanto esta aba estiver aberta.</p>}
           {!conectada && <p className="text-[11px] muted mt-2">Conecte a chave (abaixo) para liberar.</p>}
