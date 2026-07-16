@@ -1,7 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import CrudPanel from "@/components/ui/CrudPanel";
 import { KpiCard } from "@/components/ui/KpiCard";
+
+const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 
 const TABS = ["Painel", "Coprodutores", "Regras de Comissão", "Vendas & Comissões", "Repasses", "Split AppMax", "Configuração"] as const;
 const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
@@ -12,6 +16,18 @@ export default function CoproducaoWorkbench({ coprodutores, regras, vendas, repa
   coprodutores: any[]; regras: any[]; vendas: any[]; repasses: any[]; config: any; appmax: any;
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+
+  // AUTOMAÇÃO: apura as comissões das vendas pelas regras (RPC coproducao_apurar).
+  async function apurar() {
+    if (!supabase) return; setBusy(true);
+    const { data, error } = await supabase.rpc("coproducao_apurar", { p_company: COMPANY });
+    setBusy(false);
+    if (error) alert("🚫 " + error.message);
+    else { const d = data as any; alert(`✅ Apuração concluída: ${d?.apurados ?? 0} comissão(ões) criada(s)${d?.sem_regra ? ` · ${d.sem_regra} venda(s) sem regra` : ""}.`); router.refresh(); }
+  }
 
   const ativos = coprodutores.filter((c) => c.status === "ativo").length;
   const comissaoPendente = vendas.filter((v) => v.status_repasse === "pendente").reduce((s, v) => s + Number(v.valor_comissao ?? 0), 0);
@@ -38,6 +54,13 @@ export default function CoproducaoWorkbench({ coprodutores, regras, vendas, repa
 
       {tab === "Painel" && (
         <div className="space-y-4">
+          <div className="card p-4 flex flex-wrap items-center gap-3" style={{ borderLeft: "3px solid var(--brand)" }}>
+            <div className="flex-1 min-w-[240px]">
+              <div className="font-bold text-sm">⚡ Apuração automática de comissão</div>
+              <div className="text-xs muted">Varre as vendas, casa com as regras por produto e cria as comissões (comissão × empresa) sozinho. Idempotente — não duplica.</div>
+            </div>
+            <button onClick={apurar} disabled={busy} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy ? "Apurando…" : "⚡ Apurar comissões agora"}</button>
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <KpiCard label="Coprodutores ativos" value={ativos} icon="🤝" accent />
             <KpiCard label="Regras de comissão" value={regras.length} icon="⚙" />
