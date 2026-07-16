@@ -194,23 +194,9 @@ create index if not exists webhook_logs_company_idx on public.webhook_logs(compa
 create index if not exists webhook_logs_produtor_idx on public.webhook_logs(produtor_id);
 
 -- ── profiles (perfil de usuário do lemonlog) ──────────────────────────────────
-create table if not exists public.profiles (
-  id uuid primary key default gen_random_uuid(),
-  tenant_id uuid not null,
-  company_id uuid,
-  branch_id uuid,
-  -- campos originais (fiéis)
-  user_id uuid not null references auth.users(id) on delete cascade,
-  nome text,
-  -- colunas-padrão GLOP
-  active boolean not null default true, version integer not null default 1,
-  metadata jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
-  deleted_at timestamptz, deleted_by uuid references auth.users(id), reason_deleted text,
-  created_by uuid references auth.users(id), updated_by uuid references auth.users(id)
-);
-create index if not exists profiles_company_idx on public.profiles(company_id) where deleted_at is null;
-create index if not exists profiles_user_idx on public.profiles(user_id);
+-- NÃO recriado: o GLOP já tem public.profiles, e é um SUPERSET do do Rodrigo
+-- (full_name≈nome, + email/phone/avatar_url/is_superadmin/tenant_id). Manter o
+-- nosso (melhoria, sem perder nada). Mapeamento: Rodrigo.nome → GLOP.full_name.
 
 -- ── Triggers touch/audit (padrão GLOP) ───────────────────────────────────────
 do $$ declare t text;
@@ -218,7 +204,7 @@ begin
   foreach t in array array[
     'produtor_webhooks','produtor_webhook_entregas','sislogica_envios_log',
     'sislogica_webhook_recebidos','sislogica_webhook_tokens','api_logs',
-    'webhook_logs','profiles'
+    'webhook_logs'
   ] loop
     execute format('drop trigger if exists trg_%s_touch on public.%s', t, t);
     execute format('create trigger trg_%s_touch before insert or update on public.%s for each row execute function app.tg_touch_row()', t, t);
@@ -240,8 +226,7 @@ begin
       ('sislogica_webhook_recebidos','integration'),
       ('sislogica_webhook_tokens','integration'),
       ('api_logs','integration'),
-      ('webhook_logs','integration'),
-      ('profiles','admin')
+      ('webhook_logs','integration')
     ) as x(t, res)
   loop
     execute format('alter table public.%s enable row level security', rec.t);
