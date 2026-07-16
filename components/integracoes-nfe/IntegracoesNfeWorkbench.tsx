@@ -76,6 +76,20 @@ export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKey
   const supabase = useMemo(() => createClient(), []);
   const [tab, setTab] = useState<(typeof TABS)[number]>("Painel");
   const [tests, setTests] = useState<Record<string, any>>({});
+  const [keys, setKeys] = useState<Record<string, string>>({});
+
+  // Salva a chave de API de uma plataforma (write-only, via rota; nunca volta ao client).
+  async function salvarChave(platform: string, nome: string, categoria: string) {
+    const key = (keys[platform] ?? "").trim();
+    if (!key) { alert("Cole a chave da API."); return; }
+    setBusy("savekey:" + platform);
+    try {
+      const res = await fetch("/api/integracoes/credencial", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ platform, categoria, nome, key }) });
+      const j = await res.json();
+      if (!res.ok) alert("🚫 " + (j.error ?? "Falha ao salvar")); else { setKeys((k) => ({ ...k, [platform]: "" })); alert("✅ Chave salva com segurança."); router.refresh(); }
+    } catch (e: any) { alert("Erro: " + e.message); }
+    setBusy("");
+  }
   const [busy, setBusy] = useState("");
   const [novaChave, setNovaChave] = useState({ nome: "", escopos: "vendas:read,pedidos:read" });
   const [chaveGerada, setChaveGerada] = useState<string>("");
@@ -137,9 +151,14 @@ export default function IntegracoesNfeWorkbench({ produtores, nfe, baixa, apiKey
                 </div>
                 {conectada && <span className="badge badge-success">conectada</span>}
               </div>
-              <div className="flex items-center gap-1.5 mt-3 flex-wrap">
+              {addable && (
+                <div className="flex items-center gap-1.5 mt-2">
+                  <input type="password" value={keys[pr.key] ?? ""} onChange={(e) => setKeys((k) => ({ ...k, [pr.key]: e.target.value }))} placeholder={conectada ? "trocar chave (opcional)" : "colar chave da API"} className="input flex-1 min-w-0 font-mono text-[11px] py-1" />
+                  <button onClick={() => salvarChave(pr.key, pr.nome, categoria ?? "outro")} disabled={busy === "savekey:" + pr.key} className="px-2.5 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold disabled:opacity-50 whitespace-nowrap">{busy === "savekey:" + pr.key ? "…" : "🔑 Salvar"}</button>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                 <button onClick={() => testar(pr.key)} disabled={busy === "test:" + pr.key} className="px-2.5 py-1.5 rounded-lg card text-xs font-semibold disabled:opacity-50">{busy === "test:" + pr.key ? "Testando…" : "🔎 Testar"}</button>
-                {addable && !conectada && <button onClick={() => adicionar(pr.key, pr.nome, categoria ?? "outro")} disabled={busy === "add:" + pr.key} className="px-2.5 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold disabled:opacity-50">{busy === "add:" + pr.key ? "…" : "＋ Adicionar"}</button>}
                 {st && <span className={`text-xs font-medium ${st.ok ? "text-emerald-600" : "text-red-500"}`}>{st.ok ? "✅" : "🚨"} {st.message}{st.ms ? ` (${st.ms}ms)` : ""}</span>}
               </div>
             </div>
