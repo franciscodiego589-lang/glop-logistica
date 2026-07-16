@@ -5,24 +5,35 @@ import { useEffect, useState } from "react";
 import { getHelp } from "@/lib/help";
 
 // Caixa de ajuda contextual ("Para que serve esta tela"), injetada no layout —
-// aparece em TODA tela. Colapsável, com preferência lembrada no navegador.
+// aparece em TODA tela. Encolhível com preferência GLOBAL: encolher numa tela
+// mantém encolhido em todas até reabrir (chave única no navegador).
+const PREF = "help:open"; // global (1 = aberto, 0 = encolhido)
+
 export default function HelpBar() {
   const pathname = usePathname() || "/";
   const slug = pathname.split("/").filter(Boolean)[0] ?? "dashboard";
   const [open, setOpen] = useState(true);
   const [ready, setReady] = useState(false);
 
+  // lê a preferência global uma vez e acompanha mudanças feitas em outras abas
   useEffect(() => {
     setReady(true);
-    try { setOpen(localStorage.getItem("help:" + slug) !== "0"); } catch {}
-  }, [slug]);
+    try { setOpen(localStorage.getItem(PREF) !== "0"); } catch {}
+    const onStorage = (e: StorageEvent) => { if (e.key === PREF) setOpen(e.newValue !== "0"); };
+    const onPref = () => { try { setOpen(localStorage.getItem(PREF) !== "0"); } catch {} };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("help-pref-changed", onPref);
+    return () => { window.removeEventListener("storage", onStorage); window.removeEventListener("help-pref-changed", onPref); };
+  }, []);
 
   const help = getHelp(slug);
   if (!help || slug === "manual") return null;
 
   function toggle() {
     const v = !open; setOpen(v);
-    try { localStorage.setItem("help:" + slug, v ? "1" : "0"); } catch {}
+    try { localStorage.setItem(PREF, v ? "1" : "0"); } catch {}
+    // avisa outras instâncias montadas nesta mesma aba
+    window.dispatchEvent(new Event("help-pref-changed"));
   }
 
   return (
