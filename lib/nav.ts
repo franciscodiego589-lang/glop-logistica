@@ -50,6 +50,7 @@ export const NAV: NavItem[] = [
   { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Catálogo & Equipe", vol: 16, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
 
   // ── 📦 Estoque & Equipamentos ──────────────────────────────────────────────
+  { slug: "producao", label: "Produção & Lotes", icon: "🏭", group: "Estoque & Equipamentos", vol: 73, description: "Ordens de produção e controle de lote/validade — rastreabilidade e alerta de vencimento do que você fabrica" },
   { slug: "estoque", label: "Estoque Inteligente", icon: "▦", group: "Estoque & Equipamentos", vol: 11, description: "Saldos, curva ABC, ponto de pedido" },
   { slug: "estoque-logistico", label: "Estoque Logístico", icon: "🗄", group: "Estoque & Equipamentos", vol: 61, description: "Produtos, locais, movimentos, baixa automática e registros de estoque (Logística Rodrigo)" },
   { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Equipamentos", vol: 11, description: "Endereçamento, tarefas, ondas, packing" },

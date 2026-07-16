@@ -960,6 +960,18 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
     ],
   },
+  "producao": {
+    resumo: "Controla o que você fabrica: ordens de produção (o que produzir, quanto, prazo) e lotes com data de fabricação e validade. Avisa sobre lotes vencidos ou perto de vencer — essencial para suplementos.",
+    itens: [
+      "Ordens de Produção: registre cada produção com produto, quantidade, prazo, responsável e status (planejada → em produção → concluída).",
+      "Lotes & Validade: cadastre cada lote fabricado com fabricação e validade; o status controla liberado/quarentena/bloqueado.",
+      "O painel 'Produção & Validade' (em Relatórios) mostra vencidos e os que vencem em 30/90 dias.",
+    ],
+    passos: [
+      "Abra uma ordem de produção do produto que vai fabricar.",
+      "Ao produzir, registre o lote com validade — e acompanhe os vencimentos no painel.",
+    ],
+  },
   "financeiro-custos": {
     resumo: "Onde você lança as despesas do negócio e o custo de cada produto. Com isso, o sistema calcula o LUCRO REAL de cada pedido (receita menos comissões, CMV, frete, taxas e despesas).",
     itens: [
