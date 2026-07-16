@@ -7,8 +7,8 @@ const dt = (v: any) => (v ? new Date(v + "T00:00:00").toLocaleDateString("pt-BR"
 const OP_STATUS: [string, string][] = [["planejada", "Planejada"], ["em_producao", "Em produção"], ["concluida", "Concluída"], ["cancelada", "Cancelada"]];
 const LOTE_STATUS: [string, string][] = [["liberado", "Liberado"], ["quarentena", "Quarentena"], ["bloqueado", "Bloqueado"], ["vencido", "Vencido"], ["esgotado", "Esgotado"]];
 
-export default function ProducaoWorkbench({ ordens, lotes }: { ordens: any[]; lotes: any[] }) {
-  const [tab, setTab] = useState<"ordens" | "lotes">("ordens");
+export default function ProducaoWorkbench({ ordens, lotes, insumos = [] }: { ordens: any[]; lotes: any[]; insumos?: any[] }) {
+  const [tab, setTab] = useState<"ordens" | "lotes" | "insumos">("ordens");
   const hoje = new Date().toISOString().slice(0, 10);
   const abertas = ordens.filter((o) => ["planejada", "em_producao"].includes(o.status)).length;
   const vencidos = lotes.filter((l) => l.validade && l.validade < hoje).length;
@@ -34,11 +34,34 @@ export default function ProducaoWorkbench({ ordens, lotes }: { ordens: any[]; lo
         <Link href="/relatorios/producao" className="px-3 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold no-underline">🏭 Ver painel de Produção & Validade →</Link>
       </div>
 
-      <div className="flex gap-1 border-b" style={{ borderColor: "var(--border)" }}>
-        {([["ordens", "Ordens de Produção"], ["lotes", "Lotes & Validade"]] as [typeof tab, string][]).map(([k, l]) => (
+      <div className="flex gap-1 border-b flex-wrap" style={{ borderColor: "var(--border)" }}>
+        {([["ordens", "Ordens de Produção"], ["lotes", "Lotes & Validade"], ["insumos", "Insumos (ficha técnica)"]] as [typeof tab, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k)} className={`px-3 py-1.5 rounded-t-lg text-sm ${tab === k ? "bg-brand-600 text-white" : "hover:bg-black/5 dark:hover:bg-white/5"}`}>{l}</button>
         ))}
       </div>
+
+      {tab === "insumos" && (
+        <div className="space-y-2">
+          <div className="card p-3 flex items-center justify-between flex-wrap gap-2" style={{ borderLeft: "3px solid var(--brand)" }}>
+            <div className="text-sm">Cadastre os insumos de cada produto — o <b>MRP</b> calcula quanto comprar com base nas vendas.</div>
+            <Link href="/relatorios/mrp" className="px-3 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold no-underline">🧪 Ver MRP (necessidade de compra) →</Link>
+          </div>
+          <CrudPanel table="producao_insumos" title="Ficha técnica (insumos por produto)" rows={insumos}
+            emptyHint="Ex.: Produto 'MOUNJAX' → insumo 'Cápsula', 60 un/unidade; insumo 'Rótulo', 1 un/unidade."
+            fields={[
+              { key: "produto_nome", label: "Produto final", required: true, placeholder: "ex.: MOUNJAX" },
+              { key: "insumo", label: "Insumo", required: true, placeholder: "ex.: Cápsula 500mg" },
+              { key: "quantidade_por_unidade", label: "Qtde por unidade", type: "number", required: true },
+              { key: "unidade", label: "Unidade", default: "un" },
+              { key: "custo_unitario", label: "Custo do insumo (R$)", type: "number" },
+            ]}
+            columns={[
+              { key: "produto_nome", label: "Produto" }, { key: "insumo", label: "Insumo" },
+              { key: "quantidade_por_unidade", label: "Qtde/un" }, { key: "unidade", label: "Un" },
+              { key: "custo_unitario", label: "Custo", fmt: (v) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
+            ]} />
+        </div>
+      )}
 
       {tab === "ordens" ? (
         <CrudPanel table="producao_ordens" title="Ordens de Produção" rows={ordens}

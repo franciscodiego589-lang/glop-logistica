@@ -10,9 +10,10 @@ export default async function ProducaoPage() {
   if (!supabase || !company) {
     return <div className="space-y-4"><h1 className="text-2xl font-extrabold">Produção & Lotes</h1><VitrineBanner /></div>;
   }
-  const [ordens, lotes] = await Promise.all([
+  const [ordens, lotes, insumos] = await Promise.all([
     supabase.from("producao_ordens").select("id,numero,produto_nome,quantidade,unidade,status,data_prevista,data_conclusao,responsavel,observacoes").eq("company_id", company).is("deleted_at", null).order("created_at", { ascending: false }).limit(500),
     supabase.from("producao_lotes").select("id,lote,produto_nome,quantidade,fabricacao,validade,status,observacoes").eq("company_id", company).is("deleted_at", null).order("validade", { ascending: true }).limit(500),
+    supabase.from("producao_insumos").select("id,produto_nome,insumo,quantidade_por_unidade,unidade,custo_unitario,observacoes").eq("company_id", company).is("deleted_at", null).order("produto_nome").limit(500),
   ]);
-  return <ProducaoWorkbench ordens={ordens.data ?? []} lotes={lotes.data ?? []} />;
+  return <ProducaoWorkbench ordens={ordens.data ?? []} lotes={lotes.data ?? []} insumos={insumos.data ?? []} />;
 }

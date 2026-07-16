@@ -985,6 +985,24 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Leia a resposta — e clique em outra para comparar.",
     ],
   },
+  "inventario-contagem": {
+    resumo: "Registre a contagem física do estoque e compare com a quantidade do sistema. As diferenças (sobra/falta) aparecem no relatório de divergências.",
+    itens: [
+      "Cadastre cada item contado: produto, local, quantidade no sistema e quantidade contada.",
+      "A coluna Diferença mostra contado − sistema.",
+      "O relatório 'Inventário — Divergências' lista o que está fora.",
+    ],
+    passos: ["Conte o físico e lance a contagem.", "Veja as divergências no relatório e ajuste o estoque."],
+  },
+  "dados-titular": {
+    resumo: "Ferramenta de LGPD: busca todos os dados de um comprador (por CPF/CNPJ ou e-mail) e permite exportar em arquivo — para atender pedidos de acesso e portabilidade (art. 18).",
+    itens: [
+      "Escolha CPF/CNPJ ou e-mail e busque o titular.",
+      "Veja os dados e os pedidos vinculados.",
+      "Exporte em JSON para entregar ao titular ou anexar ao atendimento.",
+    ],
+    passos: ["Informe o documento/e-mail do titular e busque.", "Exporte o JSON. Para exclusão, acione o Encarregado."],
+  },
   "producao": {
     resumo: "Controla o que você fabrica: ordens de produção (o que produzir, quanto, prazo) e lotes com data de fabricação e validade. Avisa sobre lotes vencidos ou perto de vencer — essencial para suplementos.",
     itens: [

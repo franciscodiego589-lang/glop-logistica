@@ -57,6 +57,7 @@ export const NAV: NavItem[] = [
   { slug: "wms", label: "WMS / Armazém", icon: "⌗", group: "Estoque & Equipamentos", vol: 11, description: "Endereçamento, tarefas, ondas, packing" },
   { slug: "operacao-armazem", label: "WMS Enterprise (IA)", icon: "🏬", group: "Estoque & Equipamentos", vol: 11, description: "Slotting IA, putaway, reabastecimento, RFID, robótica, produtividade, ESG" },
   { slug: "inventario", label: "Inventário & Rastreio", icon: "⎗", group: "Estoque & Equipamentos", vol: 11, description: "Contagens cíclicas e genealogia de lote" },
+  { slug: "inventario-contagem", label: "Inventário / Contagem", icon: "📋", group: "Estoque & Equipamentos", vol: 76, description: "Contagem física do estoque e comparação com o sistema — identifica divergências por produto e local" },
   { slug: "ativos-retornaveis", label: "Ativos Retornáveis (RAMS)", icon: "♻️", group: "Estoque & Equipamentos", vol: 13, description: "Pallets/containers/gaiolas/IBCs: empréstimos, retenção, manutenção, ESG" },
   { slug: "vhsys", label: "Integração VHSYS", icon: "🏬", group: "Estoque & Equipamentos", vol: 62, description: "Saldos e movimentos de estoque sincronizados com o VHSYS e locais de estoque" },
   { slug: "manutencao", label: "EAM / Manutenção de Frota & Ativos", icon: "🔧", group: "Estoque & Equipamentos", vol: 9, description: "Ativos, ordens de serviço, preventiva, MTTR/MTBF" },
@@ -112,6 +113,7 @@ export const NAV: NavItem[] = [
 
   // ── 🛡️ Governança & Compliance ─────────────────────────────────────────────
   { slug: "juridico", label: "Jurídico & Compliance", icon: "⚖️", group: "Governança & Compliance", vol: 70, description: "Documentos jurídicos do GLOP: Política de Privacidade (LGPD), Termos de Uso, Cookies, Política de Segurança, DPA e ROPA/RIPD — com links públicos para o comprador" },
+  { slug: "dados-titular", label: "Dados do Titular (LGPD)", icon: "🔎", group: "Governança & Compliance", vol: 77, description: "Reúne e exporta todos os dados de um comprador por CPF/CNPJ ou e-mail — atende pedidos de acesso e portabilidade (LGPD art. 18)" },
   { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Governança & Compliance", vol: 16, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
   { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Governança & Compliance", vol: 16, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
   { slug: "processos", label: "BPM & Workflows", icon: "🔀", group: "Governança & Compliance", vol: 16, description: "Motor de processos: aprovações multinível, regras de decisão (DMN), SLA, eventos" },
