@@ -2,9 +2,9 @@
 
 > ⚠️ MINUTA — documento gerado por IA, pendente de revisão e validação por advogado(a) habilitado(a) antes de uso em produção. A legislação muda; adapte à operação real e revise periodicamente.
 
-**Última atualização:** [DATA]
+**Última atualização:** 16 de julho de 2026
 **Versão:** 1.0
-**Vigência:** a partir de [DATA]
+**Vigência:** a partir de 16 de julho de 2026
 
 ---
 
@@ -42,7 +42,7 @@
 
 ## 1. Apresentação e âmbito de aplicação
 
-Esta Política de Privacidade ("Política") descreve como a plataforma **[NOME FANTASIA: GLOP]** (Global Logistics Platform), operada por **[RAZÃO SOCIAL]**, inscrita no CNPJ sob o nº **[CNPJ]**, com sede em **[ENDEREÇO COMPLETO]** ("GLOP", "nós", "nosso" ou "Plataforma"), coleta, utiliza, armazena, compartilha, protege e, de modo geral, trata dados pessoais, em conformidade com a **Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais — LGPD)**, o **Marco Civil da Internet (Lei nº 12.965/2014)**, o **Código de Defesa do Consumidor (Lei nº 8.078/1990)**, o **Código Civil (Lei nº 10.406/2002)** e, quando aplicável a titulares na União Europeia, o **Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento (UE) 2016/679)**.
+Esta Política de Privacidade ("Política") descreve como a plataforma **[NOME FANTASIA: GLOP]** (Global Logistics Platform), operada por **LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA**, inscrita no CNPJ sob o nº **55.836.075/0001-07**, com sede em **Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190** ("GLOP", "nós", "nosso" ou "Plataforma"), coleta, utiliza, armazena, compartilha, protege e, de modo geral, trata dados pessoais, em conformidade com a **Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais — LGPD)**, o **Marco Civil da Internet (Lei nº 12.965/2014)**, o **Código de Defesa do Consumidor (Lei nº 8.078/1990)**, o **Código Civil (Lei nº 10.406/2002)** e, quando aplicável a titulares na União Europeia, o **Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento (UE) 2016/679)**.
 
 O GLOP é uma plataforma SaaS (Software as a Service) de logística e ERP voltada a operações de **dropshipping** e **infoprodutos** no Brasil. A Plataforma integra checkouts e plataformas de pagamento, e-commerces, transportadoras, emissores de nota fiscal e ferramentas de comunicação, orquestrando o fluxo do pedido desde a captação até a entrega e o pós-venda.
 
@@ -62,12 +62,12 @@ Ao utilizar a Plataforma, ou ao ter seus dados tratados por meio dela, o titular
 
 | Item | Informação |
 |---|---|
-| Razão social | [RAZÃO SOCIAL] |
+| Razão social | LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA |
 | Nome fantasia | [NOME FANTASIA: GLOP] |
-| CNPJ | [CNPJ] |
-| Endereço | [ENDEREÇO COMPLETO] |
-| Site | [URL DO SITE] |
-| E-mail de privacidade | [E-MAIL DO DPO/ENCARREGADO] |
+| CNPJ | 55.836.075/0001-07 |
+| Endereço | Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190 |
+| Site | https://glop-logistica.netlify.app |
+| E-mail de privacidade | lemoncapsencapsulados@gmail.com |
 
 O GLOP atua, conforme a atividade, ora como **Controlador**, ora como **Operador** de dados pessoais. A seção 5 detalha essa dualidade, essencial para a correta atribuição de responsabilidades sob a LGPD.
 
@@ -79,10 +79,10 @@ Em atendimento ao art. 41 da LGPD, o GLOP nomeia um Encarregado (Data Protection
 
 | Item | Informação |
 |---|---|
-| Nome do Encarregado | [NOME DO ENCARREGADO] |
-| E-mail | [E-MAIL DO DPO/ENCARREGADO] |
-| Endereço para correspondência | [ENDEREÇO COMPLETO] |
-| Canal do titular | [URL DO SITE]/privacidade (formulário de requisições) |
+| Nome do Encarregado | a ser designado pela administração |
+| E-mail | lemoncapsencapsulados@gmail.com |
+| Endereço para correspondência | Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190 |
+| Canal do titular | https://glop-logistica.netlify.app/privacidade (formulário de requisições) |
 
 O Encarregado recebe reclamações e comunicações dos titulares, presta esclarecimentos, adota providências, recebe comunicações da ANPD e orienta os colaboradores quanto às práticas de proteção de dados.
 
@@ -383,9 +383,9 @@ Quando a requisição referir-se a **dados de comprador tratados pelo GLOP como 
 
 O titular pode exercer seus direitos pelos seguintes canais:
 
-- **E-mail do Encarregado:** [E-MAIL DO DPO/ENCARREGADO]
-- **Formulário de requisições:** [URL DO SITE]/privacidade
-- **Correspondência:** [ENDEREÇO COMPLETO]
+- **E-mail do Encarregado:** lemoncapsencapsulados@gmail.com
+- **Formulário de requisições:** https://glop-logistica.netlify.app/privacidade
+- **Correspondência:** Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190
 
 Procedimento:
 
@@ -397,7 +397,7 @@ Procedimento:
 
 ## 16. Cookies e tecnologias de rastreamento
 
-O site institucional e a área logada do GLOP utilizam **cookies** e tecnologias similares para viabilizar o funcionamento, autenticação, segurança, preferências e métricas. O tratamento de dados por meio de cookies é regido pela **Política de Cookies** do GLOP, disponível em **[URL DO SITE]/cookies**, que detalha categorias (necessários, funcionais, de desempenho/analytics e, se aplicável, de marketing), finalidades, prazos e formas de gestão de preferências.
+O site institucional e a área logada do GLOP utilizam **cookies** e tecnologias similares para viabilizar o funcionamento, autenticação, segurança, preferências e métricas. O tratamento de dados por meio de cookies é regido pela **Política de Cookies** do GLOP, disponível em **https://glop-logistica.netlify.app/cookies**, que detalha categorias (necessários, funcionais, de desempenho/analytics e, se aplicável, de marketing), finalidades, prazos e formas de gestão de preferências.
 
 Cookies estritamente **necessários** fundamentam-se no legítimo interesse/execução do serviço; cookies não essenciais dependem, quando aplicável, do **consentimento** do titular, coletado via banner de gestão de preferências.
 
@@ -448,7 +448,7 @@ Em caso de incidente de segurança que possa acarretar **risco ou dano relevante
 
 ## 22. Encarregado, ANPD e canais de reclamação
 
-- **Encarregado (DPO):** [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO];
+- **Encarregado (DPO):** a ser designado pela administração — lemoncapsencapsulados@gmail.com;
 - **Autoridade Nacional de Proteção de Dados (ANPD):** o titular pode peticionar à ANPD (www.gov.br/anpd) caso entenda que seus direitos não foram adequadamente atendidos;
 - **Órgãos de defesa do consumidor:** o titular pode recorrer aos órgãos competentes (ex.: Procon), quando aplicável.
 
@@ -458,7 +458,7 @@ Recomenda-se contatar primeiro o Encarregado do GLOP, que envidará esforços pa
 
 ## 23. Alterações desta Política
 
-Esta Política pode ser **atualizada periodicamente** para refletir mudanças legais, regulatórias, tecnológicas ou operacionais. A versão vigente estará sempre disponível em **[URL DO SITE]/privacidade**, com indicação da data da última atualização e do número da versão. Alterações **materiais** serão comunicadas por meios adequados (por exemplo, aviso na Plataforma ou e-mail). O uso continuado da Plataforma após a vigência das alterações implica ciência da versão atualizada.
+Esta Política pode ser **atualizada periodicamente** para refletir mudanças legais, regulatórias, tecnológicas ou operacionais. A versão vigente estará sempre disponível em **https://glop-logistica.netlify.app/privacidade**, com indicação da data da última atualização e do número da versão. Alterações **materiais** serão comunicadas por meios adequados (por exemplo, aviso na Plataforma ou e-mail). O uso continuado da Plataforma após a vigência das alterações implica ciência da versão atualizada.
 
 ---
 
@@ -474,10 +474,10 @@ Fica eleito o foro da comarca de **[ENDEREÇO COMPLETO — comarca da sede]**, c
 
 Dúvidas, solicitações ou reclamações sobre esta Política e sobre o tratamento de dados pessoais:
 
-- **Encarregado (DPO):** [NOME DO ENCARREGADO]
-- **E-mail:** [E-MAIL DO DPO/ENCARREGADO]
-- **Endereço:** [ENDEREÇO COMPLETO]
-- **Site:** [URL DO SITE]
+- **Encarregado (DPO):** a ser designado pela administração
+- **E-mail:** lemoncapsencapsulados@gmail.com
+- **Endereço:** Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190
+- **Site:** https://glop-logistica.netlify.app
 
 ---
 
@@ -533,9 +533,9 @@ Dúvidas, solicitações ou reclamações sobre esta Política e sobre o tratame
 
 ### (c) Checklist de implementação
 
-- [ ] Preencher todos os placeholders ([RAZÃO SOCIAL], [CNPJ], [ENDEREÇO COMPLETO], [NOME DO ENCARREGADO], [E-MAIL DO DPO/ENCARREGADO], [URL DO SITE], [DATA]).
+- [ ] Preencher todos os placeholders (LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, a ser designado pela administração, lemoncapsencapsulados@gmail.com, https://glop-logistica.netlify.app, 16 de julho de 2026).
 - [ ] Nomear formalmente o Encarregado (DPO) e publicar seus canais.
-- [ ] Publicar a Política em [URL DO SITE]/privacidade e vinculá-la ao cadastro/checkout e ao rodapé.
+- [ ] Publicar a Política em https://glop-logistica.netlify.app/privacidade e vinculá-la ao cadastro/checkout e ao rodapé.
 - [ ] Elaborar e assinar o **DPA** com cada cliente Controlador (produtor/lojista).
 - [ ] Assinar/verificar cláusulas de proteção de dados com operadores (Supabase, Netlify, VHSYS, AppMax, Correios, provedores de e-mail/WhatsApp).
 - [ ] Mapear e formalizar as **transferências internacionais** e respectivas salvaguardas (SCCs).
@@ -586,7 +586,7 @@ Legenda: **R** = Responsável (executa) · **A** = Aprovador (responde) · **C**
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | Chief Legal AI (minuta) / [NOME DO ENCARREGADO] | Emissão inicial da Política de Privacidade do GLOP, contemplando dualidade Controlador/Operador, fluxos reais (pull de checkouts, rastreio Correios, coprodução/split, NF-e via VHSYS, portal público de rastreio, Supabase/Netlify), bases legais por finalidade, transferência internacional, retenção, segurança, direitos do titular e governança. |
+| 1.0 | 16 de julho de 2026 | Chief Legal AI (minuta) / a ser designado pela administração | Emissão inicial da Política de Privacidade do GLOP, contemplando dualidade Controlador/Operador, fluxos reais (pull de checkouts, rastreio Correios, coprodução/split, NF-e via VHSYS, portal público de rastreio, Supabase/Netlify), bases legais por finalidade, transferência internacional, retenção, segurança, direitos do titular e governança. |
 
 ---
 

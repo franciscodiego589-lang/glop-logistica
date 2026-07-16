@@ -2,17 +2,17 @@
 
 > ⚠️ MINUTA — documento gerado por IA, pendente de revisão e validação por advogado(a) habilitado(a) antes de uso em produção. A legislação muda; adapte à operação real e revise periodicamente.
 
-**Controlador / Operador:** [RAZÃO SOCIAL], inscrita no CNPJ sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO], operadora da plataforma [NOME FANTASIA: GLOP], acessível em [URL DO SITE].
+**Controlador / Operador:** LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, inscrita no CNPJ sob o nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, operadora da plataforma [NOME FANTASIA: GLOP], acessível em https://glop-logistica.netlify.app.
 
-**Encarregado pelo Tratamento de Dados Pessoais (DPO):** [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO].
+**Encarregado pelo Tratamento de Dados Pessoais (DPO):** a ser designado pela administração — lemoncapsencapsulados@gmail.com.
 
-**Data de vigência:** [DATA] · **Classificação deste documento:** Interno — Uso Restrito · **Versão:** 1.0
+**Data de vigência:** 16 de julho de 2026 · **Classificação deste documento:** Interno — Uso Restrito · **Versão:** 1.0
 
 ---
 
 ## 1. Objetivo
 
-1.1. Esta Política de Segurança da Informação (doravante "PSI" ou "Política") estabelece os princípios, diretrizes, controles, responsabilidades e requisitos mínimos obrigatórios para a proteção da **confidencialidade, integridade, disponibilidade, autenticidade e não repúdio** (pilares CIA + AR) das informações tratadas, processadas, armazenadas, transmitidas ou custodiadas pela [RAZÃO SOCIAL] no âmbito da operação da plataforma **GLOP — Global Logistics Platform**.
+1.1. Esta Política de Segurança da Informação (doravante "PSI" ou "Política") estabelece os princípios, diretrizes, controles, responsabilidades e requisitos mínimos obrigatórios para a proteção da **confidencialidade, integridade, disponibilidade, autenticidade e não repúdio** (pilares CIA + AR) das informações tratadas, processadas, armazenadas, transmitidas ou custodiadas pela LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA no âmbito da operação da plataforma **GLOP — Global Logistics Platform**.
 
 1.2. O GLOP é uma plataforma SaaS (Software as a Service) de logística e ERP voltada a operações de dropshipping e infoprodutos no Brasil, que trata volumes relevantes de **dados pessoais de compradores finais** (nome, CPF/CNPJ, e-mail, telefone, endereço completo), **dados financeiros e bancários de coprodutores/afiliados** (PIX, contas para repasse e split de pagamento), **documentos fiscais** (NF-e, CT-e, MDF-e, NFS-e) e **credenciais de integração** com plataformas de terceiros. Essa natureza torna a segurança da informação um requisito **crítico, contratual e legal**, e não meramente técnico.
 
@@ -256,7 +256,7 @@ Como **Operador**, o GLOP trata dados do comprador **estritamente conforme instr
 ### 8.6. Direitos dos titulares (arts. 18-22, LGPD)
 - O GLOP mantém processo para atender solicitações de titulares (confirmação, acesso, correção, anonimização, portabilidade, eliminação, informação sobre compartilhamento).
 - Como **Operador**, o GLOP **redireciona/apoia** o Controlador (produtor/lojista) no atendimento dos pedidos relativos aos compradores, conforme o contrato e o DPA; como **Controlador**, atende diretamente os pedidos de seus usuários e colaboradores.
-- Canal do titular: [E-MAIL DO DPO/ENCARREGADO].
+- Canal do titular: lemoncapsencapsulados@gmail.com.
 
 ### 8.7. Transferência internacional
 Caso fornecedores/sub-operadores processem dados fora do Brasil, aplicam-se as salvaguardas dos arts. 33 a 36 da LGPD (cláusulas contratuais, adequação, garantias). O uso de Supabase/Netlify deve ser avaliado quanto à localização de processamento e às garantias contratuais correspondentes.
@@ -352,7 +352,7 @@ Considera-se **incidente de segurança** qualquer evento, confirmado ou suspeito
 - Registro completo de todos os incidentes (inclusive os não comunicáveis) para fins de accountability e eventual requisição da ANPD.
 
 ### 12.4. Canal de reporte interno
-Qualquer pessoa que identifique ou suspeite de incidente deve reportar **imediatamente** ao time de segurança/DPO por [E-MAIL DO DPO/ENCARREGADO]. A omissão de reporte é falta disciplinar.
+Qualquer pessoa que identifique ou suspeite de incidente deve reportar **imediatamente** ao time de segurança/DPO por lemoncapsencapsulados@gmail.com. A omissão de reporte é falta disciplinar.
 
 ---
 
@@ -420,7 +420,7 @@ Acesso remoto a recursos administrativos apenas por canais seguros (TLS/VPN quan
 |---|---|
 | **Direção / Administradores** | Patrocinar e aprovar a PSI, prover recursos, prestar contas (accountability art. 50 LGPD), assumir o risco residual. |
 | **CISO / Responsável de Segurança** | Governar o SGSI, manter e revisar a PSI, coordenar riscos, vulnerabilidades, incidentes e auditorias. |
-| **Encarregado/DPO ([NOME DO ENCARREGADO])** | Ser canal com titulares e ANPD (art. 41, LGPD), orientar sobre privacidade, conduzir comunicação de incidentes, manter RIPD/registros. |
+| **Encarregado/DPO (a ser designado pela administração)** | Ser canal com titulares e ANPD (art. 41, LGPD), orientar sobre privacidade, conduzir comunicação de incidentes, manter RIPD/registros. |
 | **DevOps / Administradores de sistema** | Implementar e operar controles técnicos (RLS, MFA, criptografia, backup, monitoramento, hardening de Supabase/Netlify). |
 | **Desenvolvedores** | Aplicar S-SDLC, OWASP, revisão de código, gestão de segredos, RLS/RBAC em cada tabela e rota. |
 | **Time de Resposta a Incidentes (CSIRT)** | Executar o IRP: detecção, contenção, erradicação, recuperação e lições aprendidas. |
@@ -477,8 +477,8 @@ Acesso remoto a recursos administrativos apenas por canais seguros (TLS/VPN quan
 
 ### (c) Checklist de implementação
 
-1. Aprovar formalmente a PSI pela direção e registrar vigência ([DATA]).
-2. Nomear formalmente o Encarregado/DPO e publicar o canal [E-MAIL DO DPO/ENCARREGADO].
+1. Aprovar formalmente a PSI pela direção e registrar vigência (16 de julho de 2026).
+2. Nomear formalmente o Encarregado/DPO e publicar o canal lemoncapsencapsulados@gmail.com.
 3. Confirmar RLS habilitada em 100% das tabelas de `public` e testar isolamento cross-tenant.
 4. Ativar e exigir MFA em Supabase, Netlify, repositórios e cofre de segredos.
 5. Migrar todos os segredos e credenciais write-only para cofre; remover segredos do código; ativar secret scanning.
@@ -528,8 +528,8 @@ Acesso remoto a recursos administrativos apenas por canais seguros (TLS/VPN quan
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | Chief Legal AI (minuta) | Emissão inicial da Política de Segurança da Informação do GLOP, alinhada a ISO 27001/27701, NIST CSF, OWASP, CIS Controls e LGPD; pendente de revisão por advogado(a) habilitado(a). |
+| 1.0 | 16 de julho de 2026 | Chief Legal AI (minuta) | Emissão inicial da Política de Segurança da Informação do GLOP, alinhada a ISO 27001/27701, NIST CSF, OWASP, CIS Controls e LGPD; pendente de revisão por advogado(a) habilitado(a). |
 
 ---
 
-*Documento de propriedade de [RAZÃO SOCIAL] — [NOME FANTASIA: GLOP]. Classificação: Interno — Uso Restrito. A distribuição não autorizada é vedada. Dúvidas: [E-MAIL DO DPO/ENCARREGADO].*
+*Documento de propriedade de LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA — [NOME FANTASIA: GLOP]. Classificação: Interno — Uso Restrito. A distribuição não autorizada é vedada. Dúvidas: lemoncapsencapsulados@gmail.com.*

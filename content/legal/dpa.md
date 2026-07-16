@@ -12,13 +12,13 @@ Este Acordo de Tratamento de Dados Pessoais ("DPA", "Acordo" ou "Adendo de Prote
 
 **CONTROLADOR**
 
-[RAZÃO SOCIAL], pessoa jurídica de direito privado inscrita no CNPJ/MF sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO], doravante denominada **"CONTROLADOR"** ou **"Produtor/Lojista"**, na qualidade de usuário contratante da plataforma GLOP, que determina as finalidades e os meios essenciais do tratamento dos dados pessoais de seus compradores finais e demais titulares vinculados à sua operação comercial;
+LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, pessoa jurídica de direito privado inscrita no CNPJ/MF sob o nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, doravante denominada **"CONTROLADOR"** ou **"Produtor/Lojista"**, na qualidade de usuário contratante da plataforma GLOP, que determina as finalidades e os meios essenciais do tratamento dos dados pessoais de seus compradores finais e demais titulares vinculados à sua operação comercial;
 
 e
 
 **OPERADOR**
 
-[RAZÃO SOCIAL], nome fantasia [NOME FANTASIA: GLOP], pessoa jurídica de direito privado inscrita no CNPJ/MF sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO], mantenedora e operadora da plataforma GLOP — Global Logistics Platform, acessível em [URL DO SITE], doravante denominada **"OPERADOR"** ou **"GLOP"**, que realiza o tratamento de dados pessoais em nome e segundo as instruções documentadas do CONTROLADOR.
+LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, nome fantasia [NOME FANTASIA: GLOP], pessoa jurídica de direito privado inscrita no CNPJ/MF sob o nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, mantenedora e operadora da plataforma GLOP — Global Logistics Platform, acessível em https://glop-logistica.netlify.app, doravante denominada **"OPERADOR"** ou **"GLOP"**, que realiza o tratamento de dados pessoais em nome e segundo as instruções documentadas do CONTROLADOR.
 
 CONTROLADOR e OPERADOR são doravante denominados, em conjunto, **"Partes"** e, individualmente, **"Parte"**.
 
@@ -96,7 +96,7 @@ Para os fins deste Acordo, os termos abaixo, no singular ou no plural, terão os
 - **(c)** logs técnicos, dados de segurança, prevenção a fraude e abuso, trilhas de auditoria e telemetria necessários à integridade, disponibilidade e segurança da Plataforma (art. 7º, IX e art. 10 da LGPD — legítimo interesse), e à guarda de registros de acesso a aplicação (art. 15 do Marco Civil da Internet);
 - **(d)** dados agregados e/ou anonimizados para métricas, melhoria e desenvolvimento do produto, desde que efetivamente anonimizados na forma do art. 12 da LGPD.
 
-Para esses tratamentos, o GLOP responde como controlador e observa sua própria Política de Privacidade, publicada em [URL DO SITE]. Este Acordo, salvo indicação em contrário, rege o GLOP na condição de **operador** (Cláusula 4.1).
+Para esses tratamentos, o GLOP responde como controlador e observa sua própria Política de Privacidade, publicada em https://glop-logistica.netlify.app. Este Acordo, salvo indicação em contrário, rege o GLOP na condição de **operador** (Cláusula 4.1).
 
 4.5. **Ausência de controle conjunto presumido.** As Partes não são controladoras conjuntas (joint controllers) por força deste Acordo. Caso, em fluxo específico, configure-se controladoria conjunta, as Partes celebrarão adendo próprio definindo transparência e responsabilidades, na forma do art. 26 do GDPR e da orientação da ANPD.
 
@@ -130,7 +130,7 @@ O OPERADOR obriga-se, no cumprimento deste Acordo e da Legislação de Proteçã
 
 6.8. **Registro das operações de tratamento.** Manter registro das operações de tratamento realizadas como operador (art. 37 da LGPD; art. 30(2) do GDPR), disponibilizando-o ao CONTROLADOR e à ANPD quando requerido.
 
-6.9. **Encarregado.** Manter Encarregado (DPO) indicado e acessível, cujos contatos são [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO].
+6.9. **Encarregado.** Manter Encarregado (DPO) indicado e acessível, cujos contatos são a ser designado pela administração — lemoncapsencapsulados@gmail.com.
 
 6.10. **Demonstração de conformidade.** Disponibilizar ao CONTROLADOR as informações necessárias para demonstrar o cumprimento deste Acordo, na forma da Cláusula 11.
 
@@ -250,13 +250,13 @@ O OPERADOR obriga-se, no cumprimento deste Acordo e da Legislação de Proteçã
 
 E, por estarem justas e acordadas, as Partes firmam o presente instrumento.
 
-[DATA]
+16 de julho de 2026
 
 ______________________________________
-**CONTROLADOR** — [RAZÃO SOCIAL] — [CNPJ]
+**CONTROLADOR** — LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA — 55.836.075/0001-07
 
 ______________________________________
-**OPERADOR** — [NOME FANTASIA: GLOP] / [RAZÃO SOCIAL] — [CNPJ]
+**OPERADOR** — [NOME FANTASIA: GLOP] / LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA — 55.836.075/0001-07
 
 ---
 
@@ -398,7 +398,7 @@ Enquanto vigente o Contrato Principal e durante o ciclo de vida do pedido e das 
 - Falha na resposta a direitos dos titulares e a requisições da ANPD.
 
 ### (c) Checklist de implementação
-1. Preencher todos os placeholders ([RAZÃO SOCIAL], [CNPJ], [ENDEREÇO COMPLETO], [NOME DO ENCARREGADO], [E-MAIL DO DPO/ENCARREGADO], [URL DO SITE], [DATA]).
+1. Preencher todos os placeholders (LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, a ser designado pela administração, lemoncapsencapsulados@gmail.com, https://glop-logistica.netlify.app, 16 de julho de 2026).
 2. Confirmar e documentar as regiões de armazenamento de Supabase e Netlify (Anexo III).
 3. Firmar/atualizar contratos de subprocessamento (flow-down) com todos os sub-operadores.
 4. Publicar Política de Privacidade do GLOP (papel de controlador — Cláusula 4.4).
@@ -436,4 +436,4 @@ R = Responsável · A = Aprovador · C = Consultado · I = Informado
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | Chief Legal AI (minuta) | Emissão inicial do DPA — LGPD art. 39 e ss. / GDPR art. 28, com Anexos I, II e III. |
+| 1.0 | 16 de julho de 2026 | Chief Legal AI (minuta) | Emissão inicial do DPA — LGPD art. 39 e ss. / GDPR art. 28, com Anexos I, II e III. |

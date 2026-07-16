@@ -1,16 +1,15 @@
-// Gera lib/legal-content.generated.ts a partir de content/legal/*.md
+// Gera lib/legal-content.generated.ts a partir de TODOS os content/legal/*.md
 // Uso: node scripts/gen-legal-content.mjs
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const slugs = ["politica-privacidade", "termos-de-uso", "politica-cookies", "politica-seguranca", "dpa", "ropa-ripd"];
+const dir = join(root, "content", "legal");
 
 const map = {};
-for (const s of slugs) {
-  const p = join(root, "content", "legal", s + ".md");
-  map[s] = existsSync(p) ? readFileSync(p, "utf8") : "";
+for (const f of readdirSync(dir).filter((f) => f.endsWith(".md")).sort()) {
+  map[f.replace(/\.md$/, "")] = readFileSync(join(dir, f), "utf8");
 }
 
 const body =
@@ -21,5 +20,4 @@ const body =
   ";\n";
 
 writeFileSync(join(root, "lib", "legal-content.generated.ts"), body);
-const sizes = slugs.map((s) => `${s}: ${map[s].length}`).join("  ·  ");
-console.log("OK legal-content.generated.ts —", sizes);
+console.log("OK legal-content.generated.ts —", Object.keys(map).length, "documentos:", Object.keys(map).join(", "));

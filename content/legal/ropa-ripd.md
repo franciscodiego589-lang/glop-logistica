@@ -10,11 +10,11 @@
 |---|---|
 | Título | Registro das Operações de Tratamento (ROPA) e Relatório de Impacto à Proteção de Dados Pessoais (RIPD/DPIA) |
 | Plataforma | [NOME FANTASIA: GLOP] — Global Logistics Platform |
-| Controladora / Operadora | [RAZÃO SOCIAL], inscrita no CNPJ sob nº [CNPJ], com sede em [ENDEREÇO COMPLETO] |
-| Encarregado (DPO) | [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO] |
-| Site institucional | [URL DO SITE] |
+| Controladora / Operadora | LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, inscrita no CNPJ sob nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190 |
+| Encarregado (DPO) | a ser designado pela administração — lemoncapsencapsulados@gmail.com |
+| Site institucional | https://glop-logistica.netlify.app |
 | Versão | 1.0 |
-| Data de emissão | [DATA] |
+| Data de emissão | 16 de julho de 2026 |
 | Classificação | Confidencial — uso interno e regulatório |
 | Base normativa | Lei nº 13.709/2018 (LGPD), art. 37 e art. 38; Resoluções e Guias da ANPD; Lei nº 12.965/2014 (Marco Civil da Internet); Lei nº 8.078/1990 (CDC); Lei nº 10.406/2002 (Código Civil); Regulamento (UE) 2016/679 (GDPR), art. 30 e art. 35, quando aplicável a titulares/operações na UE |
 
@@ -460,13 +460,13 @@ Nenhum risco residual permanece nas faixas **Alto** ou **Crítico** após as med
 
 | Prioridade | Ação de tratamento | Operação | Responsável | Prazo sugerido |
 |---|---|---|---|---|
-| 1 | Implementar dupla aprovação + notificação de troca de dados bancários | ROPA-04 | Engenharia + Financeiro | [DATA] |
+| 1 | Implementar dupla aprovação + notificação de troca de dados bancários | ROPA-04 | Engenharia + Financeiro | 16 de julho de 2026 |
 | 2 | Auditoria periódica de políticas RLS e teste de isolamento multi-tenant | ROPA-01/07 | Segurança/DevOps | Trimestral |
-| 3 | Confirmar minimização (status neutro) e anti-enumeração no portal público | ROPA-08 | Engenharia | [DATA] |
-| 4 | Formalizar DPAs e lista de subprocessadores (Supabase, Netlify, VHSYS, AppMax, e-mail, WhatsApp) | Todas | Jurídico/DPO | [DATA] |
-| 5 | Definir e automatizar política de retenção/expurgo por atividade | Todas | Engenharia + DPO | [DATA] |
-| 6 | Fixar região de hospedagem e salvaguardas de transferência internacional | Todas | DevOps/Jurídico | [DATA] |
-| 7 | Mascaramento de PII em logs/webhooks | ROPA-07 | Engenharia | [DATA] |
+| 3 | Confirmar minimização (status neutro) e anti-enumeração no portal público | ROPA-08 | Engenharia | 16 de julho de 2026 |
+| 4 | Formalizar DPAs e lista de subprocessadores (Supabase, Netlify, VHSYS, AppMax, e-mail, WhatsApp) | Todas | Jurídico/DPO | 16 de julho de 2026 |
+| 5 | Definir e automatizar política de retenção/expurgo por atividade | Todas | Engenharia + DPO | 16 de julho de 2026 |
+| 6 | Fixar região de hospedagem e salvaguardas de transferência internacional | Todas | DevOps/Jurídico | 16 de julho de 2026 |
+| 7 | Mascaramento de PII em logs/webhooks | ROPA-07 | Engenharia | 16 de julho de 2026 |
 
 **Conclusão sobre risco residual:** após a implementação das medidas, o risco residual das três operações críticas situa-se entre **Baixo e Moderado**, considerado **aceitável** e proporcional às finalidades, sob monitoramento contínuo e revisão periódica deste RIPD.
 
@@ -474,7 +474,7 @@ Nenhum risco residual permanece nas faixas **Alto** ou **Crítico** após as med
 
 ## B.7 Parecer do Encarregado (DPO)
 
-Na qualidade de Encarregado pelo Tratamento de Dados Pessoais de [RAZÃO SOCIAL] / [NOME FANTASIA: GLOP], após análise das operações de tratamento descritas neste registro e da avaliação de impacto das operações de maior risco, **manifesto o seguinte parecer**:
+Na qualidade de Encarregado pelo Tratamento de Dados Pessoais de LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA / [NOME FANTASIA: GLOP], após análise das operações de tratamento descritas neste registro e da avaliação de impacto das operações de maior risco, **manifesto o seguinte parecer**:
 
 1. As operações possuem **finalidades legítimas, específicas e informadas** e **bases legais adequadas** (predominância do art. 7º, V, e art. 7º, II, com uso fundamentado do art. 7º, IX para segurança e prevenção à fraude), atendendo aos princípios do art. 6º da LGPD, em especial **finalidade, adequação, necessidade e segurança**.
 2. A arquitetura multi-tenant com **RLS por company_id/tenant_id**, **RBAC (has_permission)**, **soft-delete**, **trilha de auditoria por triggers** e **credenciais de API write-only** constitui base de segurança **compatível** com o art. 46 da LGPD, desde que submetida a **testes periódicos de isolamento** e a **gestão de retenção** ativa.
@@ -485,9 +485,9 @@ Na qualidade de Encarregado pelo Tratamento de Dados Pessoais de [RAZÃO SOCIAL]
 **Parecer final:** as operações podem prosseguir, com **risco residual aceitável (Baixo a Moderado)**, **condicionado** à execução do Plano de tratamento de riscos (seção B.6) e à revisão periódica deste documento. Determino a reavaliação em caso de mudança material de finalidade, fluxo, subprocessador ou incidente relevante.
 
 _____________________________________
-[NOME DO ENCARREGADO] — Encarregado (DPO)
-[E-MAIL DO DPO/ENCARREGADO]
-[DATA]
+a ser designado pela administração — Encarregado (DPO)
+lemoncapsencapsulados@gmail.com
+16 de julho de 2026
 
 ---
 
@@ -520,7 +520,7 @@ _____________________________________
 
 ## (c) Checklist de implementação
 
-- [ ] Preencher todos os placeholders ([RAZÃO SOCIAL], [CNPJ], [ENDEREÇO COMPLETO], [NOME DO ENCARREGADO], [E-MAIL DO DPO/ENCARREGADO], [URL DO SITE], [DATA]).
+- [ ] Preencher todos os placeholders (LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, a ser designado pela administração, lemoncapsencapsulados@gmail.com, https://glop-logistica.netlify.app, 16 de julho de 2026).
 - [ ] Formalizar e nomear o Encarregado (DPO) e publicar canal de contato (LGPD, art. 41).
 - [ ] Celebrar **DPA** com cada cliente produtor/lojista (GLOP operador).
 - [ ] Celebrar/atualizar DPA com subprocessadores: Supabase, Netlify, VHSYS, AppMax, provedor de e-mail, provedor de WhatsApp.
@@ -574,7 +574,7 @@ Legenda: **R** = Responsável (executa); **A** = Aprovador (responde final); **C
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | [NOME DO ENCARREGADO] / Chief Legal AI (minuta) | Emissão inicial do ROPA (8 atividades) e do RIPD (3 operações de risco) |
+| 1.0 | 16 de julho de 2026 | a ser designado pela administração / Chief Legal AI (minuta) | Emissão inicial do ROPA (8 atividades) e do RIPD (3 operações de risco) |
 | | | | |
 
 ---

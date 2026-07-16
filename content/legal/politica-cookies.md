@@ -2,11 +2,11 @@
 
 > ⚠️ MINUTA — documento gerado por IA, pendente de revisão e validação por advogado(a) habilitado(a) antes de uso em produção. A legislação muda; adapte à operação real e revise periodicamente.
 
-**Controladora / Operadora:** [RAZÃO SOCIAL], inscrita no CNPJ sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO], operadora da plataforma [NOME FANTASIA: GLOP] (Global Logistics Platform), acessível em [URL DO SITE].
+**Controladora / Operadora:** LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, inscrita no CNPJ sob o nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, operadora da plataforma [NOME FANTASIA: GLOP] (Global Logistics Platform), acessível em https://glop-logistica.netlify.app.
 
-**Encarregado pelo Tratamento de Dados Pessoais (DPO):** [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO].
+**Encarregado pelo Tratamento de Dados Pessoais (DPO):** a ser designado pela administração — lemoncapsencapsulados@gmail.com.
 
-**Versão:** 1.0 · **Vigência a partir de:** [DATA] · **Última atualização:** [DATA].
+**Versão:** 1.0 · **Vigência a partir de:** 16 de julho de 2026 · **Última atualização:** 16 de julho de 2026.
 
 ---
 
@@ -62,7 +62,7 @@ Esta Política se aplica a todo indivíduo que interage com os ambientes digitai
 
 **Cookies.** São pequenos arquivos de texto que um site grava no seu navegador (ou dispositivo) quando você o acessa. A cada nova requisição ao mesmo domínio, o navegador reenvia esses arquivos, permitindo reconhecer o dispositivo, manter a sessão ativa, lembrar preferências e coletar informações estatísticas. Podem ser classificados por origem (próprios ou de terceiros) e por duração (de sessão ou persistentes).
 
-- **Cookies próprios (first-party):** definidos pelo domínio do GLOP ([URL DO SITE]).
+- **Cookies próprios (first-party):** definidos pelo domínio do GLOP (https://glop-logistica.netlify.app).
 - **Cookies de terceiros (third-party):** definidos por domínios distintos do GLOP (por exemplo, provedores de infraestrutura, gateways, aplicativos de mensageria).
 - **Cookies de sessão:** existem apenas durante a navegação e são apagados ao fechar o navegador.
 - **Cookies persistentes:** permanecem por um período determinado (ou até serem apagados manualmente).
@@ -250,10 +250,10 @@ Esta Política pode ser atualizada a qualquer tempo em razão de mudanças legis
 
 ## 20. Como falar conosco e com o Encarregado (DPO)
 
-- **Controladora/Operadora:** [RAZÃO SOCIAL] — [NOME FANTASIA: GLOP], CNPJ [CNPJ], [ENDEREÇO COMPLETO].
-- **Encarregado(a) pelo Tratamento de Dados Pessoais (DPO):** [NOME DO ENCARREGADO].
-- **E-mail para assuntos de privacidade/cookies:** [E-MAIL DO DPO/ENCARREGADO].
-- **Site:** [URL DO SITE].
+- **Controladora/Operadora:** LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA — [NOME FANTASIA: GLOP], CNPJ 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190.
+- **Encarregado(a) pelo Tratamento de Dados Pessoais (DPO):** a ser designado pela administração.
+- **E-mail para assuntos de privacidade/cookies:** lemoncapsencapsulados@gmail.com.
+- **Site:** https://glop-logistica.netlify.app.
 
 Responderemos às solicitações nos prazos e formas previstos na LGPD. Você também pode peticionar à **Autoridade Nacional de Proteção de Dados (ANPD)**.
 
@@ -289,7 +289,7 @@ O texto abaixo é um **modelo** para implementação do banner e da central de p
 
 **Botões:** **Salvar preferências** · **Aceitar todos** · **Rejeitar não essenciais**
 
-**Rodapé da central:** Para exercer seus direitos ou falar com nosso Encarregado (DPO), contate [E-MAIL DO DPO/ENCARREGADO]. Versão da Política: 1.0 — [DATA].
+**Rodapé da central:** Para exercer seus direitos ou falar com nosso Encarregado (DPO), contate lemoncapsencapsulados@gmail.com. Versão da Política: 1.0 — 16 de julho de 2026.
 
 ### 21.3. Aviso do portal público de rastreio (sem login)
 
@@ -324,7 +324,7 @@ O texto abaixo é um **modelo** para implementação do banner e da central de p
 
 ### 22.c. Checklist de implementação
 
-1. Preencher todos os placeholders ([RAZÃO SOCIAL], [CNPJ], [ENDEREÇO COMPLETO], [E-MAIL DO DPO/ENCARREGADO], [NOME DO ENCARREGADO], [URL DO SITE], [DATA]).
+1. Preencher todos os placeholders (LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, lemoncapsencapsulados@gmail.com, a ser designado pela administração, https://glop-logistica.netlify.app, 16 de julho de 2026).
 2. Implementar **Consent Management Platform (CMP)** com opt-in por categoria e bloqueio de cookies não essenciais antes do consentimento.
 3. Garantir que **nenhum script analítico/marketing** carregue antes do consentimento (revisar tags e SDKs).
 4. Configurar atributos **Secure/HttpOnly/SameSite** nos cookies de sessão do Supabase/servidor onde aplicável.
@@ -373,9 +373,9 @@ Legenda: R = Responsável pela execução; A = Aprovador (accountable); C = Cons
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | Chief Legal AI (minuta) — revisão pendente por [NOME DO ENCARREGADO] | Criação da Política de Cookies e Tecnologias de Rastreamento do GLOP, com categorias, bases legais, dupla natureza Controlador/Operador, portal público de rastreio, terceiros/suboperadores, gestão de consentimento e modelo de banner/central. |
+| 1.0 | 16 de julho de 2026 | Chief Legal AI (minuta) — revisão pendente por a ser designado pela administração | Criação da Política de Cookies e Tecnologias de Rastreamento do GLOP, com categorias, bases legais, dupla natureza Controlador/Operador, portal público de rastreio, terceiros/suboperadores, gestão de consentimento e modelo de banner/central. |
 | | | | |
 
 ---
 
-*Documento pertencente a [RAZÃO SOCIAL] — [NOME FANTASIA: GLOP]. Uso interno e publicação sujeitos à revisão jurídica final.*
+*Documento pertencente a LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA — [NOME FANTASIA: GLOP]. Uso interno e publicação sujeitos à revisão jurídica final.*

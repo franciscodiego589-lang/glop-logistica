@@ -2,13 +2,13 @@
 
 > ⚠️ MINUTA — documento gerado por IA, pendente de revisão e validação por advogado(a) habilitado(a) antes de uso em produção. A legislação muda; adapte à operação real e revise periodicamente.
 
-**Controladora / Fornecedora da plataforma:** [RAZÃO SOCIAL], nome fantasia [NOME FANTASIA: GLOP], inscrita no CNPJ sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO] ("GLOP", "Plataforma", "nós" ou "Fornecedora").
+**Controladora / Fornecedora da plataforma:** LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, nome fantasia [NOME FANTASIA: GLOP], inscrita no CNPJ sob o nº 55.836.075/0001-07, com sede em Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190 ("GLOP", "Plataforma", "nós" ou "Fornecedora").
 
-**Encarregado pelo Tratamento de Dados Pessoais (DPO):** [NOME DO ENCARREGADO] — contato: [E-MAIL DO DPO/ENCARREGADO].
+**Encarregado pelo Tratamento de Dados Pessoais (DPO):** a ser designado pela administração — contato: lemoncapsencapsulados@gmail.com.
 
-**Site oficial:** [URL DO SITE].
+**Site oficial:** https://glop-logistica.netlify.app.
 
-**Versão:** 1.0 — **Vigência a partir de:** [DATA].
+**Versão:** 1.0 — **Vigência a partir de:** 16 de julho de 2026.
 
 ---
 
@@ -58,7 +58,7 @@ Para os fins destes Termos de Uso ("Termos"), os vocábulos abaixo, no singular 
 - **LGPD:** Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais).
 - **CDC:** Lei nº 8.078/1990 (Código de Defesa do Consumidor).
 - **Marco Civil:** Lei nº 12.965/2014 (Marco Civil da Internet).
-- **Política de Privacidade:** o documento que descreve o tratamento de dados pessoais pelo GLOP, disponível em [URL DO SITE].
+- **Política de Privacidade:** o documento que descreve o tratamento de dados pessoais pelo GLOP, disponível em https://glop-logistica.netlify.app.
 - **DPA / Acordo de Tratamento de Dados:** o Data Processing Agreement que rege a relação Controlador–Operador entre Usuário e GLOP.
 - **SLA:** o Acordo de Nível de Serviço aplicável à disponibilidade e ao suporte da Plataforma.
 
@@ -157,7 +157,7 @@ Todos os direitos não expressamente concedidos permanecem reservados ao GLOP e/
 
 ### 6.1. Planos e preços
 
-Os planos, limites de uso (por exemplo, número de pedidos, empresas, usuários, integrações e volume de armazenamento), funcionalidades incluídas e preços são os vigentes no ato da contratação e/ou os descritos na proposta comercial, pedido ou tabela publicada em [URL DO SITE], que integram estes Termos.
+Os planos, limites de uso (por exemplo, número de pedidos, empresas, usuários, integrações e volume de armazenamento), funcionalidades incluídas e preços são os vigentes no ato da contratação e/ou os descritos na proposta comercial, pedido ou tabela publicada em https://glop-logistica.netlify.app, que integram estes Termos.
 
 ### 6.2. Pagamento
 
@@ -269,7 +269,7 @@ O GLOP compromete-se a: (i) disponibilizar a Plataforma conforme o plano contrat
 
 ### 9.2. Remissão ao SLA
 
-Os índices de disponibilidade (uptime), janelas de manutenção, tempos de resposta de suporte, severidades e eventuais créditos de serviço são regidos pelo **SLA** aplicável, publicado em [URL DO SITE], que integra estes Termos. Na ausência de SLA específico, aplicam-se as práticas de melhor esforço, sem garantia de disponibilidade ininterrupta.
+Os índices de disponibilidade (uptime), janelas de manutenção, tempos de resposta de suporte, severidades e eventuais créditos de serviço são regidos pelo **SLA** aplicável, publicado em https://glop-logistica.netlify.app, que integra estes Termos. Na ausência de SLA específico, aplicam-se as práticas de melhor esforço, sem garantia de disponibilidade ininterrupta.
 
 ### 9.3. Manutenções
 
@@ -460,7 +460,7 @@ O uso continuado da Plataforma após a vigência da nova versão implica aceite.
 
 ### 20.1. Canais
 
-As comunicações do GLOP ao Usuário serão feitas por e-mail cadastrado, avisos na Plataforma ou notificação in-app. As comunicações do Usuário ao GLOP serão feitas pelos canais oficiais indicados em [URL DO SITE] e no item 24.
+As comunicações do GLOP ao Usuário serão feitas por e-mail cadastrado, avisos na Plataforma ou notificação in-app. As comunicações do Usuário ao GLOP serão feitas pelos canais oficiais indicados em https://glop-logistica.netlify.app e no item 24.
 
 ### 20.2. Validade
 
@@ -516,7 +516,7 @@ As partes envidarão esforços para solucionar controvérsias de forma amigável
 
 ### 22.3. Foro
 
-Fica eleito o foro da Comarca de [CIDADE/UF DA SEDE], com renúncia a qualquer outro, por mais privilegiado que seja, para dirimir controvérsias oriundas destes Termos, ressalvadas as hipóteses de competência legal cogente (por exemplo, foro do consumidor, quando aplicável).
+Fica eleito o foro da Comarca de Cuiabá/MT, com renúncia a qualquer outro, por mais privilegiado que seja, para dirimir controvérsias oriundas destes Termos, ressalvadas as hipóteses de competência legal cogente (por exemplo, foro do consumidor, quando aplicável).
 
 ---
 
@@ -528,9 +528,9 @@ Integram estes Termos: (i) a Política de Privacidade; (ii) o DPA; (iii) o SLA; 
 
 ## 24. Contato
 
-- **Suporte e assuntos contratuais:** [E-MAIL DO DPO/ENCARREGADO] ou canais indicados em [URL DO SITE].
-- **Encarregado (DPO):** [NOME DO ENCARREGADO] — [E-MAIL DO DPO/ENCARREGADO].
-- **Endereço:** [ENDEREÇO COMPLETO].
+- **Suporte e assuntos contratuais:** lemoncapsencapsulados@gmail.com ou canais indicados em https://glop-logistica.netlify.app.
+- **Encarregado (DPO):** a ser designado pela administração — lemoncapsencapsulados@gmail.com.
+- **Endereço:** Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190.
 
 ---
 
@@ -569,7 +569,7 @@ Integram estes Termos: (i) a Política de Privacidade; (ii) o DPA; (iii) o SLA; 
 
 ### (c) Checklist de implementação
 
-- [ ] Preencher todos os placeholders ([RAZÃO SOCIAL], [CNPJ], [ENDEREÇO COMPLETO], [E-MAIL DO DPO/ENCARREGADO], [NOME DO ENCARREGADO], [URL DO SITE], [CIDADE/UF DA SEDE], [DATA], prazos entre colchetes).
+- [ ] Preencher todos os placeholders (LEMONCAPS INDÚSTRIA E COMÉRCIO LTDA, 55.836.075/0001-07, Rua Érico Veríssimo, s/nº, Quadra 05, Lote 10, Bairro Santa Cruz, Cuiabá/MT, CEP 78.068-190, lemoncapsencapsulados@gmail.com, a ser designado pela administração, https://glop-logistica.netlify.app, Cuiabá/MT, 16 de julho de 2026, prazos entre colchetes).
 - [ ] Publicar e vincular a Política de Privacidade, o DPA e o SLA (itens 8.3, 9.2, 23).
 - [ ] Implementar registro de aceite eletrônico com data, versão, IP e identificação do aceitante (item 3.1).
 - [ ] Configurar fluxo de comunicação de novas versões com antecedência mínima (item 19.2).
@@ -616,7 +616,7 @@ Legenda: R = Responsável (executa); A = Aprovador (responde); C = Consultado; I
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 1.0 | [DATA] | Chief Legal AI (minuta) | Elaboração inicial dos Termos de Uso do GLOP (SaaS logístico B2B), cobrindo objeto, licença SaaS, planos e inadimplência, obrigações do Usuário e dualidade Controlador/Operador, integrações de terceiros, PI, limitação de responsabilidade, CDC, rescisão e eliminação de dados. |
+| 1.0 | 16 de julho de 2026 | Chief Legal AI (minuta) | Elaboração inicial dos Termos de Uso do GLOP (SaaS logístico B2B), cobrindo objeto, licença SaaS, planos e inadimplência, obrigações do Usuário e dualidade Controlador/Operador, integrações de terceiros, PI, limitação de responsabilidade, CDC, rescisão e eliminação de dados. |
 | — | — | [NOME DO REVISOR] | Revisão jurídica humana pendente antes de produção. |
 
 ---
