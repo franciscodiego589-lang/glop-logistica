@@ -1065,4 +1065,56 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Ele digita o código e acompanha a entrega em tempo real.",
     ],
   },
+  "catalogo": {
+    resumo: "O cadastro completo dos seus produtos: SKU, preço de venda, custo (CMV), peso e dimensões, estoque atual e mínimo, e foto. É a base que alimenta o cálculo de frete, o lucro real e o MRP.",
+    itens: [
+      "Painel: quantos produtos, quantos ativos, o valor total em estoque (estoque × custo) e quantos estão abaixo do mínimo.",
+      "Produtos: cadastre cada item com SKU, preço, custo, peso (g) e dimensões (cm) — o peso e as medidas alimentam a prepostagem dos Correios.",
+      "Estoque atual e mínimo: quando o atual fica abaixo do mínimo, o produto entra na lista de reposição.",
+      "Tipo: marque como Kit/Combo se o produto for um agrupamento de outros.",
+      "O relatório 'Catálogo — Estoque & Reposição' mostra o valor por categoria e o que repor.",
+    ],
+    passos: [
+      "Cadastre seus produtos com preço, custo, peso e dimensões.",
+      "Defina o estoque mínimo de cada um e acompanhe a reposição no relatório do catálogo.",
+    ],
+  },
+  "financeiro-contas": {
+    resumo: "Onde você lança tudo o que a empresa tem a pagar (fornecedores, impostos, comissões) e a receber (repasses, vendas a prazo), com data de vencimento. O sistema mostra o saldo projetado e o fluxo de caixa.",
+    itens: [
+      "Painel: total a receber, total a pagar, saldo projetado (receber − pagar) e quantas contas estão vencidas.",
+      "Contas: cada lançamento tem tipo (a pagar / a receber), descrição, categoria, valor, vencimento e se já foi pago.",
+      "Marque como Pago quando quitar — assim a conta sai do saldo em aberto.",
+      "O relatório 'Fluxo de Caixa' mostra a pagar × a receber por período e os próximos vencimentos.",
+    ],
+    passos: [
+      "Lance as contas a pagar e a receber com o vencimento.",
+      "Marque como pago ao quitar e acompanhe o saldo no relatório de Fluxo de Caixa.",
+    ],
+  },
+  "crm": {
+    resumo: "Um cadastro dos seus clientes para você segmentar e anotar (VIP, recorrente, inativo), com tags e observações. As métricas (LTV, recompra, melhores clientes) são calculadas dos pedidos no relatório.",
+    itens: [
+      "Fichas: cadastre cada comprador com CPF/CNPJ, nome, contato, segmento e tags.",
+      "Segmento: classifique como novo, recorrente, VIP ou inativo para ações de marketing e atendimento.",
+      "Observações: anote preferências, histórico e combinados com o cliente.",
+      "O relatório 'CRM — Segmentos & LTV' cruza as fichas com os pedidos e mostra LTV, taxa de recompra e ranking de clientes.",
+    ],
+    passos: [
+      "Crie as fichas dos seus melhores clientes e marque o segmento.",
+      "Abra o relatório de CRM para ver LTV, recompra e os melhores clientes.",
+    ],
+  },
+  "metas": {
+    resumo: "Defina metas por mês (receita, pedidos, entregas, ticket médio ou comissão) e o sistema calcula sozinho o progresso, apurando o realizado direto dos pedidos.",
+    itens: [
+      "Metas: dê um nome, escolha o tipo (receita, pedidos, entregues, ticket, comissão), o mês de competência e o alvo.",
+      "O realizado é apurado automaticamente dos pedidos daquele mês — você não precisa preencher.",
+      "O relatório 'Metas & Desempenho' mostra o progresso de cada meta (realizado × alvo) com barras.",
+    ],
+    passos: [
+      "Defina a meta do mês (ex.: Receita de julho = R$ 100.000).",
+      "Acompanhe o progresso no painel de Metas — o realizado vem dos pedidos.",
+    ],
+  },
 };

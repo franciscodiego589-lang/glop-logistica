@@ -45,8 +45,10 @@ export const NAV: NavItem[] = [
   { slug: "planos-precos", label: "Planos & Preços do Produtor", icon: "💰", group: "Comercial & Marketing", vol: 57, description: "Planos por plataforma, tabelas de preço por produto/faixa, regras de embalagem e faixas de frete/peso" },
   { slug: "importacao-pedidos", label: "Importação Inteligente (SOIDI)", icon: "📥", group: "Comercial & Marketing", vol: 52, description: "Importar pedidos de qualquer origem, OCR/document intelligence, validação CPF/CNPJ/CEP, normalização, dedup, promoção" },
   { slug: "pedidos-logisticos", label: "Pedidos Logísticos (LOM)", icon: "🧾", group: "Comercial & Marketing", vol: 1, description: "Domínio 01: demanda logística, validação (ATP), planejamento, reserva, máquina das 17 etapas e barramento de eventos" },
+  { slug: "crm", label: "CRM de Compradores", icon: "👤", group: "Comercial & Marketing", vol: 79, description: "Fichas dos seus clientes com segmento (novo/recorrente/VIP), tags e observações — e o relatório de LTV, recompra e melhores clientes cruzando com os pedidos" },
 
   // ── ✴️ Catálogo & Equipe ───────────────────────────────────────────────────
+  { slug: "catalogo", label: "Catálogo de Produtos", icon: "🧴", group: "Catálogo & Equipe", vol: 78, description: "Cadastro completo dos seus produtos: SKU, preço, custo (CMV), peso e dimensões, estoque atual/mínimo e foto — a base do frete, do lucro e do MRP" },
   { slug: "produtos", label: "Cadastro Mestre (SKU)", icon: "▤", group: "Catálogo & Equipe", vol: 11, description: "SKU, dimensões, peso, categorias, fornecedores, embalagens" },
   { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Catálogo & Equipe", vol: 16, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
 
@@ -87,6 +89,7 @@ export const NAV: NavItem[] = [
   // ── 💰 Financeiro ──────────────────────────────────────────────────────────
   { slug: "financeiro-dre", label: "Financeiro — DRE", icon: "💵", group: "Financeiro", vol: 68, description: "Demonstrativo de resultado com dados reais: receita bruta, comissões de coprodução, líquido da empresa, margem, ticket médio, receita por estado e canal" },
   { slug: "financeiro-custos", label: "Custos & Despesas", icon: "🧮", group: "Financeiro", vol: 72, description: "Lance despesas (fixas/variáveis) e o custo de cada produto (CMV, frete médio, taxa de gateway) — a base para o lucro real por pedido" },
+  { slug: "financeiro-contas", label: "Contas a Pagar & Receber", icon: "💳", group: "Financeiro", vol: 80, description: "Lance o que a empresa tem a pagar (fornecedores, impostos) e a receber (repasses, vendas a prazo) com vencimentos — e veja o fluxo de caixa e o saldo projetado" },
   { slug: "compras", label: "Suprimentos / Compras", icon: "🛒", group: "Financeiro", vol: 10, description: "Requisição → cotação → pedido → recebimento" },
 
   // ── 📋 Fiscal & Tributos ───────────────────────────────────────────────────
@@ -100,6 +103,7 @@ export const NAV: NavItem[] = [
   // ── 📊 Relatórios & IA ─────────────────────────────────────────────────────
   { slug: "relatorios", label: "Central de Relatórios", icon: "📊", group: "Relatórios & IA", vol: 71, description: "Relatórios gerenciais com dados reais: vendas, operação, coprodução, integrações, logística, fiscal, IA e auditoria — KPIs, quebras, séries e exportação CSV" },
   { slug: "assistente", label: "Assistente (perguntas rápidas)", icon: "💬", group: "Relatórios & IA", vol: 75, description: "Pergunte com um clique (vendas, o que está travado, lucro, lotes vencendo, comissões, SAC) — o assistente consulta seus dados na hora e responde" },
+  { slug: "metas", label: "Metas & Desempenho", icon: "🎯", group: "Relatórios & IA", vol: 81, description: "Defina metas por mês (receita, pedidos, entregas, ticket, comissão) e acompanhe o progresso contra o realizado apurado automaticamente dos pedidos" },
   { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Relatórios & IA", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Relatórios & IA", vol: 15, description: "Insights, previsões e planos de ação logísticos" },
   { slug: "ia-central", label: "LAIOS — Logistics AI OS", icon: "✦", group: "Relatórios & IA", vol: 15, description: "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa" },
