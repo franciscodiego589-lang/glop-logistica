@@ -29,6 +29,17 @@ export default function CoproducaoWorkbench({ coprodutores, regras, vendas, repa
     else { const d = data as any; alert(`✅ Apuração concluída: ${d?.apurados ?? 0} comissão(ões) criada(s)${d?.sem_regra ? ` · ${d.sem_regra} venda(s) sem regra` : ""}.`); router.refresh(); }
   }
 
+  // #1 GERAR REPASSE: fecha as comissões pendentes em lotes de repasse por coprodutor.
+  async function gerarRepasse() {
+    if (!supabase) return;
+    if (!confirm("Gerar repasse agrupa TODAS as comissões pendentes (com valor) de cada coprodutor num lote fechado. Continuar?")) return;
+    setBusy(true);
+    const { data, error } = await supabase.rpc("coproducao_gerar_repasse", { p_company: COMPANY });
+    setBusy(false);
+    if (error) alert("🚫 " + error.message);
+    else { const d = data as any; if ((d?.lotes ?? 0) === 0) alert("ℹ️ Nenhuma comissão pendente para repassar."); else { alert(`✅ ${d.lotes} lote(s) de repasse gerado(s) — ${money(d.total_repassar)} a repassar.`); setTab("Repasses"); router.refresh(); } }
+  }
+
   const ativos = coprodutores.filter((c) => c.status === "ativo").length;
   const comissaoPendente = vendas.filter((v) => v.status_repasse === "pendente").reduce((s, v) => s + Number(v.valor_comissao ?? 0), 0);
   const aRepassar = repasses.filter((r) => ["aberto", "conferido", "aprovado"].includes(r.status)).reduce((s, r) => s + Number(r.total_liquido_repassar ?? 0), 0);
@@ -59,7 +70,10 @@ export default function CoproducaoWorkbench({ coprodutores, regras, vendas, repa
               <div className="font-bold text-sm">⚡ Apuração automática de comissão</div>
               <div className="text-xs muted">Varre as vendas, casa com as regras por produto e cria as comissões (comissão × empresa) sozinho. Idempotente — não duplica.</div>
             </div>
-            <button onClick={apurar} disabled={busy} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy ? "Apurando…" : "⚡ Apurar comissões agora"}</button>
+            <div className="flex flex-col gap-1.5">
+              <button onClick={apurar} disabled={busy} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50">{busy ? "Apurando…" : "⚡ Apurar comissões agora"}</button>
+              <button onClick={gerarRepasse} disabled={busy} className="px-4 py-2 rounded-lg border text-sm font-semibold disabled:opacity-50" style={{ borderColor: "var(--border)" }}>＋ Gerar repasse</button>
+            </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <KpiCard label="Coprodutores ativos" value={ativos} icon="🤝" accent />
@@ -147,7 +161,10 @@ export default function CoproducaoWorkbench({ coprodutores, regras, vendas, repa
 
       {tab === "Repasses" && (
         <div className="card p-0 overflow-x-auto">
-          <div className="px-4 pt-3 font-semibold text-sm">Repasses por período <span className="badge badge-neutral ml-1">{repasses.length}</span></div>
+          <div className="px-4 pt-3 flex items-center justify-between flex-wrap gap-2">
+            <span className="font-semibold text-sm">Repasses por período <span className="badge badge-neutral ml-1">{repasses.length}</span></span>
+            <button onClick={gerarRepasse} disabled={busy} className="px-3 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold disabled:opacity-50">{busy ? "Gerando…" : "＋ Gerar repasse (fecha comissões pendentes)"}</button>
+          </div>
           {repasses.length === 0 ? <p className="text-sm muted p-4">Nenhum repasse gerado. Um repasse agrupa as comissões de um coprodutor num período para pagamento.</p> : (
             <table className="w-full text-sm mt-2">
               <thead><tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}>

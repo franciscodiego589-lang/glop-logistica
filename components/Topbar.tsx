@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import NotificationBell from "@/components/NotificationBell";
 
 export default function Topbar({ email }: { email?: string | null }) {
   const router = useRouter();
@@ -48,10 +49,7 @@ export default function Topbar({ email }: { email?: string | null }) {
       <div className="flex-1" />
 
       {/* Ações */}
-      <button className="btn btn-ghost btn-sm h-10 w-10 !px-0 relative" title="Notificações">
-        <span className="text-base">🔔</span>
-        <span className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: "var(--danger)" }} />
-      </button>
+      <NotificationBell />
       <button onClick={toggle} className="btn btn-ghost btn-sm h-10 w-10 !px-0" title="Alternar tema">
         <span className="text-base">{dark ? "☀" : "☾"}</span>
       </button>

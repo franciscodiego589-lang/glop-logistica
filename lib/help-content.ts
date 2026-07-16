@@ -922,4 +922,54 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Use a aba Agendamentos para reservar horarios de carga/descarga.",
     ],
   },
+  "financeiro-dre": {
+    resumo: "Mostra o resultado financeiro de verdade a partir das vendas: quanto entrou (receita bruta), quanto sai em comissões de coprodução e quanto sobra para a empresa. Tudo calculado no banco, no período que você escolher.",
+    itens: [
+      "Cartões: receita bruta, comissão de coprodução, líquido da empresa, margem, pedidos, ticket médio, entregues e cancelados.",
+      "Estrutura do resultado: receita − comissões = líquido, no formato de um DRE simplificado.",
+      "Receita por estado e por canal: onde você mais fatura, para negociar frete e priorizar estoque.",
+      "Botões 7/30/90/365 dias: troca a janela do período analisado.",
+    ],
+    passos: [
+      "Puxe seus pedidos em Puxar Pedidos e apure as comissões em Coprodução.",
+      "Escolha o período no topo e leia o líquido da empresa e a margem.",
+    ],
+  },
+  "correios-central": {
+    resumo: "Reúne TODAS as ferramentas dos Correios num só lugar: pré-postagem, rastreio (SRO), conferência de postagem, correção de CEP, contratos/remetente, credenciais da API e logs.",
+    itens: [
+      "Prepostagem: gera as pré-postagens (PPN) dos pedidos prontos para despacho.",
+      "Rastreio (SRO): consulta os eventos de cada objeto pelo código de rastreio.",
+      "Conferência e correção de CEP: valida endereços e ajusta o que estiver errado antes de postar.",
+      "Credenciais da API: cole a chave/contrato dos Correios para habilitar as integrações.",
+    ],
+    passos: [
+      "Cadastre o contrato/remetente e cole as credenciais da API.",
+      "Gere as prepostagens e acompanhe o rastreio dos objetos.",
+    ],
+  },
+  "ecommerce-hub": {
+    resumo: "Conecta qualquer e-commerce (Shopify, WooCommerce, Nuvemshop, VTEX, Tray, Yampi…): você cola a chave da API da loja, testa a conexão e passa a puxar os pedidos de lá.",
+    itens: [
+      "Catálogo de plataformas: cada loja com o campo para colar a chave da API.",
+      "Salvar chave: grava a credencial de forma segura (não volta para a tela) e marca a loja como conectada.",
+      "Testar conexão: confirma se a chave é válida antes de puxar pedidos.",
+    ],
+    passos: [
+      "Escolha a plataforma, cole a chave da API e clique em Salvar.",
+      "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
+    ],
+  },
+  "rastreio": {
+    resumo: "Página pública que o comprador usa para acompanhar o pedido pelo código de rastreio. Cobre tanto os pedidos logísticos quanto os pedidos de loja postados pelos Correios.",
+    itens: [
+      "Campo de busca: o cliente digita o código de rastreio e vê o status atual.",
+      "Linha do tempo: mostra as movimentações do objeto (postado, em trânsito, entregue).",
+      "Público: pode ser compartilhado com o comprador, sem login, sem expor dados sensíveis.",
+    ],
+    passos: [
+      "Compartilhe o link /rastreio com o comprador.",
+      "Ele digita o código e acompanha a entrega em tempo real.",
+    ],
+  },
 };

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ExportButton from "@/components/ui/ExportButton";
@@ -33,6 +33,9 @@ export default function StoreHubWorkbench({ connectors, orders }: {
   const [trk, setTrk] = useState<Record<string, string>>({});
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [sels, setSels] = useState<Set<string>>(new Set());   // #4 ações em massa
+  const [autoSync, setAutoSync] = useState(false);            // #2 sincronização automática
+  const autoRef = useRef<any>(null);
 
   const conn = connectors.find((c) => c.id === sel) ?? connectors[0];
   const rows = useMemo(() => orders.filter((o) => o.connector_id === sel), [orders, sel]);
@@ -102,6 +105,35 @@ export default function StoreHubWorkbench({ connectors, orders }: {
     setBusy(""); router.refresh();
   }
 
+  // #2 SINCRONIZAÇÃO AUTOMÁTICA: enquanto ligada e a aba aberta, puxa novas vendas
+  // a cada 10 min (modo incremental). Desliga sozinha ao sair da tela.
+  useEffect(() => {
+    if (autoRef.current) { clearInterval(autoRef.current); autoRef.current = null; }
+    if (autoSync && conectada) {
+      autoRef.current = setInterval(() => { if (!busy) pull({ mode: "incremental", label: "Auto-sync" }); }, 10 * 60_000);
+    }
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSync, conectada, sel]);
+
+  // #4 AÇÕES EM MASSA: aplica um novo status aos pedidos selecionados (RPC transition_store_order).
+  const toggleSel = (id: string) => setSels((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const allShownSelected = filteredRows.length > 0 && filteredRows.every((o) => sels.has(o.id));
+  const toggleAll = () => setSels(() => allShownSelected ? new Set() : new Set(filteredRows.map((o) => o.id)));
+  async function bulkTransition(to: string, label: string) {
+    if (!supabase || sels.size === 0) return;
+    if (!confirm(`Marcar ${sels.size} pedido(s) como “${label}”?`)) return;
+    setBusy("bulk");
+    let ok = 0, fail = 0; const errs: string[] = [];
+    for (const id of Array.from(sels)) {
+      const { error } = await supabase.rpc("transition_store_order", { p_company: COMPANY, p_order: id, p_to_state: to, p_reason: "ação em massa" });
+      if (error) { fail++; if (errs.length < 4) errs.push(error.message); } else ok++;
+    }
+    setBusy(""); setSels(new Set());
+    alert(`${ok} atualizado(s)${fail ? `, ${fail} com erro${errs.length ? ":\n" + errs.join("\n") : ""}` : ""}.`);
+    router.refresh();
+  }
+
   const B = "w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed no-underline block";
   const primary = `${B} bg-brand-600 text-white hover:opacity-90`;
   const soft = `${B} border hover:bg-black/5 dark:hover:bg-white/5`;
@@ -139,7 +171,11 @@ export default function StoreHubWorkbench({ connectors, orders }: {
             <button disabled={!conectada || busy === "pull"} onClick={() => pull({ since_days: 30, label: "Últimos 30 dias" })} className={soft} style={{ borderColor: "var(--border)" }}>📆 Puxar últimos 30 dias</button>
             <button disabled={!conectada || busy === "pull"} onClick={() => pull({ statuses: [2, 6], label: "Puxando pagas" })} className={soft} style={{ borderColor: "var(--border)" }}>✅ Puxar só pagas (finalizadas)</button>
             <button onClick={() => router.refresh()} className={soft} style={{ borderColor: "var(--border)" }}>🔄 Atualizar lista</button>
+            <button disabled={!conectada} onClick={() => setAutoSync((a) => !a)} className={autoSync ? `${B} bg-emerald-600 text-white` : soft} style={autoSync ? undefined : { borderColor: "var(--border)" }}>
+              {autoSync ? "🟢 Auto-sync LIGADO (a cada 10 min)" : "⏱️ Ligar sincronização automática"}
+            </button>
           </div>
+          {autoSync && <p className="text-[11px] mt-1.5" style={{ color: "var(--success)" }}>Puxando novas vendas sozinho enquanto esta aba estiver aberta.</p>}
           {!conectada && <p className="text-[11px] muted mt-2">Conecte a chave (abaixo) para liberar.</p>}
           {conn?.metadata?.last_pull_at && <div className="text-[11px] muted mt-2">Última sinc.: {dt(conn.metadata.last_pull_at)}</div>}
           {prog && <div className="text-[11px] mt-1.5 font-medium" style={{ color: "var(--brand)" }}>⏳ {prog}</div>}
@@ -210,13 +246,33 @@ export default function StoreHubWorkbench({ connectors, orders }: {
           <span className="font-semibold text-sm">{conn?.producer_ref ?? conn?.name ?? "Pedidos"} — {filteredRows.length} de {recebidas}{statusFilter !== "all" || search ? " (filtrado)" : ""}</span>
           {(statusFilter !== "all" || search) && <button onClick={() => { setStatusFilter("all"); setSearch(""); }} className="text-xs font-semibold" style={{ color: "var(--brand)" }}>limpar filtro ✕</button>}
         </div>
+
+        {/* #4 barra de ações em massa */}
+        {sels.size > 0 && (
+          <div className="mx-4 mt-2 p-2 rounded-lg flex flex-wrap items-center gap-1.5" style={{ background: "var(--surface-2)", border: "1px solid var(--brand)" }}>
+            <span className="text-xs font-semibold px-1">{sels.size} selecionado(s):</span>
+            {[
+              { to: "pronto_despacho", label: "Pronto p/ despacho" },
+              { to: "etiquetado", label: "Etiquetado" },
+              { to: "postado", label: "Postado" },
+              { to: "entregue", label: "Entregue" },
+            ].map((a) => (
+              <button key={a.to} disabled={busy === "bulk"} onClick={() => bulkTransition(a.to, a.label)} className="px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-semibold disabled:opacity-50">{a.label}</button>
+            ))}
+            <button disabled={busy === "bulk"} onClick={() => bulkTransition("cancelado", "Cancelado")} className="px-2.5 py-1 rounded-md text-xs font-semibold text-white disabled:opacity-50" style={{ background: "var(--danger)" }}>Cancelar</button>
+            <button onClick={() => setSels(new Set())} className="px-2 py-1 rounded-md text-xs muted">limpar seleção ✕</button>
+            {busy === "bulk" && <span className="text-xs" style={{ color: "var(--brand)" }}>aplicando…</span>}
+          </div>
+        )}
         {filteredRows.length === 0 ? <p className="text-sm muted p-4">{rows.length === 0 ? <>Nenhum pedido ainda. Conecte a chave e clique em <b>Puxar todos os pedidos</b>.</> : "Nenhum pedido no filtro atual."}</p> : (
           <table className="w-full text-sm mt-2">
             <thead><tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}>
-              <th className="py-2 px-4">Venda</th><th className="px-3">Comprador</th><th className="px-3">Produto</th><th className="px-3">Destino</th><th className="px-3">Status</th><th className="px-3 text-right">Valor</th><th className="px-3">Recebido</th><th className="px-3">Rastreio → Monetizze</th></tr></thead>
+              <th className="py-2 pl-4 pr-1"><input type="checkbox" checked={allShownSelected} onChange={toggleAll} title="Selecionar todos (do filtro)" /></th>
+              <th className="py-2 px-2">Venda</th><th className="px-3">Comprador</th><th className="px-3">Produto</th><th className="px-3">Destino</th><th className="px-3">Status</th><th className="px-3 text-right">Valor</th><th className="px-3">Recebido</th><th className="px-3">Rastreio → Monetizze</th></tr></thead>
             <tbody>{filteredRows.map((o) => (
-              <tr key={o.id} className="border-b last:border-0" style={{ borderColor: "var(--border)" }}>
-                <td className="py-2 px-4 font-medium">#{o.sale_number}</td>
+              <tr key={o.id} className="border-b last:border-0" style={{ borderColor: "var(--border)", background: sels.has(o.id) ? "color-mix(in srgb, var(--brand) 8%, transparent)" : undefined }}>
+                <td className="pl-4 pr-1"><input type="checkbox" checked={sels.has(o.id)} onChange={() => toggleSel(o.id)} /></td>
+                <td className="py-2 px-2 font-medium">#{o.sale_number}</td>
                 <td className="px-3">{o.buyer_name ?? "—"}<div className="text-[11px] muted">{o.buyer_doc ?? ""}</div></td>
                 <td className="px-3 text-xs">{o.product_name ?? "—"}</td>
                 <td className="px-3 text-xs">{o.dest_city ?? "—"}{o.dest_uf ? `/${o.dest_uf}` : ""}</td>

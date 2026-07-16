@@ -5,6 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 const STATUS_LABEL: Record<string, string> = {
   draft: "Criado", planned: "Planejado", dispatched: "Despachado", in_transit: "Em trânsito", out_for_delivery: "Saiu para entrega",
   delivered: "Entregue", returned: "Devolvido", canceled: "Cancelado", posted: "Postado", accepted: "Aceito", awaiting_pickup: "Aguardando retirada",
+  // store_orders (pedidos de loja rastreados pelos Correios)
+  recebido: "Recebido", importado: "Importado", pronto_despacho: "Pronto p/ despacho", pre_postado: "Pré-postado",
+  etiquetado: "Etiquetado", postado: "Postado", em_transito: "Em trânsito", saiu_entrega: "Saiu para entrega",
+  entregue: "Entregue", devolvido: "Devolvido", extraviado: "Extraviado",
 };
 const EVENT_LABEL: Record<string, string> = {
   created: "Objeto criado", picked_up: "Coletado", in_transit: "Em trânsito", out_for_delivery: "Saiu para entrega",
@@ -15,14 +19,21 @@ export default function RastreioPage() {
   const supabase = useMemo(() => createClient(), []);
   const [code, setCode] = useState("");
   const [res, setRes] = useState<any>(null);
+  const [res2, setRes2] = useState<any>(null);
   const [busy, setBusy] = useState(false);
   const [searched, setSearched] = useState(false);
 
   async function track() {
     if (!supabase || !code.trim()) return;
-    setBusy(true); setSearched(true);
+    setBusy(true); setSearched(true); setRes2(null);
     const { data } = await supabase.rpc("public_track", { p_code: code.trim() });
-    setRes(data); setBusy(false);
+    setRes(data);
+    // Fallback: pedidos de loja (store_orders) rastreados pelo código dos Correios
+    if (!data || !(data as any).found) {
+      const { data: d2 } = await supabase.rpc("rastreio_publico", { p_codigo: code.trim() });
+      setRes2(d2);
+    }
+    setBusy(false);
   }
   const events = (res?.events ?? []) as any[];
   const delivered = res?.status === "delivered";
@@ -42,8 +53,29 @@ export default function RastreioPage() {
           <button onClick={track} disabled={busy} className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold disabled:opacity-60">{busy ? "Buscando…" : "Rastrear"}</button>
         </div>
 
-        {searched && !busy && res && !res.found && (
+        {searched && !busy && res && !res.found && (!res2 || !res2.found) && (
           <div className="card p-6 mt-4 text-center muted">Nenhum objeto encontrado com esse código. Confira e tente novamente.</div>
+        )}
+
+        {/* Pedido de loja rastreado pelos Correios (rastreio_publico) */}
+        {res2?.found && (
+          <div className="card p-5 mt-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <div className="text-xs uppercase muted font-semibold">Status atual</div>
+                <div className={`text-xl font-bold ${res2.status === "entregue" ? "text-green-500" : "text-brand-500"}`}>{STATUS_LABEL[res2.status] ?? res2.status}</div>
+              </div>
+              <div className="text-right text-sm">
+                {res2.destino && <div>{res2.destino}</div>}
+                <div className="muted text-xs font-mono">{res2.codigo}</div>
+              </div>
+            </div>
+            {res2.produto && <div className="mt-3 text-sm"><span className="muted">Produto:</span> {res2.produto}</div>}
+            {res2.cliente && <div className="text-sm"><span className="muted">Destinatário:</span> {res2.cliente}</div>}
+            <div className="mt-3 text-xs muted">
+              Postado em {res2.criado_em ? new Date(res2.criado_em).toLocaleDateString("pt-BR") : "—"} · atualizado {res2.atualizado_em ? new Date(res2.atualizado_em).toLocaleString("pt-BR") : "—"}
+            </div>
+          </div>
         )}
 
         {res?.found && (
