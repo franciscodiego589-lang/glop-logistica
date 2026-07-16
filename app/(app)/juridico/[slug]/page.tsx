@@ -12,7 +12,7 @@ export default function LegalDocPage({ params }: { params: { slug: string } }) {
   if (!doc) notFound();
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap print-hide">
         <Link href="/juridico" className="text-sm font-semibold no-underline" style={{ color: "var(--brand)" }}>← Jurídico & Compliance</Link>
         <div className="flex items-center gap-2">
           {doc!.publicPath && <Link href={doc!.publicPath} className="px-2.5 py-1.5 rounded-lg border text-xs no-underline" style={{ borderColor: "var(--border)" }}>ver versão pública ↗</Link>}

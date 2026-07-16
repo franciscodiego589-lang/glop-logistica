@@ -33,7 +33,7 @@ export default async function RelatorioPage({ params, searchParams }: { params: 
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">{r!.icon} {(data as any)?.titulo ?? r!.title}</h1>
           <p className="text-sm muted mt-0.5">{(data as any)?.periodo ?? r!.resumo}</p>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 print-hide">
           {r!.periodo && PERIODOS.map((p) => (
             <Link key={p} href={`/relatorios/${r!.slug}?dias=${p}`} className={`px-3 py-1.5 rounded-lg text-xs font-semibold no-underline ${dias === p ? "bg-brand-600 text-white" : "border"}`} style={dias === p ? undefined : { borderColor: "var(--border)" }}>{p}d</Link>
           ))}

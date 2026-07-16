@@ -37,7 +37,7 @@ export default function HelpBar() {
   }
 
   return (
-    <div className="card mb-4 p-0 overflow-hidden" style={{ borderLeft: "3px solid var(--brand)" }}>
+    <div className="card mb-4 p-0 overflow-hidden print-hide" style={{ borderLeft: "3px solid var(--brand)" }}>
       <button onClick={toggle} className="w-full flex items-center gap-2 px-4 py-2.5 text-left hover:bg-black/5 dark:hover:bg-white/5">
         <span>💡</span>
         <span className="font-semibold text-sm">Para que serve esta tela</span>

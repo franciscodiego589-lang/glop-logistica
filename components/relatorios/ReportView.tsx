@@ -79,7 +79,11 @@ export default function ReportView({ data }: { data: any }) {
                     <tbody>
                       {linhas.map((r, ri) => (
                         <tr key={ri} className="border-b last:border-0" style={{ borderColor: "var(--border)" }}>
-                          {colunas.map((c) => <td key={c.key} className={`py-1.5 px-3 ${c.fmt === "money" || c.fmt === "int" ? "text-right tabular-nums" : ""}`}>{fmt(r[c.key], c.fmt)}</td>)}
+                          {colunas.map((c) => <td key={c.key} className={`py-1.5 px-3 ${c.fmt === "money" || c.fmt === "int" ? "text-right tabular-nums" : ""}`}>
+                        {c.fmt === "link" && r[c.hrefKey ?? "href"]
+                          ? <a href={r[c.hrefKey ?? "href"]} className="font-semibold no-underline" style={{ color: "var(--brand)" }}>{fmt(r[c.key], "text")} →</a>
+                          : fmt(r[c.key], c.fmt)}
+                      </td>)}
                         </tr>
                       ))}
                     </tbody>

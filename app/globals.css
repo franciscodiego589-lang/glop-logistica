@@ -171,3 +171,16 @@ h1 { letter-spacing: -0.015em; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .animate-in { animation: fadeInUp .28s ease both; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* Impressão / PDF — mostra só o conteúdo (relatórios, documentos jurídicos) */
+@media print {
+  aside, header { display: none !important; }
+  .print-hide { display: none !important; }
+  main { padding: 0 !important; overflow: visible !important; }
+  .card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
+  table { break-inside: auto; }
+  tr, li { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  html, body { background: #fff !important; }
+  a { text-decoration: none !important; color: inherit !important; }
+}

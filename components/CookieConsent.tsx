@@ -29,7 +29,7 @@ export default function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[60] p-3 sm:p-4 flex justify-center pointer-events-none">
+    <div className="fixed inset-x-0 bottom-0 z-[60] p-3 sm:p-4 flex justify-center pointer-events-none print-hide">
       <div className="pointer-events-auto w-full max-w-3xl card p-4 shadow-lg" style={{ boxShadow: "var(--shadow-lg)", borderTop: "3px solid var(--brand)" }}>
         <div className="flex items-start gap-3">
           <span className="text-2xl leading-none">🍪</span>
