@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { VitrineBanner } from "@/components/VitrineBanner";
 import ReportView from "@/components/relatorios/ReportView";
+import PrintButton from "@/components/ui/PrintButton";
 import { findRelatorio } from "@/lib/relatorios";
 
 export const dynamic = "force-dynamic";
@@ -32,13 +33,12 @@ export default async function RelatorioPage({ params, searchParams }: { params: 
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">{r!.icon} {(data as any)?.titulo ?? r!.title}</h1>
           <p className="text-sm muted mt-0.5">{(data as any)?.periodo ?? r!.resumo}</p>
         </div>
-        {r!.periodo && (
-          <div className="flex gap-1.5">
-            {PERIODOS.map((p) => (
-              <Link key={p} href={`/relatorios/${r!.slug}?dias=${p}`} className={`px-3 py-1.5 rounded-lg text-xs font-semibold no-underline ${dias === p ? "bg-brand-600 text-white" : "border"}`} style={dias === p ? undefined : { borderColor: "var(--border)" }}>{p}d</Link>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-1.5">
+          {r!.periodo && PERIODOS.map((p) => (
+            <Link key={p} href={`/relatorios/${r!.slug}?dias=${p}`} className={`px-3 py-1.5 rounded-lg text-xs font-semibold no-underline ${dias === p ? "bg-brand-600 text-white" : "border"}`} style={dias === p ? undefined : { borderColor: "var(--border)" }}>{p}d</Link>
+          ))}
+          <PrintButton />
+        </div>
       </div>
 
       {erro ? (

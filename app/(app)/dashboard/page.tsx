@@ -109,11 +109,11 @@ export default async function DashboardPage() {
           <div className="font-bold text-sm mb-2">⚡ Atalhos</div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[
+              { icon: "📈", label: "Visão Executiva", href: "/relatorios/consolidado" },
+              { icon: "📊", label: "Relatórios", href: "/relatorios" },
               { icon: "🛒", label: "Puxar Pedidos", href: "/integracoes-lojas" },
-              { icon: "📮", label: "Prepostagem", href: "/prepostagem" },
               { icon: "🤝", label: "Coprodução", href: "/coproducao" },
               { icon: "🧾", label: "Integrações & NF-e", href: "/integracoes-nfe" },
-              { icon: "📦", label: "Envios & Rastreio", href: "/envios-rastreamento" },
               { icon: "📖", label: "Manual", href: "/manual" },
             ].map((a) => (
               <Link key={a.href} href={a.href} className="card p-3 no-underline flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5">

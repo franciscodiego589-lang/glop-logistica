@@ -11,6 +11,7 @@ export type Relatorio = {
 };
 
 export const RELATORIOS: Relatorio[] = [
+  { slug: "consolidado", title: "Visão Executiva Consolidada", icon: "📈", rpc: "rel_consolidado", categoria: "Visão Geral", periodo: true, diasPadrao: 30, resumo: "Um só painel com os indicadores de todos os módulos: vendas, operação, coprodução, integrações, fiscal e IA — mais os pontos de atenção." },
   { slug: "vendas", title: "Vendas", icon: "💰", rpc: "rel_vendas", categoria: "Comercial & Financeiro", periodo: true, diasPadrao: 30, resumo: "Receita, pedidos, ticket médio, por canal, estado, produto e status — com série diária e top compradores." },
   { slug: "coproducao", title: "Coprodução & Comissões", icon: "🤝", rpc: "rel_coproducao", categoria: "Comercial & Financeiro", periodo: false, diasPadrao: 3650, resumo: "Comissões por coprodutor, status de repasse e lotes — total, pendente e líquido a repassar." },
   { slug: "fiscal", title: "Fiscal & NF-e", icon: "🧾", rpc: "rel_fiscal", categoria: "Comercial & Financeiro", periodo: true, diasPadrao: 90, resumo: "Emissões de NF-e por status, valor total, erros e emissões por dia." },
@@ -21,5 +22,5 @@ export const RELATORIOS: Relatorio[] = [
   { slug: "auditoria", title: "Auditoria & Governança", icon: "🛡️", rpc: "rel_auditoria", categoria: "Inteligência & Governança", periodo: true, diasPadrao: 30, resumo: "Ações por tabela e tipo (inserção/atualização/exclusão) e por dia — trilha de auditoria." },
 ];
 
-export const RELATORIO_CATEGORIAS = ["Comercial & Financeiro", "Operação & Logística", "Inteligência & Governança"];
+export const RELATORIO_CATEGORIAS = ["Visão Geral", "Comercial & Financeiro", "Operação & Logística", "Inteligência & Governança"];
 export const findRelatorio = (slug: string) => RELATORIOS.find((r) => r.slug === slug);
