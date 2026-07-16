@@ -2,6 +2,21 @@ import type { Help } from "@/lib/help";
 
 // Conteudo de ajuda por tela (gerado + revisado). Telas ausentes usam a descricao do nav.
 export const HELP_CONTENT: Record<string, Help> = {
+  "integracoes-nfe": {
+    resumo: "Central das integrações por API com as plataformas de pagamento (Monetizze, AppMax, Braip, Hotmart, Kiwify, Mercado Pago, PagSeguro, Stripe) e de logística/fiscal — com teste de conexão ao vivo, chaves de API, logs e emissão de NF-e.",
+    itens: [
+      "Painel: quantas integrações ativas, NF-e autorizadas/com erro, chaves de API e chamadas de API.",
+      "Integrações & Teste: clique em Testar para ver, na hora, se cada plataforma está no ar (e se a chave da Monetizze é válida). O teste roda no servidor — sua chave nunca sai do backend.",
+      "Chaves de API: gere chaves para sistemas externos consultarem seus dados. A chave aparece uma única vez ao criar.",
+      "Nota Fiscal (NF-e): emissões com status, chave, DANFE/XML, e a configuração de baixa de estoque por produto (via VHSYS).",
+      "Logs: histórico de chamadas de API e de webhooks recebidos das plataformas.",
+    ],
+    passos: [
+      "Aba Integrações & Teste → clique em Testar todas para checar tudo de uma vez.",
+      "Aba Chaves de API → dê um nome, escolha os escopos e clique Gerar chave (copie na hora).",
+      "Aba Nota Fiscal → confira as emissões e configure a baixa de estoque por produto.",
+    ],
+  },
   "admin": {
     resumo: "Painel de configuracao geral do sistema: parametros, recursos que podem ser ligados ou desligados, moedas, idiomas, modulos e informacoes da licenca.",
     itens: [

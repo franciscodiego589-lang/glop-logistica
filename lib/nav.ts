@@ -89,6 +89,7 @@ export const NAV: NavItem[] = [
   { slug: "documentos", label: "Documentos (ECM / GED)", icon: "🗂", group: "Plataforma", vol: 16, description: "Repositório, versionamento, check-in/out, assinaturas eletrônicas, retenção, busca" },
   { slug: "mdm", label: "Governança de Dados (MDM)", icon: "🧬", group: "Plataforma", vol: 16, description: "Fonte única da verdade: qualidade de dados, deduplicação, linhagem, glossário" },
   { slug: "integracoes", label: "Integrações (iPaaS)", icon: "🔌", group: "Plataforma", vol: 16, description: "API Gateway, conectores, event bus, webhooks, fila com retry/DLQ, ETL, chaves de API" },
+  { slug: "integracoes-nfe", label: "Integrações (API) & Nota Fiscal", icon: "🧾", group: "Plataforma", vol: 64, description: "Ferramentas de integração com plataformas de pagamento (Monetizze, AppMax, Braip, Hotmart, Kiwify, Mercado Pago, PagSeguro, Stripe) e emissão de NF-e: testar conexões, chaves de API, logs e DANFE/XML" },
   { slug: "seguranca", label: "Identidade & Segurança (IAM)", icon: "🛡", group: "Plataforma", vol: 16, description: "Zero Trust, MFA, sessões, PAM, detecção de ameaças, incidentes, certificação de acessos" },
   { slug: "admin", label: "Administração da Plataforma", icon: "⚙", group: "Plataforma", vol: 16, description: "Config center (rollback), feature flags, multimoeda, multilíngue, módulos, licenças" },
   { slug: "dispositivos", label: "Super App & Dispositivos", icon: "📲", group: "Plataforma", vol: 16, description: "PWA instalável, dispositivos, sync offline, push, modos operacionais (coletor/motorista)" },
