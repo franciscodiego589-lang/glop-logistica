@@ -168,6 +168,34 @@ export default function StoreHubWorkbench({ connectors, orders }: {
     router.refresh();
   }
 
+  // Baixa a etiqueta/rótulo (PDF) de um objeto já prepostado e abre em nova aba.
+  async function baixarEtiqueta(codigo: string) {
+    if (!codigo) return; setBusy("etiqueta:" + codigo);
+    try {
+      const res = await fetch("/api/correios/rotulo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo_objeto: codigo }) });
+      const j = await res.json();
+      if (!res.ok || !j.pdf_base64) alert("🚫 " + (j.error ?? "Etiqueta indisponível"));
+      else {
+        const bytes = Uint8Array.from(atob(j.pdf_base64), (c) => c.charCodeAt(0));
+        const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+        window.open(url, "_blank"); setTimeout(() => URL.revokeObjectURL(url), 30000);
+      }
+    } catch (e: any) { alert("Erro: " + e.message); }
+    setBusy("");
+  }
+
+  // Atualiza o rastreio (SRO) de todos os objetos postados e propaga o estado.
+  async function atualizarRastreio() {
+    setBusy("sro");
+    try {
+      const res = await fetch("/api/correios/rastreio", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+      const j = await res.json();
+      if (!res.ok) alert("🚫 " + (j.error ?? "Falha ao atualizar rastreio"));
+      else alert(`📡 Rastreio: ${j.atualizados} atualizado(s), ${j.entregues} entregue(s)${j.erros ? `, ${j.erros} erro(s)` : ""} (de ${j.consultados}).`);
+    } catch (e: any) { alert("Erro: " + e.message); }
+    setBusy(""); router.refresh();
+  }
+
   const B = "w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed no-underline block";
   const primary = `${B} bg-brand-600 text-white hover:opacity-90`;
   const soft = `${B} border hover:bg-black/5 dark:hover:bg-white/5`;
@@ -241,8 +269,9 @@ export default function StoreHubWorkbench({ connectors, orders }: {
               <span className="text-[11px] muted self-center">exportar filtro</span>
             </div>
             {rastreiosPendentes > 0 && <button onClick={() => pushTracking()} disabled={busy === "track"} className={`${B} bg-emerald-600 text-white hover:opacity-90`}>{busy === "track" ? "Enviando…" : `📮 Enviar ${rastreiosPendentes} rastreio(s)`}</button>}
+            <button onClick={atualizarRastreio} disabled={busy === "sro"} className={soft} style={{ borderColor: "var(--border)" }}>{busy === "sro" ? "Atualizando…" : "📡 Atualizar rastreio (Correios)"}</button>
             <a href="/integracoes-nfe" className={soft} style={{ borderColor: "var(--border)" }}>🧾 Integrações & NF-e</a>
-            <a href="/prepostagem" className={soft} style={{ borderColor: "var(--border)" }}>📮 Prepostagem Correios</a>
+            <a href="/correios-central" className={soft} style={{ borderColor: "var(--border)" }}>🏤 Correios — Central</a>
           </div>
         </div>
       </div>
@@ -316,15 +345,18 @@ export default function StoreHubWorkbench({ connectors, orders }: {
                 <td className="px-3 text-right tabular-nums">{money(o.value)}</td>
                 <td className="px-3 text-xs muted">{dt(o.created_at)}</td>
                 <td className="px-3">
-                  {o.tracking_pushed_at ? (
-                    <span className="text-xs" title={o.tracking_push_msg ?? ""}><span className="font-mono">{o.tracking_code}</span> <span className="badge badge-success ml-1">✓ notificado</span></span>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <input value={trk[o.id] ?? o.tracking_code ?? ""} onChange={(e) => setTrk({ ...trk, [o.id]: e.target.value.toUpperCase() })} placeholder="PA123456789BR" className="input w-36 font-mono text-[11px] py-1" />
-                      <button onClick={() => { const code = (trk[o.id] ?? o.tracking_code ?? "").trim(); if (!code) { alert("Digite o código de rastreio."); return; } pushTracking([{ sale_number: o.sale_number, tracking_code: code }]); }}
-                        disabled={busy === "track"} className="px-2 py-1 rounded bg-emerald-600 text-white text-xs font-semibold disabled:opacity-50">📮</button>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1">
+                    {o.tracking_pushed_at ? (
+                      <span className="text-xs" title={o.tracking_push_msg ?? ""}><span className="font-mono">{o.tracking_code}</span> <span className="badge badge-success ml-1">✓ notificado</span></span>
+                    ) : (
+                      <>
+                        <input value={trk[o.id] ?? o.tracking_code ?? ""} onChange={(e) => setTrk({ ...trk, [o.id]: e.target.value.toUpperCase() })} placeholder="PA123456789BR" className="input w-36 font-mono text-[11px] py-1" />
+                        <button onClick={() => { const code = (trk[o.id] ?? o.tracking_code ?? "").trim(); if (!code) { alert("Digite o código de rastreio."); return; } pushTracking([{ sale_number: o.sale_number, tracking_code: code }]); }}
+                          disabled={busy === "track"} className="px-2 py-1 rounded bg-emerald-600 text-white text-xs font-semibold disabled:opacity-50" title="Enviar rastreio à plataforma">📮</button>
+                      </>
+                    )}
+                    {o.tracking_code && <button onClick={() => baixarEtiqueta(o.tracking_code)} disabled={busy === "etiqueta:" + o.tracking_code} className="px-2 py-1 rounded border text-xs disabled:opacity-50" style={{ borderColor: "var(--border)" }} title="Baixar etiqueta/rótulo (PDF)">🏷️</button>}
+                  </div>
                 </td>
               </tr>))}</tbody>
           </table>

@@ -8,7 +8,37 @@ const TOKEN_SAFETY_MS = 30 * 60 * 1000;
 
 export const pedidosToken = () => process.env.CORREIOS_API_TOKEN_PEDIDOS?.trim() || "";
 export const cepToken = () => process.env.CORREIOS_API_TOKEN_CEP?.trim() || "";
+// SRO (rastreio) exige credencial com escopo de rastro (contrato SP). Cai pro token de pedidos se ausente.
+export const sroToken = () => process.env.CORREIOS_API_TOKEN_SRO?.trim() || process.env.CORREIOS_API_TOKEN?.trim() || "";
 export const correiosConfigurado = () => !!pedidosToken();
+export const sroConfigurado = () => !!sroToken();
+
+// Rastreia um objeto (SRO). Retorna { codObjeto, eventos:[{tipo, descricao, dtHrCriado, unidade...}] }.
+export async function correiosRastreio(codigo: string): Promise<any> {
+  const t = sroToken();
+  if (!t) throw new Error("Configure o secret CORREIOS_API_TOKEN_SRO (chave dos Correios com escopo de rastreio).");
+  const cod = String(codigo ?? "").trim().toUpperCase();
+  const res = await fetch(`${BASE}/srorastro/v1/objetos/${cod}?resultado=T`, {
+    headers: { Authorization: "Bearer " + t, Accept: "application/json" }, cache: "no-store",
+  });
+  const j: any = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(j?.msgs?.[0] ?? ("SRO HTTP " + res.status));
+  const obj = Array.isArray(j?.objetos) ? j.objetos[0] : j;
+  return obj;
+}
+
+// Mapeia o evento SRO dos Correios para o estado do pedido (store_orders.state).
+export function sroEventoParaEstado(tipo: string, descricao: string): string | null {
+  const t = (tipo ?? "").toUpperCase();
+  const d = (descricao ?? "").toLowerCase();
+  if (t === "BDE" || t === "BDI" || t === "BDR" || d.includes("entregue")) return "entregue";
+  if (d.includes("saiu para entrega") || d.includes("saiu para entregar")) return "saiu_entrega";
+  if (t === "OEC") return "saiu_entrega";
+  if (d.includes("devolv")) return "devolvido";
+  if (d.includes("postado") || t === "PO" || t === "PMT") return "postado";
+  if (d.includes("encaminhado") || d.includes("trânsito") || d.includes("transito") || d.includes("recebido")) return "em_transito";
+  return null;
+}
 
 // cache em memória do token Basic (só usado no fallback; a chave CWS é usada direto)
 let _cartaoMem: { token: string; exp: number } | null = null;
@@ -58,28 +88,26 @@ export async function correiosPrepostagem(bearer: string, payload: any): Promise
   return { ok: res.ok, status: res.status, body: j };
 }
 
-// Gera o rótulo (PDF) de forma assíncrona: solicita e faz polling do download.
-export async function correiosRotulo(bearer: string, idPrepostagem: string, codigoObjeto?: string): Promise<{ ok: boolean; pdfBase64?: string; body?: any }> {
+// Gera o rótulo (PDF, base64) do objeto: solicita e faz polling do download.
+// Payload validado contra o swagger: tipoRotulo=P, formatoRotulo=ET, imprimeRemetente=S.
+export async function correiosRotulo(bearer: string, codigoObjeto: string): Promise<{ ok: boolean; pdfBase64?: string; nome?: string; body?: any }> {
   const post = await fetch(`${BASE}/prepostagem/v1/prepostagens/rotulo/assincrono/pdf`, {
     method: "POST",
     headers: { Authorization: "Bearer " + bearer, "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
-      codigosObjeto: codigoObjeto ? [codigoObjeto] : undefined,
-      idsPrePostagem: [idPrepostagem],
-      tipoRotulo: "P", formatoRotulo: "ET", imprimeRemetente: "S", layoutImpressao: "PADRAO",
-    }), cache: "no-store",
+    body: JSON.stringify({ codigosObjeto: [codigoObjeto], tipoRotulo: "P", formatoRotulo: "ET", imprimeRemetente: "S" }),
+    cache: "no-store",
   });
   const pj: any = await post.json().catch(() => ({}));
   const recibo = pj.idRecibo ?? pj.recibo ?? pj.id;
   if (!post.ok || !recibo) return { ok: false, body: pj };
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await new Promise((r) => setTimeout(r, 1200));
     const g = await fetch(`${BASE}/prepostagem/v1/prepostagens/rotulo/download/assincrono/${recibo}`, {
       headers: { Authorization: "Bearer " + bearer, Accept: "application/json" }, cache: "no-store",
     });
     const gj: any = await g.json().catch(() => ({}));
     const pdf = gj.dados ?? gj.pdf ?? gj.arquivo ?? gj.dadosBase64;
-    if (g.ok && pdf) return { ok: true, pdfBase64: pdf };
+    if (g.ok && pdf) return { ok: true, pdfBase64: pdf, nome: gj.nome };
   }
-  return { ok: false, body: { mensagem: "Rótulo ainda em processamento — tente baixar novamente em instantes." } };
+  return { ok: false, body: { mensagem: "Rótulo ainda em processamento — tente novamente em instantes." } };
 }
