@@ -37,8 +37,10 @@ export default function Topbar({ email }: { email?: string | null }) {
       {/* Busca */}
       <div className="relative flex-1 max-w-xl">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 muted text-sm pointer-events-none">⌕</span>
-        <input placeholder="Pesquisa inteligente — produtos, pedidos, lotes, docas, NF…"
-          className="input h-10 pl-9" style={{ background: "var(--surface-2)" }} />
+        <input placeholder="Pesquisa inteligente — produtos, pedidos, lotes, docas, NF…" readOnly
+          onFocus={() => window.dispatchEvent(new Event("open-command-palette"))}
+          onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
+          className="input h-10 pl-9 cursor-pointer" style={{ background: "var(--surface-2)" }} />
         <kbd className="hidden sm:block absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-semibold muted px-1.5 py-0.5 rounded border"
           style={{ borderColor: "var(--border)" }}>⌘K</kbd>
       </div>

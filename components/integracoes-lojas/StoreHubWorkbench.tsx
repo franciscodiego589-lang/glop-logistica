@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import ExportButton from "@/components/ui/ExportButton";
 
 const COMPANY = process.env.NEXT_PUBLIC_DEFAULT_COMPANY_ID as string;
 const PLAT = (p: string) => ({ monetizze: "Monetizze", hotmart: "Hotmart", kiwify: "Kiwify", yampi: "Yampi", shopify: "Shopify", mercado_livre: "Mercado Livre", woocommerce: "WooCommerce", generic: "Genérico" } as any)[p] ?? p;
@@ -145,7 +146,15 @@ export default function StoreHubWorkbench({ connectors, orders }: {
 
       {/* tabela de pedidos */}
       <div className="card p-0 overflow-x-auto">
-        <div className="px-4 pt-3 font-semibold text-sm">{conn?.producer_ref ?? conn?.name ?? "Pedidos"} — {recebidas} pedido(s)</div>
+        <div className="px-4 pt-3 flex items-center justify-between">
+          <span className="font-semibold text-sm">{conn?.producer_ref ?? conn?.name ?? "Pedidos"} — {recebidas} pedido(s)</span>
+          <ExportButton rows={rows} filename="pedidos" columns={[
+            { key: "sale_number", label: "Venda" }, { key: "buyer_name", label: "Comprador" },
+            { key: "product_name", label: "Produto" }, { key: "state", label: "Status" },
+            { key: "value", label: "Valor" }, { key: "dest_city", label: "Cidade" }, { key: "dest_uf", label: "UF" },
+            { key: "created_at", label: "Recebido", fmt: (v) => dt(v) },
+          ]} />
+        </div>
         {rows.length === 0 ? <p className="text-sm muted p-4">Nenhum pedido ainda. Salve a chave da API e clique em <b>Puxar pedidos</b>.</p> : (
           <table className="w-full text-sm mt-2">
             <thead><tr className="text-left muted text-xs uppercase border-b" style={{ borderColor: "var(--border)" }}>
