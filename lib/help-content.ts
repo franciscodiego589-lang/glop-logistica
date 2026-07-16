@@ -960,6 +960,31 @@ export const HELP_CONTENT: Record<string, Help> = {
       "Teste a conexão e depois puxe os pedidos em Puxar Pedidos.",
     ],
   },
+  "atendimento": {
+    resumo: "Central de chamados (SAC) dos seus compradores. Registre cada dúvida ou problema, defina canal, prioridade e status, e acompanhe o que está em aberto — vinculando ao número da venda.",
+    itens: [
+      "Abra um chamado com assunto, comprador e (opcional) o nº da venda.",
+      "Classifique por canal (WhatsApp, e-mail, telefone, site) e prioridade (até urgente).",
+      "Acompanhe o status (aberto → em andamento → resolvido) e registre a resposta.",
+      "O relatório de SAC mostra chamados por status, canal e prioridade.",
+    ],
+    passos: [
+      "Registre o chamado assim que o comprador entrar em contato.",
+      "Atualize o status e a resposta até resolver.",
+    ],
+  },
+  "assistente": {
+    resumo: "Um assistente que responde perguntas sobre o seu negócio consultando os dados reais na hora. Clique numa pergunta rápida e ele traz o número (vendas, o que está travado, lucro, lotes vencendo, comissões, atendimento).",
+    itens: [
+      "Perguntas rápidas: um clique e a resposta vem dos seus dados, via consultas seguras.",
+      "Cobre vendas, alertas operacionais, lucro, produção/validade, comissões e SAC.",
+      "As respostas aparecem em formato de conversa, do mais recente para o mais antigo.",
+    ],
+    passos: [
+      "Clique numa das perguntas rápidas.",
+      "Leia a resposta — e clique em outra para comparar.",
+    ],
+  },
   "producao": {
     resumo: "Controla o que você fabrica: ordens de produção (o que produzir, quanto, prazo) e lotes com data de fabricação e validade. Avisa sobre lotes vencidos ou perto de vencer — essencial para suplementos.",
     itens: [

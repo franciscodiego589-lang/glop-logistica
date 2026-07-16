@@ -31,6 +31,7 @@ export const NAV: NavItem[] = [
   { slug: "comando", label: "Command Center (tempo real)", icon: "◉", group: "Início", vol: 5, description: "Mission control: estado vivo da operação, central de alertas, sala de crise" },
 
   // ── 🩺 Atendimento ─────────────────────────────────────────────────────────
+  { slug: "atendimento", label: "Central de Atendimento (SAC)", icon: "🎧", group: "Atendimento", vol: 74, description: "Central de chamados dos compradores: por canal (WhatsApp/e-mail/telefone), prioridade, status e SLA — vinculados ao nº da venda" },
   { slug: "portal-cliente", label: "Portal do Cliente Logístico", icon: "💬", group: "Atendimento", vol: 8, description: "Timeline, tracking, ETA, notificações, comprovantes, self-service, devoluções, NPS" },
   { slug: "pos-venda", label: "Pós-Venda & Ocorrências (CLX)", icon: "🎧", group: "Atendimento", vol: 8, description: "Rastreio público, ocorrências, chamados/SLA, NPS/CSAT" },
   { slug: "comunicacao", label: "Comunicação (Email/WhatsApp)", icon: "📣", group: "Atendimento", vol: 58, description: "Logs de e-mail e WhatsApp de rastreio ao comprador + templates editáveis (email/WhatsApp/carteiro)" },
@@ -97,6 +98,7 @@ export const NAV: NavItem[] = [
 
   // ── 📊 Relatórios & IA ─────────────────────────────────────────────────────
   { slug: "relatorios", label: "Central de Relatórios", icon: "📊", group: "Relatórios & IA", vol: 71, description: "Relatórios gerenciais com dados reais: vendas, operação, coprodução, integrações, logística, fiscal, IA e auditoria — KPIs, quebras, séries e exportação CSV" },
+  { slug: "assistente", label: "Assistente (perguntas rápidas)", icon: "💬", group: "Relatórios & IA", vol: 75, description: "Pergunte com um clique (vendas, o que está travado, lucro, lotes vencendo, comissões, SAC) — o assistente consulta seus dados na hora e responde" },
   { slug: "analytics", label: "Logistics Data Platform (BI)", icon: "📈", group: "Relatórios & IA", vol: 16, description: "Data lake/warehouse logístico, catálogo de KPIs, forecast, governança de dados" },
   { slug: "logia", label: "LOGIA (Insights)", icon: "✧", group: "Relatórios & IA", vol: 15, description: "Insights, previsões e planos de ação logísticos" },
   { slug: "ia-central", label: "LAIOS — Logistics AI OS", icon: "✦", group: "Relatórios & IA", vol: 15, description: "Cérebro operacional: multiagentes (WMS/TMS/YMS/Correios), IA preditiva/prescritiva, memória corporativa" },
