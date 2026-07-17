@@ -79,6 +79,8 @@ export default function AssistentePage() {
   const supabase = useMemo(() => createClient(), []);
   const [chat, setChat] = useState<{ q: string; a: string }[]>([]);
   const [busy, setBusy] = useState<string>("");
+  const [q, setQ] = useState("");
+  const [busyFree, setBusyFree] = useState(false);
 
   async function ask(p: Pergunta) {
     if (!supabase) return;
@@ -89,6 +91,22 @@ export default function AssistentePage() {
     setBusy("");
   }
 
+  // Pergunta em texto livre → IA (rota /api/ia/perguntar, com os dados reais como contexto).
+  async function askFree(e?: React.FormEvent) {
+    e?.preventDefault();
+    const pergunta = q.trim();
+    if (!pergunta || busyFree) return;
+    setBusyFree(true); setQ("");
+    let a = "Não consegui responder agora.";
+    try {
+      const res = await fetch("/api/ia/perguntar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: pergunta }) });
+      const j = await res.json();
+      a = j.answer ?? j.error ?? a;
+    } catch (err: any) { a = "Erro de rede: " + (err?.message ?? "falha"); }
+    setChat((c) => [{ q: pergunta, a }, ...c]);
+    setBusyFree(false);
+  }
+
   return (
     <div className="space-y-4">
       <div>
@@ -96,6 +114,20 @@ export default function AssistentePage() {
         <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Assistente</h1>
         <p className="text-sm muted mt-0.5">Pergunte com um clique — o assistente consulta seus dados na hora e responde.</p>
       </div>
+
+      {/* Pergunta em texto livre (IA) */}
+      <form onSubmit={askFree} className="card p-4">
+        <div className="font-bold text-sm mb-2">💬 Pergunte o que quiser</div>
+        <div className="flex gap-2">
+          <input value={q} onChange={(e) => setQ(e.target.value)} disabled={busyFree}
+            placeholder="ex.: qual produto mais vendeu essa semana? tem algo travando meu envio?"
+            className="input flex-1 text-sm" />
+          <button type="submit" disabled={busyFree || !q.trim()} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold disabled:opacity-50 whitespace-nowrap">
+            {busyFree ? "Pensando…" : "Perguntar"}
+          </button>
+        </div>
+        <p className="text-[11px] muted mt-1.5">A IA responde com base nos seus dados reais. Precisa da chave da Anthropic configurada (server).</p>
+      </form>
 
       <div className="card p-4">
         <div className="font-bold text-sm mb-2">Perguntas rápidas</div>
@@ -121,7 +153,7 @@ export default function AssistentePage() {
           ))}
         </div>
       )}
-      <p className="text-xs muted">💡 As respostas vêm dos seus dados reais (via RPC seguro). Em breve dá pra evoluir para perguntas em texto livre conectando um modelo de IA.</p>
+      <p className="text-xs muted">💡 As respostas vêm dos seus dados reais (via RPC seguro). As perguntas em texto livre usam IA (Claude) no servidor — sua chave nunca sai do backend.</p>
     </div>
   );
 }

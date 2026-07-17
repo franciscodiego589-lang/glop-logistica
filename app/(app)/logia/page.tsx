@@ -2,6 +2,7 @@ import Link from "next/link";
 import { VitrineBanner } from "@/components/VitrineBanner";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { createClient } from "@/lib/supabase/server";
+import LogiaIA from "@/components/logia/LogiaIA";
 
 export const dynamic = "force-dynamic";
 const money = (v: any) => "R$ " + Number(v ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -47,6 +48,7 @@ export default async function LogiaPage() {
         </div>
       ) : (
         <>
+          <LogiaIA />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <KpiCard label="Vendas analisadas" value={total} icon="🧾" accent />
             <KpiCard label="Receita" value={money(receita)} icon="💰" tone="success" />

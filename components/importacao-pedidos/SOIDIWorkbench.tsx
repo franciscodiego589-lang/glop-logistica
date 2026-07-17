@@ -48,6 +48,29 @@ export default function SOIDIWorkbench({ dash, files, orders, validations, rules
     setBusy("");
     if (error) alert(error.message.includes("promovível") ? "🚫 " + error.message : "Erro: " + error.message); else router.refresh();
   }
+  // ✨ Extrair com IA: manda o texto bagunçado (e-mail/WhatsApp/planilha) para o
+  // Claude, que devolve os pedidos estruturados; mapeia p/ o formato do SOIDI e
+  // joga no campo de importação (o usuário confere e clica em Importar e ler).
+  async function extrairIA() {
+    const texto = raw.trim();
+    if (!texto) { alert("Cole o texto do pedido (e-mail, WhatsApp, planilha) primeiro."); return; }
+    setBusy("ia");
+    try {
+      const res = await fetch("/api/ia/extrair-pedido", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto }) });
+      const j = await res.json();
+      if (j.configured === false) { alert("🔌 " + (j.message ?? "IA não configurada.")); setBusy(""); return; }
+      if (j.error) { alert("Erro: " + j.error); setBusy(""); return; }
+      const pedidos = (j.pedidos ?? []).map((p: any) => ({
+        order_number: p.sale_number || "", customer_name: p.buyer_name || "", customer_doc: p.buyer_doc || "",
+        customer_email: p.buyer_email || "", customer_phone: p.buyer_phone || "", dest_zip: p.dest_zip || "",
+        dest_city: p.dest_city || "", dest_uf: p.dest_uf || "", total_value: p.value || 0, product_name: p.product_name || "",
+      }));
+      if (pedidos.length === 0) { alert("A IA não encontrou pedidos nesse texto."); setBusy(""); return; }
+      setRaw(JSON.stringify(pedidos, null, 2));
+      alert(`✨ ${pedidos.length} pedido(s) extraído(s). Confira abaixo e clique em Importar e ler.`);
+    } catch (e: any) { alert("Erro de rede: " + (e?.message ?? "falha")); }
+    setBusy("");
+  }
 
   return (
     <div className="space-y-4">
@@ -85,10 +108,14 @@ export default function SOIDIWorkbench({ dash, files, orders, validations, rules
       {tab === "Importar" && (
         <div className="space-y-3">
           <div className="card p-4">
-            <div className="font-semibold text-sm mb-1">Colar pedidos (CSV com cabeçalho ou JSON)</div>
-            <p className="text-xs muted mb-2">Campos: order_number, customer_name, customer_doc, customer_email, customer_phone, dest_zip, dest_city, dest_uf, weight_kg, total_value. (A leitura de PDF/imagem real roda na Edge Function <code>document-ocr</code>.)</p>
+            <div className="font-semibold text-sm mb-1">Colar pedidos (CSV, JSON — ou texto bagunçado + IA)</div>
+            <p className="text-xs muted mb-2">CSV/JSON com os campos: order_number, customer_name, customer_doc, customer_email, customer_phone, dest_zip, dest_city, dest_uf, weight_kg, total_value. Ou cole um texto solto (e-mail/WhatsApp) e clique em <b>Extrair com IA</b>.</p>
             <textarea value={raw} onChange={(e) => setRaw(e.target.value)} rows={8} className="input w-full font-mono text-xs" />
-            <button onClick={doImport} disabled={busy === "import"} className="mt-2 px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold">{busy === "import" ? "Importando…" : "📥 Importar e ler"}</button>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button onClick={extrairIA} disabled={busy === "ia"} className="px-3 py-2 rounded-lg border text-sm font-semibold disabled:opacity-50" style={{ borderColor: "var(--brand)", color: "var(--brand)" }}>{busy === "ia" ? "Extraindo…" : "✨ Extrair com IA"}</button>
+              <button onClick={doImport} disabled={busy === "import"} className="px-3 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold">{busy === "import" ? "Importando…" : "📥 Importar e ler"}</button>
+            </div>
+            <p className="text-[11px] muted mt-1.5">✨ A extração por IA lê texto solto (e-mail, WhatsApp, planilha fora do padrão) e organiza nos campos. Requer a chave da Anthropic no servidor. Confira sempre antes de importar.</p>
           </div>
         </div>
       )}
