@@ -16,7 +16,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2f56e6",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#08090d" },
+    { media: "(prefers-color-scheme: light)", color: "#2f56e6" },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -26,9 +29,9 @@ export const viewport: Viewport = {
 const themeScript = `
 try {
   var t = localStorage.getItem('theme');
-  if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches))
-    document.documentElement.classList.add('dark');
-} catch (e) {}
+  // Escuro é o padrão (visual Antigravity); só fica claro se o usuário escolher.
+  if (t !== 'light') document.documentElement.classList.add('dark');
+} catch (e) { document.documentElement.classList.add('dark'); }
 `;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
