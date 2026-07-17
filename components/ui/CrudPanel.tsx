@@ -87,12 +87,12 @@ export default function CrudPanel({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="font-semibold text-base">{title} <span className="badge badge-neutral align-middle ml-1">{rows.length}</span></div>
-        <div className="relative ml-auto">
+        <div className="relative ml-auto w-full sm:w-auto">
           <span className="absolute left-2.5 top-1/2 -translate-y-1/2 muted text-sm pointer-events-none">⌕</span>
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar…"
-            className="input h-9 pl-8 w-52" style={{ background: "var(--surface-2)" }} />
+            className="input h-9 pl-8 w-full sm:w-52" style={{ background: "var(--surface-2)" }} />
         </div>
         <button onClick={() => { setOpen((o) => !o); setErr(null); }}
           className={`btn btn-sm ${open ? "" : "btn-primary"}`}>{open ? "Cancelar" : "+ Novo"}</button>

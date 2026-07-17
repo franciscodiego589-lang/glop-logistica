@@ -124,7 +124,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-[340px] card p-0 animate-in z-30 overflow-hidden" style={{ boxShadow: "var(--shadow-lg)" }}>
+        <div className="fixed sm:absolute top-16 sm:top-auto right-2 sm:right-0 mt-0 sm:mt-2 w-[calc(100vw-1rem)] sm:w-[340px] card p-0 animate-in z-30 overflow-hidden" style={{ boxShadow: "var(--shadow-lg)" }}>
           {/* Cabeçalho */}
           <div className="px-3 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
             <div>
@@ -132,8 +132,8 @@ export default function NotificationBell() {
               <div className="text-[11px] muted">{erro ? "falha ao carregar" : geradoEm ? "atualizado " + relativo(geradoEm) : "carregando…"}</div>
             </div>
             <div className="flex items-center gap-1">
-              <button onClick={load} title="Atualizar" className="h-7 w-7 grid place-items-center rounded-lg btn-ghost text-sm">↻</button>
-              <button onClick={toggleNotif} title={notif ? "Avisos do navegador: ligados" : "Ativar avisos no navegador"} className="h-7 w-7 grid place-items-center rounded-lg btn-ghost text-sm">{notif ? "🔔" : "🔕"}</button>
+              <button onClick={load} title="Atualizar" className="h-9 w-9 grid place-items-center rounded-lg btn-ghost text-sm">↻</button>
+              <button onClick={toggleNotif} title={notif ? "Avisos do navegador: ligados" : "Ativar avisos no navegador"} className="h-9 w-9 grid place-items-center rounded-lg btn-ghost text-sm">{notif ? "🔔" : "🔕"}</button>
             </div>
           </div>
 

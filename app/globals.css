@@ -166,6 +166,8 @@ h1 { letter-spacing: -0.015em; }
 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.05rem 1.15rem; box-shadow: var(--shadow-sm); }
 .kpi-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .kpi-value { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; margin-top: .3rem; line-height: 1.05; }
+/* mobile: valores longos (R$ 6+ dígitos) não podem ser cortados nos cards de KPI */
+@media (max-width: 420px) { .kpi-value { font-size: 1.25rem; overflow-wrap: anywhere; } }
 
 /* Animações */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
