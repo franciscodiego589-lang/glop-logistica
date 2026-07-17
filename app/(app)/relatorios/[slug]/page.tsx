@@ -3,14 +3,15 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { VitrineBanner } from "@/components/VitrineBanner";
 import ReportView from "@/components/relatorios/ReportView";
-import PrintButton from "@/components/ui/PrintButton";
+import ReportPrintDocument from "@/components/relatorios/ReportPrintDocument";
+import AutoPrint from "@/components/relatorios/AutoPrint";
 import { findRelatorio } from "@/lib/relatorios";
 
 export const dynamic = "force-dynamic";
 
 const PERIODOS = [7, 30, 90, 365];
 
-export default async function RelatorioPage({ params, searchParams }: { params: { slug: string }; searchParams?: { dias?: string } }) {
+export default async function RelatorioPage({ params, searchParams }: { params: { slug: string }; searchParams?: { dias?: string; print?: string } }) {
   const r = findRelatorio(params.slug);
   if (!r) notFound();
 
@@ -25,6 +26,25 @@ export default async function RelatorioPage({ params, searchParams }: { params: 
   const { data, error } = await supabase.rpc(r!.rpc, { p_company: company, p_days: dias });
   const erro = !!error && data == null;
 
+  // ── Modo PDF / impressão (?print=1): documento completo, papel timbrado ──────
+  const voltarHref = `/relatorios/${r!.slug}${r!.periodo ? `?dias=${dias}` : ""}`;
+  if (searchParams?.print === "1" && data) {
+    const geradoEm = new Date().toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    const numero = `${r!.slug.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8)}-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`;
+    return (
+      <>
+        <AutoPrint voltarHref={voltarHref} />
+        <ReportPrintDocument
+          data={data}
+          titulo={(data as any)?.titulo ?? r!.title}
+          subtitulo={(data as any)?.periodo ?? r!.resumo}
+          geradoEm={geradoEm}
+          numero={numero}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-end justify-between flex-wrap gap-2">
@@ -37,7 +57,7 @@ export default async function RelatorioPage({ params, searchParams }: { params: 
           {r!.periodo && PERIODOS.map((p) => (
             <Link key={p} href={`/relatorios/${r!.slug}?dias=${p}`} className={`px-3 py-1.5 rounded-lg text-xs font-semibold no-underline ${dias === p ? "bg-brand-600 text-white" : "border"}`} style={dias === p ? undefined : { borderColor: "var(--border)" }}>{p}d</Link>
           ))}
-          <PrintButton />
+          <Link href={`/relatorios/${r!.slug}?print=1${r!.periodo ? `&dias=${dias}` : ""}`} className="px-3 py-1.5 rounded-lg text-xs font-semibold no-underline text-white" style={{ background: "#0b7a3b" }}>🖨️ PDF / Imprimir</Link>
         </div>
       </div>
 

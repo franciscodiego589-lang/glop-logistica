@@ -172,15 +172,63 @@ h1 { letter-spacing: -0.015em; }
 .animate-in { animation: fadeInUp .28s ease both; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
-/* Impressão / PDF — mostra só o conteúdo (relatórios, documentos jurídicos) */
+/* ══ Documento de relatório (PDF / impressão) — papel timbrado nível empresa ══ */
+.report-doc {
+  max-width: 210mm; margin: 16px auto; background: #fff; color: #0f172a;
+  padding: 20mm 16mm; box-shadow: 0 2px 24px rgba(0,0,0,.14); border-radius: 4px;
+  font-size: 12px; line-height: 1.45;
+}
+.report-doc * { box-sizing: border-box; }
+.rd-brandrow { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.rd-brand { display: flex; gap: 12px; align-items: center; }
+.rd-logo { width: 46px; height: 46px; border-radius: 10px; background: #1f5eff; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center; letter-spacing: .5px; }
+.rd-empresa { font-weight: 800; font-size: 13px; color: #0f172a; }
+.rd-empresa-sub { font-size: 10.5px; color: #64748b; margin-top: 2px; }
+.rd-meta { text-align: right; font-size: 10px; color: #475569; }
+.rd-meta-line { display: flex; gap: 8px; justify-content: flex-end; }
+.rd-meta-line span { color: #94a3b8; }
+.rd-rule { height: 3px; background: linear-gradient(90deg, #1f5eff, #0b7a3b); border-radius: 2px; margin: 12px 0 10px; }
+.rd-title { font-size: 20px; font-weight: 800; margin: 0; color: #0f172a; letter-spacing: -.01em; }
+.rd-subtitle { font-size: 11px; color: #64748b; margin-top: 2px; }
+.rd-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0; }
+.rd-kpi { border: 1px solid #e2e8f0; border-top: 3px solid #cbd5e1; border-radius: 6px; padding: 8px 10px; break-inside: avoid; }
+.rd-kpi-label { font-size: 9px; text-transform: uppercase; letter-spacing: .4px; color: #64748b; font-weight: 700; }
+.rd-kpi-value { font-size: 16px; font-weight: 800; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.rd-section { margin-top: 16px; }
+.rd-section-title { font-size: 12px; font-weight: 800; color: #0f172a; margin: 0 0 6px; padding-bottom: 4px; border-bottom: 1.5px solid #e2e8f0; }
+.rd-count { color: #94a3b8; font-weight: 600; font-size: 10px; }
+.rd-empty { font-size: 10.5px; color: #94a3b8; }
+.rd-bars { display: flex; flex-direction: column; gap: 6px; }
+.rd-bar-row { break-inside: avoid; }
+.rd-bar-head { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
+.rd-bar-label { color: #334155; }
+.rd-bar-num { color: #64748b; font-variant-numeric: tabular-nums; }
+.rd-bar-track { height: 6px; background: #eef2f7; border-radius: 4px; overflow: hidden; }
+.rd-bar-fill { height: 100%; background: #1f5eff; border-radius: 4px; }
+.rd-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.rd-table th { text-align: left; background: #f1f5f9; color: #334155; font-weight: 700; padding: 5px 7px; border-bottom: 1.5px solid #cbd5e1; text-transform: uppercase; font-size: 9px; letter-spacing: .3px; }
+.rd-table td { padding: 4px 7px; border-bottom: 1px solid #eef2f7; color: #0f172a; }
+.rd-table td.num, .rd-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.rd-table tbody tr:nth-child(even) { background: #f8fafc; }
+.rd-endnote { margin-top: 18px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #94a3b8; }
+.report-running-footer { display: none; }
+
+/* ══ Impressão / PDF ══ */
+@page { size: A4; margin: 12mm 10mm 16mm 10mm; }
 @media print {
-  aside, header { display: none !important; }
+  aside, header, nav { display: none !important; }
   .print-hide { display: none !important; }
   main { padding: 0 !important; overflow: visible !important; }
-  .card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
-  table { break-inside: auto; }
-  tr, li { break-inside: avoid; }
-  h1, h2, h3 { break-after: avoid; }
   html, body { background: #fff !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   a { text-decoration: none !important; color: inherit !important; }
+  /* documento de relatório: full-bleed, sem sombra */
+  .report-doc { max-width: none !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; font-size: 10.5px; }
+  .rd-table thead { display: table-header-group; }   /* repete o cabeçalho da tabela em cada página */
+  .rd-kpi, .rd-bar-row, .rd-table tr { break-inside: avoid; }
+  .rd-section-title, h1, h2, h3 { break-after: avoid; }
+  .report-running-footer { display: flex !important; justify-content: space-between; position: fixed; bottom: 4mm; left: 10mm; right: 10mm; font-size: 8px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 3px; }
+  /* fallback p/ telas antigas (docs jurídicos) */
+  .card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
+  tr, li { break-inside: avoid; }
 }
