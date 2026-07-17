@@ -35,6 +35,9 @@ export default function Topbar({ email }: { email?: string | null }) {
   return (
     <header className="sticky top-0 z-20 h-16 px-4 sm:px-6 flex items-center gap-3 border-b"
       style={{ borderColor: "var(--border)", background: "color-mix(in srgb, var(--surface) 82%, transparent)", backdropFilter: "blur(10px)" }}>
+      {/* Menu (mobile) — abre a gaveta de navegação */}
+      <button onClick={() => window.dispatchEvent(new Event("toggle-mobile-nav"))} aria-label="Abrir menu"
+        className="md:hidden h-10 w-10 grid place-items-center rounded-lg btn-ghost shrink-0 text-xl">☰</button>
       {/* Busca */}
       <div className="relative flex-1 max-w-xl">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 muted text-sm pointer-events-none">⌕</span>
@@ -75,8 +78,8 @@ export default function Topbar({ email }: { email?: string | null }) {
               <div className="text-xs muted truncate">{email ?? "—"}</div>
             </div>
             <div className="h-px my-1" style={{ background: "var(--border)" }} />
-            <a href="/configuracoes" className="block px-3 py-2 rounded-lg text-sm btn-ghost">Configurações</a>
-            <a href="/permissoes" className="block px-3 py-2 rounded-lg text-sm btn-ghost">Permissões & acessos</a>
+            <a href="/admin" className="block px-3 py-2 rounded-lg text-sm btn-ghost">Configurações</a>
+            <a href="/seguranca" className="block px-3 py-2 rounded-lg text-sm btn-ghost">Permissões & acessos</a>
             <div className="h-px my-1" style={{ background: "var(--border)" }} />
             <button onClick={logout} className="w-full text-left px-3 py-2 rounded-lg text-sm btn-ghost" style={{ color: "var(--danger)" }}>
               Sair da conta

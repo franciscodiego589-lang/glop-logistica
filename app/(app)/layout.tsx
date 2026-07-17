@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import MobileNav from "@/components/MobileNav";
 import Topbar from "@/components/Topbar";
 import HelpBar from "@/components/HelpBar";
 import CommandPalette from "@/components/CommandPalette";
@@ -17,6 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
+      <MobileNav />
       <div className="flex-1 flex flex-col min-w-0">
         <CommandPalette />
         <Topbar email={email} />

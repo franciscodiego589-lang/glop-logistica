@@ -172,6 +172,11 @@ h1 { letter-spacing: -0.015em; }
 .animate-in { animation: fadeInUp .28s ease both; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
+/* ══ Responsividade — rede de segurança (não afeta desktop) ══ */
+img, video, canvas { max-width: 100%; height: auto; }
+/* conteúdo longo (e-mails, URLs, códigos) quebra em vez de estourar a largura no mobile */
+@media (max-width: 640px) { td, .break-long { overflow-wrap: anywhere; } }
+
 /* ══ Documento de relatório (PDF / impressão) — papel timbrado nível empresa ══ */
 .report-doc {
   max-width: 210mm; margin: 16px auto; background: #fff; color: #0f172a;
